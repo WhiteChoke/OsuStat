@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/PythonApi/" />
+  <Project Path="OsuStat.Core/OsuStat.Core.csproj" />
+  <Project Path="OsuStat.UI/OsuStat.UI.csproj" />
+</Solution>
