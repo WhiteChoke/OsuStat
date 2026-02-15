@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "OsuStat.Core/1.0.0": {
+        "dependencies": {
+          "OsuParsers": "1.7.2"
+        },
+        "runtime": {
+          "OsuStat.Core.dll": {}
+        }
+      },
+      "OsuParsers/1.7.2": {
+        "runtime": {
+          "lib/netstandard2.0/OsuParsers.dll": {
+            "assemblyVersion": "1.7.2.0",
+            "fileVersion": "1.7.2.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "OsuStat.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "OsuParsers/1.7.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hc32VhDa7QQZIKKIxYW99fbe71+3DIueJvMirtQ0hDN8YRLJDHRtaN/9xre1G0FRe1DLSNxyx5p969TS1i0tWQ==",
+      "path": "osuparsers/1.7.2",
+      "hashPath": "osuparsers.1.7.2.nupkg.sha512"
+    }
+  }
+}

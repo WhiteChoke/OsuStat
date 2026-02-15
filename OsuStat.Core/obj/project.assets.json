@@ -1,11 +1,41 @@
 {
   "version": 3,
   "targets": {
-    "net10.0": {}
+    "net10.0": {
+      "OsuParsers/1.7.2": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/OsuParsers.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/OsuParsers.dll": {
+            "related": ".xml"
+          }
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "OsuParsers/1.7.2": {
+      "sha512": "hc32VhDa7QQZIKKIxYW99fbe71+3DIueJvMirtQ0hDN8YRLJDHRtaN/9xre1G0FRe1DLSNxyx5p969TS1i0tWQ==",
+      "type": "package",
+      "path": "osuparsers/1.7.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/OsuParsers.dll",
+        "lib/netstandard2.0/OsuParsers.xml",
+        "osuparsers.1.7.2.nupkg.sha512",
+        "osuparsers.nuspec"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0": []
+    "net10.0": [
+      "OsuParsers >= 1.7.2"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\denis\\.nuget\\packages\\": {}
@@ -51,6 +81,12 @@
     "frameworks": {
       "net10.0": {
         "targetAlias": "net10.0",
+        "dependencies": {
+          "OsuParsers": {
+            "target": "Package",
+            "version": "[1.7.2, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",
@@ -67,7 +103,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",

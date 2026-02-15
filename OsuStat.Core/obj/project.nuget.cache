@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "9Gi8ZzsDb6U=",
+  "dgSpecHash": "wv8X2min2yE=",
   "success": true,
   "projectFilePath": "F:\\code\\OsuStat\\OsuStat.Core\\OsuStat.Core.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\denis\\.nuget\\packages\\osuparsers\\1.7.2\\osuparsers.1.7.2.nupkg.sha512"
+  ],
   "logs": []
 }
