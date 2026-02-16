@@ -1,3 +1,9 @@
 .vs
 .env
 .venv
+bin/
+obj/
+packages
+*.suo
+*.user
+_ReSharper.*

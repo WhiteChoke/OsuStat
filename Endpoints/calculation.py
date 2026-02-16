@@ -17,7 +17,7 @@ router = APIRouter(prefix="/pp-calculate", tags=["🌟 POST"])
 async def Upload(item: Item):
     try:
         # temprorary path, should be used an actual file
-        path = r"D:\Programming\OsuStat\Release Hallucination - Chronostasis (P A N) [Extra].osu"
+        path = r"F:\code\OsuStat\Nashimoto Ui - AaAaAaAAaAaAAa (Sotarks) [SMOKELIND's InSaNE].osu"
         beatmap = rosu.Beatmap(path=path)
         
         # beatmap.convert(rosu.GameMode.Osu) # No need in it for now, fuck the file

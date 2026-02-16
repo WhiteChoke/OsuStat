@@ -4,6 +4,13 @@
              xmlns:local="clr-namespace:OsuStat.UI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="BackgroundBlack" Color="#27292B"/>
+        <SolidColorBrush x:Key="RaspberryRed" Color="#5C2334"/>
+        <FontFamily x:Key="Rubik">/Assets/Fonts/#Rubik</FontFamily>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="{StaticResource Rubik}"/>
+        </Style>
     </Application.Resources>
 </Application>
