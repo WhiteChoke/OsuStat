@@ -10,72 +10,13 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
-            <RowDefinition/>
-            <RowDefinition Height="2"/>
-            <RowDefinition/>
+            <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Background="{StaticResource RaspberryRed}">
+            <Button Content="Setting" Background="Transparent" BorderBrush="Transparent" 
+                    Command="{Binding NavigateToSettingsCommand}"/>
         </StackPanel>
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal" Margin="18 30 18 18">
-                <Ellipse Height="60" Width="60" HorizontalAlignment="Left" >
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="{Binding User.AvatarPath }" Stretch="UniformToFill"/>
-                    </Ellipse.Fill>
-                </Ellipse>
-                <StackPanel VerticalAlignment="Bottom" Margin="15 0">
-                    <TextBlock Text="{Binding User.Nickname}" VerticalAlignment="Center" FontSize="26"/>
-                    <TextBlock Text="{Binding User.GlobalRanking}" FontSize="16"/>
-                </StackPanel>
-            </StackPanel>
-
-            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" 
-                        Orientation="Horizontal"  Margin="22">
-                <TextBlock Text="last session:" FontSize="26"/>
-                <TextBlock Text="{Binding User.LastSession}" FontSize="17" VerticalAlignment="Center"/>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Margin="24 0">
-            <TextBlock Text="Today" FontSize="40"/>
-                <TextBlock FontSize="20" Text="{Binding PlayTime}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding MapsPlayed}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding PpGained}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding AvgBpm}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding AvgStarRate}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding AvgAccuracy}" Margin="6 0 0 10 "/>
-            </StackPanel>
-            <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Margin="20 0">
-                <TextBlock Text="Best score" FontSize="23"/>
-                <Border Width="210" Height="210" 
-                            CornerRadius="10" HorizontalAlignment="Left">
-                    <Border.Background>
-                        <ImageBrush ImageSource="{Binding MapAvatarPath}" Stretch="UniformToFill" />
-                    </Border.Background>
-                    <DockPanel VerticalAlignment="Bottom" Margin="8">
-                        <Border  Width="auto" Height="auto" CornerRadius="4">
-                            <Border.Background>
-                                <SolidColorBrush Color="Black" Opacity=".7"/>
-                            </Border.Background>
-                            <TextBlock Text="{Binding MapName}" FontSize="20"/>
-                        </Border>
-                        <Border  Width="auto" Height="auto" CornerRadius="4" HorizontalAlignment="Right">
-                            <Border.Background>
-                                <SolidColorBrush Color="Black" Opacity=".7"/>
-                            </Border.Background>
-                            <TextBlock Text="{Binding Pp}" FontSize="20"/>
-                        </Border>
-                    </DockPanel>
-                </Border>
-            </StackPanel>
-        </Grid>
-        <Rectangle Grid.Row="2" Fill="White"/>
-        
+        <ContentControl Grid.Row="1" 
+                        Content="{Binding Navigation.CurrentView}"/>
     </Grid>
 </Window>

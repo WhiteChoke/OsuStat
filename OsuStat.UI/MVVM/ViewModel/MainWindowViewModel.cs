@@ -1,25 +1,28 @@
 ﻿using OsuStat.UI.MVVM.Core;
-using OsuStat.UI.MVVM.Model;
 using OsuStat.UI.Service;
-using System.IO;
-
 
 namespace OsuStat.UI.MVVM.ViewModel
 {
     public class MainWindowViewModel : Core.ViewModel
     {
-        public Player User { get; set; } = new Player();
+        private INavigationService _navigation;
 
-        private readonly string _rootDirectory = Directory.GetParent(".").Parent.Parent.ToString();
-
-        public MainWindowViewModel()
+        public INavigationService Navigation
         {
-            InitializeAsync();
+            get => _navigation;
+            set
+            {
+                _navigation = value;
+                OnPropertyChanged();
+            }
         }
-
-        private async void InitializeAsync()
+        
+        public RelayCommand NavigateToSettingsCommand { get; set; }
+        public MainWindowViewModel(INavigationService navigationService)
         {
-            await LoadUserData.LoadData(User, _rootDirectory);
+            Navigation = navigationService;
+            NavigateToSettingsCommand = new RelayCommand(o =>
+                { Navigation.NavigateTo<SettingsViewModel>(); });
         }
     }
 }

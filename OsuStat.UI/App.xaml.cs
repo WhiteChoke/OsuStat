@@ -1,8 +1,9 @@
 ﻿using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using OsuStat.UI.MVVM.Core;
-using OsuStat.UI.MVVM.View;
 using OsuStat.UI.MVVM.ViewModel;
+using OsuStat.UI.Service;
+using OsuStat.UI.Service.Impl;
 
 namespace OsuStat.UI
 {
@@ -19,10 +20,10 @@ namespace OsuStat.UI
                 DataContext = provider.GetRequiredService<MainWindowViewModel>()
             });
             services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<HomeView>();
-            services.AddSingleton<SettingsView>();
+            services.AddSingleton<HomeViewModel>();
+            services.AddSingleton<SettingsViewModel>();
             
-            services.AddSingleton<IServiceCollection, ServiceCollection>();
+            services.AddSingleton<INavigationService, NavigationService>();
             
             services.AddSingleton<Func<Type, ViewModel>>
             (
@@ -34,6 +35,7 @@ namespace OsuStat.UI
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            _serviceProvider.GetRequiredService<INavigationService>().NavigateTo<HomeViewModel>();
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
             base.OnStartup(e);

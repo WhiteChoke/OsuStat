@@ -26,7 +26,7 @@ namespace OsuStat.UI.MVVM.Core
 
         public void Execute(object? parameter)
         {
-            Execute(parameter);
+            _execute(parameter);
         }
     }
 }
