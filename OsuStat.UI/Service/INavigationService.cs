@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using OsuStat.UI.MVVM.Core;
 
 namespace OsuStat.UI.Service
 {
-    internal interface INavigationService
+    public interface INavigationService
     {
+        ViewModel CurrentView { get; }
+        void NavigateTo<T>() where T : ViewModel;
     }
 }
