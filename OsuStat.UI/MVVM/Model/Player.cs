@@ -1,6 +1,6 @@
-﻿using OsuStat.UI.MVVM;
+﻿using OsuStat.UI.MVVM.Core;
 
-namespace OsuStat.UI.Model
+namespace OsuStat.UI.MVVM.Model
 {
     public class Player : NotifyPropertyBase
     {

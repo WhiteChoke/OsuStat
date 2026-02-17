@@ -1,10 +1,10 @@
-﻿using OsuStat.UI.Model;
-using OsuStat.UI.MVVM;
+﻿using OsuStat.UI.MVVM.Core;
+using OsuStat.UI.MVVM.Model;
 using OsuStat.UI.Service;
 using System.IO;
 
 
-namespace OsuStat.UI.ViewModel
+namespace OsuStat.UI.MVVM.ViewModel
 {
     public class MainWindowViewModel : NotifyPropertyBase
     {

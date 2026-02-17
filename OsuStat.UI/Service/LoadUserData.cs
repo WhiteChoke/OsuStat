@@ -1,8 +1,7 @@
 ﻿using OsuStat.Core;
-using OsuStat.UI.Model;
+using OsuStat.UI.MVVM.Model;
 using System.IO;
 using System.Windows;
-using System.Windows.Automation.Text;
 
 namespace OsuStat.UI.Service
 {
@@ -11,7 +10,7 @@ namespace OsuStat.UI.Service
         public static async Task LoadData(Player user, string rootPath)
         {
             try
-            {
+            {              
                 var info = await PlayerInfo.GetPlayerInfo(@"F:\osu!\");
 
                 user.Nickname = info["Nickname"];

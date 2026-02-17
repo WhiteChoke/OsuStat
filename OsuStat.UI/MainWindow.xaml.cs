@@ -1,4 +1,4 @@
-﻿using OsuStat.UI.ViewModel;
+﻿using OsuStat.UI.MVVM.ViewModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
