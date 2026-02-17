@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OsuStat.UI.MVVM.Core
+﻿namespace OsuStat.UI.MVVM.Core
 {
-    internal class ViewModel
+    public abstract class ViewModel : ObservableObject
     {
     }
 }

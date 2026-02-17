@@ -2,7 +2,7 @@
 
 namespace OsuStat.UI.MVVM.Model
 {
-    public class Player : NotifyPropertyBase
+    public class Player : ObservableObject
     {
         private string _nickname;
 

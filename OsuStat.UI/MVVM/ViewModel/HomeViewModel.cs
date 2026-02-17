@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OsuStat.UI.MVVM.ViewModel
+﻿namespace OsuStat.UI.MVVM.ViewModel
 {
-    internal class HomeViewModel
+    class HomeViewModel : Core.ViewModel
     {
     }
 }

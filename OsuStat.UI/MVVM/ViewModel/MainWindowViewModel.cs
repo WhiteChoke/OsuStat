@@ -6,7 +6,7 @@ using System.IO;
 
 namespace OsuStat.UI.MVVM.ViewModel
 {
-    public class MainWindowViewModel : NotifyPropertyBase
+    public class MainWindowViewModel : Core.ViewModel
     {
         public Player User { get; set; } = new Player();
 

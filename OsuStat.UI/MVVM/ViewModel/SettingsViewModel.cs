@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OsuStat.UI.MVVM.ViewModel
+﻿namespace OsuStat.UI.MVVM.ViewModel
 {
-    internal class SettingsViewModel
+    public class SettingsViewModel : Core.ViewModel
     {
     }
 }
