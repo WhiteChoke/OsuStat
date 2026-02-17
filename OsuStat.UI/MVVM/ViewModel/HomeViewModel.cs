@@ -1,6 +1,6 @@
 ﻿namespace OsuStat.UI.MVVM.ViewModel
 {
-    class HomeViewModel : Core.ViewModel
+    public class HomeViewModel : Core.ViewModel
     {
     }
 }
