@@ -10,7 +10,7 @@ namespace OsuStat.UI.Service.Impl
         public ViewModel CurrentView
         { 
             get => _currentView;
-            set
+            private set
             {
                 _currentView = value;
                 OnPropertyChanged();
