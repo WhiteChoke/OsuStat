@@ -9,8 +9,8 @@ namespace OsuStat.Core
         {
             var info = new Dictionary<string, string>();
 
-            OsuDatabase osuDb = DatabaseDecoder.DecodeOsu(osuDirectoryPath + "osu!.db");
-            PresenceDatabase presence = DatabaseDecoder.DecodePresence(osuDirectoryPath + "presence.db");
+            OsuDatabase osuDb = DatabaseDecoder.DecodeOsu(osuDirectoryPath + @"\osu!.db");
+            PresenceDatabase presence = DatabaseDecoder.DecodePresence(osuDirectoryPath + @"\presence.db");
                        
             var currentPlayer = presence.Players.Find(player => player.Username.Equals(osuDb.PlayerName)) ;
 

@@ -3,10 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OsuStat.UI.MVVM.View"
+             xmlns:local="clr-namespace:OsuStat.UI.MVVM.View"          
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock>TEST</TextBlock>
+             d:DesignHeight="850" d:DesignWidth="572"
+             Background="{StaticResource BackgroundBlack}">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15, 30">
+        <StackPanel>
+            <TextBlock Text="{Binding CurrentFolder}" FontSize="30"/>
+            <Border BorderThickness="1" 
+                    CornerRadius="2" 
+                    BorderBrush="White" 
+                    Width="auto" 
+                    HorizontalAlignment="Left"
+                    Margin="0, 10"
+                    Padding="3">
+                <Button Content="Change folder" 
+                        Background="Transparent" 
+                        FontSize="16" 
+                        BorderThickness="0"
+                        Command="{Binding SelectFolderCommand}"/>
+            </Border>
+        </StackPanel>
+        <Button Height="30" 
+                Background="Transparent"
+                Content="✖"
+                Width="30"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Command="{Binding NavigateToHomeCommand}"/>
     </Grid>
 </UserControl>

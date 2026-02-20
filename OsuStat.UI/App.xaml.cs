@@ -24,6 +24,7 @@ namespace OsuStat.UI
             services.AddSingleton<SettingsViewModel>();
             
             services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<ISettingsService, SettingsService>();
             
             services.AddSingleton<Func<Type, ViewModel>>
             (
@@ -36,6 +37,7 @@ namespace OsuStat.UI
         protected override void OnStartup(StartupEventArgs e)
         {
             _serviceProvider.GetRequiredService<INavigationService>().NavigateTo<HomeViewModel>();
+            _serviceProvider.GetRequiredService<ISettingsService>();
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
             base.OnStartup(e);
