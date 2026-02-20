@@ -7,11 +7,11 @@ namespace OsuStat.UI.Service
 {
     public class LoadUserData
     {
-        public static async Task LoadData(Player user, string rootPath)
+        public static async Task LoadData(Player user, string gameFolderPath ,string rootPath)
         {
             try
             {              
-                var info = await PlayerInfo.GetPlayerInfo(@"F:\osu!\");
+                var info = await PlayerInfo.GetPlayerInfo(gameFolderPath);
 
                 user.Nickname = info["Nickname"];
                 user.GlobalRanking = "#" + info["GlobalRanking"];
