@@ -27,7 +27,7 @@ namespace OsuStat.UI.MVVM.ViewModel
         {
             try
             {
-                await LoadUserData.LoadData(User, _settings.CurrentSettings.GameFolder, _settings.ApplicationFolder);
+                await LoadUserData.LoadData(User, _settings.GetGameFolder(), _settings.ApplicationFolder);
             }
             catch (Exception e)
             {
