@@ -1,66 +1,57 @@
 import rosu_pp_py as rosu
 
-from fastapi import APIRouter, UploadFile
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from fastapi import APIRouter
 
-class Item(BaseModel):
+router = APIRouter(prefix="/pp-calculate", tags=["🌟 POST"])
+
+class classniy_class(BaseModel):
+    file_path: str
     n300: int
     n100: int
     n50: int
     misses: int
     combo: int
-    mods: list[int] | int | None = None
-
-router = APIRouter(prefix="/pp-calculate", tags=["🌟 POST"])
+    mods: int | None = None
 
 @router.post("/beatmap/")
-async def Upload(item: Item):
+async def Upload(schema: classniy_class):
     try:
-        # temprorary path, should be used an actual file
-        path = r"F:\code\OsuStat\Nashimoto Ui - AaAaAaAAaAaAAa (Sotarks) [SMOKELIND's InSaNE].osu"
-        beatmap = rosu.Beatmap(path=path)
-        
-        # beatmap.convert(rosu.GameMode.Osu) # No need in it for now, fuck the file
+        beatmap = rosu.Beatmap(path=schema.file_path)
+
         if beatmap.is_suspicious():
-            return {"error": "Beatmap is suspicious"}
-        
-        # Calculates current ammount of pp
+            return {"ERROR": "Beatmap is suspicious"}
+
         perf = rosu.Performance(
-            n300 = item.n300,
-            n100 = item.n100,
-            n50 = item.n50,
-            combo = item.combo,
-            misses = item.misses,
-            mods = item.mods
+            n300=schema.n300,
+            n100=schema.n100,
+            n50=schema.n50,
+            combo=schema.combo,
+            misses=schema.misses,
+            mods=schema.mods
         )
-        
+
         attrs = perf.calculate(beatmap)
-        
-        # Calculates MAX ammount of pp
-        
         perf.set_accuracy(100)
-        perf.set_misses(None)
+        perf.set_misses(0)
         perf.set_combo(None)
-        
-        attrs_max_pp = perf.calculate(attrs)
-        
-        
-        # Rounds the ammount of pp so it's not Long type
+        attrs_max_pp = perf.calculate(beatmap)
+
         current_pp = round(attrs.pp, 2)
         maximum_pp = round(attrs_max_pp.pp, 2)
-        
-        
-        return {"message": "Data received", "item": item, "PP": current_pp, "MAX_pp": maximum_pp}
-    
-    except FileNotFoundError as e:
-        return {"ERROR": f"Beatmap file not found: {str(e)}"}
-    
+
+        return {
+            "STATE": "Success",
+            
+            "beatmap": {
+                "AR": float(f"{beatmap.ar:.1f}"),
+                "BPM": float(f"{beatmap.bpm:.1f}"),
+                "CS": float(f"{beatmap.cs:.1f}"),
+                "HP": float(f"{beatmap.hp:.1f}")
+            },
+            
+            "pp": current_pp,
+            "max_pp": maximum_pp
+        }
     except Exception as e:
         return {"ERROR": f"The map is fucked: {str(e)}"}
-    
-    # dk if this thing will actually be needed here
-    # file = upload.file
-    # filename = upload.filename
-    
-    # with open(f'{filename}', 'wb') as f:
-    #     f.write(file.read())
