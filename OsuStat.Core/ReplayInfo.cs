@@ -1,28 +1,41 @@
-﻿using OsuParsers.Decoders;
+﻿using System.Net.Http.Json;
+using OsuParsers.Decoders;
+using OsuParsers.Enums;
 using OsuParsers.Replays;
+using OsuStat.UI.Dto;
 
 namespace OsuStat.Core;
 
 public class ReplayInfo
 {
-    public static Dictionary<string, string> Get(string replayPath, string gamePath)
+    private static readonly HttpClient _httpClient = new();
+    private static readonly string _url = "http://127.0.0.1:727/pp-calculate/beatmap/";
+    
+    public static async Task<Dictionary<string, object>> Get(string replayPath, string gamePath)
     {
-        var result = new Dictionary<string, string>();
-        var OsuDb = DatabaseDecoder.DecodeOsu(@"D:\osu!\osu!.db");
+        var result = new Dictionary<string, object>();
+        var osuDb = DatabaseDecoder.DecodeOsu(@"D:\osu!\osu!.db");
         var replay = ReplayDecoder.Decode(replayPath);
-        var beatmap = OsuDb.Beatmaps.Find(beatmap => replay.BeatmapMD5Hash == beatmap.MD5Hash);
+        var beatmap = osuDb.Beatmaps.Find(beatmap => replay.BeatmapMD5Hash == beatmap.MD5Hash);
         var bgPath = Directory.GetFiles(Path.Combine(gamePath, "Songs", beatmap.FolderName), "*.jpg");
-        result.Add("Name", beatmap.Title);
-        result.Add("Artist", beatmap.Artist);
-        result.Add("Mapper", beatmap.Creator);
-        result.Add("Length", replay.ReplayLength.ToString());
-        result.Add("StarRate", beatmap.Difficulty);
-        result.Add("Hp", beatmap.HPDrain.ToString());
-        result.Add("Cs", beatmap.CircleSize.ToString());
-        result.Add("Ar", beatmap.ApproachRate.ToString());
-        result.Add("BgPath",  bgPath[0]);
+
+        var requestBody = new GetBeatMapStatRequestDto(
+            $"{gamePath}/Songs/{beatmap.FolderName}/{beatmap.FileName}",
+            replay.Count300,
+            replay.Count100,
+            replay.Count50,
+            replay.CountMiss,
+            replay.Combo,
+            0
+            );
         
+        var response = await _httpClient.PostAsync(
+            _url, 
+            JsonContent.Create(requestBody)
+            );
         
+        var r = await response.Content.ReadFromJsonAsync<GetBeatMapStatResponseDto>();
+      
         return result;
     }
 }
