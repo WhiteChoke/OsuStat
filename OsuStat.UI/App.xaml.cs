@@ -25,6 +25,7 @@ namespace OsuStat.UI
             
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<ISettingsService, SettingsService>();
+            services.AddSingleton<IObserveGameService, ObserveGameService>();
             
             services.AddSingleton<Func<Type, ViewModel>>
             (

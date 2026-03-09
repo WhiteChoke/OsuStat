@@ -14,6 +14,8 @@
 
   <ItemGroup>
     <Resource Include="Assets\Fonts\Rubik.ttf" />
+    <None Remove="Assets\Images\Star.jpeg" />
+    <Resource Include="Assets\Images\Star.jpeg" />
   </ItemGroup>
 
   <ItemGroup>
