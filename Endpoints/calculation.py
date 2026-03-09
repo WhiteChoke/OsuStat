@@ -20,7 +20,7 @@ async def Upload(schema: classniy_class):
         beatmap = rosu.Beatmap(path=schema.file_path)
 
         if beatmap.is_suspicious():
-            return {"error": "Beatmap is suspicious"}
+            return {"ERROR": "Beatmap is suspicious"}
 
         perf = rosu.Performance(
             n300=schema.n300,
@@ -46,12 +46,12 @@ async def Upload(schema: classniy_class):
             "beatmap": {
                 "AR": float(f"{beatmap.ar:.1f}"),
                 "BPM": float(f"{beatmap.bpm:.1f}"),
-                "CS": float(f"{beatmap.cs}"),
-                "HP": float(f"{beatmap.hp}")
+                "CS": float(f"{beatmap.cs:.1f}"),
+                "HP": float(f"{beatmap.hp:.1f}")
             },
             
             "pp": current_pp,
             "max_pp": maximum_pp
         }
     except Exception as e:
-        return {"ERROR": f"Failed to parse beatmap: {str(e)}"}
+        return {"ERROR": f"The map is fucked: {str(e)}"}
