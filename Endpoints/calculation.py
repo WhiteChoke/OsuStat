@@ -6,7 +6,7 @@ from fastapi import APIRouter
 router = APIRouter(prefix="/pp-calculate", tags=["🌟 POST"])
 
 class classniy_class(BaseModel):
-    file_path: str
+    filePath: str
     n300: int
     n100: int
     n50: int
@@ -17,8 +17,16 @@ class classniy_class(BaseModel):
 @router.post("/beatmap/")
 async def Upload(schema: classniy_class):
     try:
-        beatmap = rosu.Beatmap(path=schema.file_path)
+        beatmap = rosu.Beatmap(path=schema.filePath)
 
+        diff = rosu.Difficulty(
+            mods = schema.mods,
+            ar = beatmap.ar,
+            ar_with_mods = True
+        )
+        
+        gradual_diff = diff.calculate(beatmap)
+        
         if beatmap.is_suspicious():
             return {"ERROR": "Beatmap is suspicious"}
 
@@ -47,7 +55,8 @@ async def Upload(schema: classniy_class):
                 "AR": float(f"{beatmap.ar:.1f}"),
                 "BPM": float(f"{beatmap.bpm:.1f}"),
                 "CS": float(f"{beatmap.cs:.1f}"),
-                "HP": float(f"{beatmap.hp:.1f}")
+                "HP": float(f"{beatmap.hp:.1f}"),
+                "SR": float(f"{gradual_diff.stars:.1f}")
             },
             
             "pp": current_pp,
