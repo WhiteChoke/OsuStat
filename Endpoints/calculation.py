@@ -3,7 +3,7 @@ import rosu_pp_py as rosu
 from pydantic import BaseModel
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/pp-calculate", tags=["🌟 POST"])
+router = APIRouter(prefix="/pp-calculate", tags=["🌟 GET"])
 
 class classniy_class(BaseModel):
     filePath: str
@@ -14,7 +14,7 @@ class classniy_class(BaseModel):
     combo: int
     mods: int | None = None
 
-@router.post("/beatmap/")
+@router.get("/beatmap/")
 async def Upload(schema: classniy_class):
     try:
         beatmap = rosu.Beatmap(path=schema.filePath)
@@ -59,6 +59,7 @@ async def Upload(schema: classniy_class):
                 "BPM": float(f"{beatmap.bpm:.1f}"),
                 "CS": float(f"{beatmap.cs:.1f}"),
                 "HP": float(f"{beatmap.hp:.1f}"),
+                "OD": float(f"{beatmap.od:.1f}"),
                 "SR": float(f"{gradual_diff.stars:.1f}")
             },
             
