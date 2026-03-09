@@ -6,7 +6,7 @@ public class BeatMap
     public string Artist { get; set; }
     public string Mapper { get; set; }
     public int PlayCount { get; set; }
-    public int Bpm { get; set; }
+    public double Bpm { get; set; }
     public int Length { get; set; }
     public double StarRate { get; set; }
     public double Hp { get; set; }
@@ -19,7 +19,7 @@ public class BeatMap
         string artist, 
         string mapper, 
         int playCount, 
-        int bpm, int length, 
+        double bpm, int length, 
         double starRate, 
         double hp, 
         double cs, 

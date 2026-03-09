@@ -29,12 +29,29 @@ public class ReplayInfo
             0
             );
         
-        var response = await _httpClient.PostAsync(
+        var httpResponse = await _httpClient.PostAsync(
             _url, 
             JsonContent.Create(requestBody)
             );
-        
-        var r = await response.Content.ReadFromJsonAsync<GetBeatMapStatResponseDto>();
+        var response = await httpResponse.Content.ReadFromJsonAsync<GetBeatMapStatResponseDto>();
+
+        if (response != null)
+        {
+            result.Add("Name", beatmap.FileName);
+            result.Add("Artist", beatmap.Artist);
+            result.Add("Mapper", beatmap.Creator);
+            result.Add("Bpm", response.beatmap.Bpm);
+            result.Add("Length", replay.ReplayLength);
+            result.Add("StarRate", response.beatmap.Sr);
+            result.Add("Hp", response.beatmap.Hp);
+            result.Add("Cs", response.beatmap.Cs);
+            result.Add("Ar", response.beatmap.Ar);
+            result.Add("BgPath", bgPath[0]);
+        }
+        else
+        {
+            throw new NullReferenceException("Beatmap not found");
+        }
       
         return result;
     }

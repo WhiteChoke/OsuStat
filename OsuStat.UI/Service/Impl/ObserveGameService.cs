@@ -1,7 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Net.Http;
 using System.Windows;
+using OsuParsers.Beatmaps;
 using OsuStat.Core;
+using OsuStat.UI.Dto;
 using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
 
@@ -11,6 +14,7 @@ public class ObserveGameService(ISettingsService settings) : ObservableObject, I
 {
     private FileSystemWatcher watcher;
     private ObservableCollection<BeatMap> _beatmaps;
+    private HttpClient  _httpClient = new();
     
     public void Start(ObservableCollection<BeatMap> Beatmaps)
     {
@@ -34,32 +38,35 @@ public class ObserveGameService(ISettingsService settings) : ObservableObject, I
         watcher.EnableRaisingEvents = true;
     }
 
-    private void AppendBeatMap(object sender, FileSystemEventArgs e)
+    private async void AppendBeatMap(object sender, FileSystemEventArgs e)
     {
-        var result = ReplayInfo.Get(e.FullPath, @"D:\osu!");
-        var hp = double.Parse(result["Hp"]);
-        var сs = double.Parse(result["Cs"]);
-        var ar = double.Parse(result["Ar"]);
-        var lenght = int.Parse(result["Length"]);
+        
+        var result = await ReplayInfo.Get(e.FullPath, @"D:/osu!");
+
         var beatmap = new BeatMap(
-            result["Name"],
-            result["Artist"],
-            result["Mapper"],
-            1,
-            1,
-            lenght,
-            0.0,
-            hp,
-            сs,
-            ar,
-            result["BgPath"]
+            (string) result["Name"],
+            (string) result["Artist"],
+            (string) result["Mapper"],
+            0,
+            (double) result["Bpm"],
+            (int) result["Length"],
+            (double) result["StarRate"],
+            (double) result["Hp"],
+            (double) result["Cs"],
+            (double) result["Ar"],
+            (string) result["BgPath"]
         );
+
+
+
         if (!_beatmaps.Any(map => map.Equals(beatmap)))
         {
-            Application.Current.Dispatcher.Invoke(() =>  
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 _beatmaps.Add(beatmap);
             });
         }
     }
+    
+    
 }
