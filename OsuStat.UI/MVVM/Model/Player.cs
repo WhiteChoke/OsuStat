@@ -29,10 +29,10 @@ namespace OsuStat.UI.MVVM.Model
         private string _avatarPath;
         public string AvatarPath
         {
-            get => _nickname;
+            get => _avatarPath;
             set 
             { 
-                _nickname = value;
+                _avatarPath = value;
                 OnPropertyChanged();
             }
         }

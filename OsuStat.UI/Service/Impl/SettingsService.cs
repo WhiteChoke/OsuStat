@@ -13,8 +13,7 @@ namespace OsuStat.UI.Service.Impl
         private readonly string _jsonPath = 
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Osu stat\settings.json";
 
-        public Settings CurrentSettings { get; } = new();
-
+        private Settings CurrentSettings { get; }
 
         public SettingsService()
         {
@@ -22,7 +21,8 @@ namespace OsuStat.UI.Service.Impl
             ApplicationFolder = Directory.GetParent(AppContext.BaseDirectory).Parent.Parent.Parent.FullName;
             try
             {
-                CurrentSettings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(_jsonPath));
+                CurrentSettings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(_jsonPath)) 
+                                  ?? new Settings();
             }
             catch (IOException)
             {
@@ -42,6 +42,10 @@ namespace OsuStat.UI.Service.Impl
         {
             throw new NotImplementedException();
         }
+
+        public string GetGameFolder() { return CurrentSettings.GameFolder; }
+
+        public string GetLanguage() { return CurrentSettings.Language; }
 
         private void CreateSettingFile()
         {

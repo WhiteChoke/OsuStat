@@ -6,8 +6,9 @@ namespace OsuStat.UI.Service
     public interface ISettingsService : INotifyPropertyChanged
     {
         public string ApplicationFolder { get; }
-        Settings CurrentSettings { get; }
         void SetGameFolder(string folderPath);
         void SetLanguage();
+        string GetGameFolder();
+        string GetLanguage();
     }
 }
