@@ -22,7 +22,10 @@ async def Upload(schema: classniy_class):
         diff = rosu.Difficulty(
             mods = schema.mods,
             ar = beatmap.ar,
-            ar_with_mods = True
+            cs = beatmap.cs,
+            hp = beatmap.hp,
+            od = beatmap.od,
+            lazer = False
         )
         
         gradual_diff = diff.calculate(beatmap)
