@@ -14,7 +14,7 @@ class classniy_class(BaseModel):
     combo: int
     mods: int | None = None
 
-@router.get("/beatmap/")
+@router.post("/beatmap/")
 async def Upload(schema: classniy_class):
     try:
         beatmap = rosu.Beatmap(path=schema.filePath)
