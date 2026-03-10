@@ -20,7 +20,7 @@ public class ReplayInfo
         var bgPath = Directory.GetFiles(Path.Combine(gamePath, "Songs", beatmap.FolderName), "*.jpg");
 
         var requestBody = new GetBeatMapStatRequestDto(
-            $"{gamePath}/Songs/{beatmap.FolderName}/{beatmap.FileName}",
+            string.Join("/",$"{gamePath}/Songs/{beatmap.FolderName}/{beatmap.FileName}".Split('\\')),
             replay.Count300,
             replay.Count100,
             replay.Count50,
