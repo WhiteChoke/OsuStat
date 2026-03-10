@@ -14,11 +14,11 @@ public class ObserveGameService(ISettingsService settings) : ObservableObject, I
 {
     private FileSystemWatcher watcher;
     private ObservableCollection<BeatMap> _beatmaps;
-    private HttpClient  _httpClient = new();
+    private ISettingsService _settings;
     
     public void Start(ObservableCollection<BeatMap> Beatmaps)
     {
-        watcher = new FileSystemWatcher(Path.Combine(@"D:\osu!\Data\r"));
+        watcher = new FileSystemWatcher(Path.Combine(_settings.GetGameFolder(), "Data", "r"));
         _beatmaps = Beatmaps;
         
         watcher.NotifyFilter = NotifyFilters.Attributes
@@ -41,7 +41,7 @@ public class ObserveGameService(ISettingsService settings) : ObservableObject, I
     private async void AppendBeatMap(object sender, FileSystemEventArgs e)
     {
         
-        var result = await ReplayInfo.Get(e.FullPath, @"D:/osu!");
+        var result = await ReplayInfo.Get(e.FullPath, _settings.GetGameFolder());
 
         var beatmap = new BeatMap(
             (string) result["Name"],

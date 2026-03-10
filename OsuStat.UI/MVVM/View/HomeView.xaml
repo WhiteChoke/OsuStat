@@ -81,46 +81,52 @@
                           Margin="10 25">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border CornerRadius="5"
-                                BorderBrush="Black"
-                                BorderThickness="1"
-                                Margin="0 0 0 20"
-                                Height="56"
-                                >
-                            <Border.Background>
-                                <ImageBrush ImageSource="{Binding BgPath}"
-                                            Stretch="UniformToFill"/>
-                            </Border.Background>
-                            <Grid Margin="15 0 9 0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Border HorizontalAlignment="Left"
-                                        Background="#86000000"
-                                        Width="130"
-                                        VerticalAlignment="Center"
-                                        Height="auto">
-                                    <TextBlock Text="{Binding Name}"
-                                               FontSize="26"
-                                               Padding="6 0 10 0"/>
-                                </Border>
-                                <Border HorizontalAlignment="Right"
-                                        Background="#86000000"
-                                        Width="auto"
-                                        Grid.Column="1"
-                                        Padding="2 2 4 2"
-                                        VerticalAlignment="Center"
-                                        Height="auto">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding StarRate}"
+                        <Expander Background="Green">
+                            <Expander.Header>
+                                
+                                <Border CornerRadius="5"
+                                        BorderBrush="Black"
+                                        BorderThickness="1"
+                                        Margin="0 0 0 20"
+                                        Height="56"
+                                        Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
+                               AncestorType={x:Type Expander}}, Path=ActualWidth}">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding BgPath}"
+                                                Stretch="UniformToFill"/>
+                                </Border.Background>
+                                <Grid Margin="15 0 9 0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border HorizontalAlignment="Left"
+                                            Background="#86000000"
+                                            Width="130"
+                                            VerticalAlignment="Center"
+                                            Height="auto">
+                                        <TextBlock Text="{Binding Name}"
                                                    FontSize="26"
-                                                   Margin="0 0 20 0"/>
-                                        <Image Source="/Assets/Images/Star.jpeg"  Width="24"/>
-                                    </StackPanel>
-                                </Border>
-                            </Grid>
-                        </Border>
+                                                   Padding="6 0 10 0"/>
+                                    </Border>
+                                    <Border HorizontalAlignment="Right"
+                                            Background="#86000000"
+                                            Width="auto"
+                                            Grid.Column="1"
+                                            Padding="2 2 4 2"
+                                            VerticalAlignment="Center"
+                                            Height="auto">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding StarRate}"
+                                                       FontSize="26"
+                                                       Margin="0 0 20 0"/>
+                                            <Image Source="/Assets/Images/Star.jpeg"  Width="24"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            </Expander.Header>
+                        </Expander>                            
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 

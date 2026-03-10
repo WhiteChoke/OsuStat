@@ -5,6 +5,9 @@
              xmlns:viewModel="clr-namespace:OsuStat.UI.MVVM.ViewModel"
              xmlns:view="clr-namespace:OsuStat.UI.MVVM.View">
     <Application.Resources>
+        <Style x:Key="BeatMapExpander" TargetType="Expander">
+            
+        </Style>
         
         <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
             <view:HomeView/>
