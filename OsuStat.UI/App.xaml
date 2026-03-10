@@ -6,7 +6,33 @@
              xmlns:view="clr-namespace:OsuStat.UI.MVVM.View">
     <Application.Resources>
         <Style x:Key="BeatMapExpander" TargetType="Expander">
-            
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Expander">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ToggleButton x:Name="HeaderSite"
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          Content="{TemplateBinding Header}"
+                                          IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}">
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ExpandSite" 
+                                              Grid.Row="1"
+                                              Visibility="Collapsed" /> 
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="HeaderSite" Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         
         <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">

@@ -81,7 +81,7 @@
                           Margin="10 25">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Expander Background="Green">
+                        <Expander Style="{StaticResource BeatMapExpander}">
                             <Expander.Header>
                                 
                                 <Border CornerRadius="5"
@@ -126,6 +126,75 @@
                                 </Grid>
                             </Border>
                             </Expander.Header>
+                            <Expander.Content>
+                                    <Border BorderThickness="1" 
+                                            Padding="10"
+                                            CornerRadius="17">
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding BgPath}"
+                                                        Stretch="UniformToFill"/>                                     
+                                        </Border.Background>
+                                        <Grid HorizontalAlignment="Left">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border CornerRadius="10"
+                                                    Background="#86000000"
+                                                    Margin="0 0 0 20"
+                                                    Padding="10 0">
+                                                <StackPanel Height="auto" Width="187" Margin="6">
+                                                    <TextBlock FontSize="26" Text="{Binding Name}"/>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock FontSize="18" Text="by "/>
+                                                        <TextBlock FontSize="18" Text="{Binding Artist}"/>
+                                                    </StackPanel>
+                                                    <StackPanel Margin="0 25 0 0">
+                                                        <TextBlock FontSize="18" Text="Mapper: " />
+                                                        <TextBlock FontSize="18" Text="{Binding Mapper}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Border>
+                                            <Border Grid.Row="1"
+                                                    CornerRadius="10"
+                                                    Background="#86000000"
+                                                    Padding="10 8">
+                                                <StackPanel Orientation="Horizontal">
+                                                   <TextBlock FontSize="28" Text="played: "/>
+                                                    <TextBlock FontSize="28" Text="{Binding PlayCount}"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <Border Grid.Column="1"
+                                                    CornerRadius="10"
+                                                    Background="#86000000"
+                                                    Width="auto"
+                                                    Padding="7"
+                                                    HorizontalAlignment="Left">
+                                                <Grid Width="208" >
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition/>
+                                                        <RowDefinition/>
+                                                        <RowDefinition/>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Row="0" Grid.Column="0" FontSize="26" HorizontalAlignment="Left" Text="{Binding Bpm}"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="0" FontSize="18" HorizontalAlignment="Left" Text="{Binding Length}"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="0" FontSize="18" HorizontalAlignment="Left" Text="{Binding Hp}"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="1" FontSize="26" HorizontalAlignment="Right" Text="{Binding StarRate}"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="1" FontSize="18" HorizontalAlignment="Right" Text="{Binding Ar}"/>
+                                                    <TextBlock Grid.Row="2" Grid.Column="1" FontSize="18" HorizontalAlignment="Right" Text="{Binding Cs}"/>
+                                                </Grid>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                            </Expander.Content>
                         </Expander>                            
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

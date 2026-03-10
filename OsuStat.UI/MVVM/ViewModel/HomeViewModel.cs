@@ -21,7 +21,7 @@ namespace OsuStat.UI.MVVM.ViewModel
             _settings = settingsService;
             _beatMaps = new ObservableCollection<BeatMap>()
             {
-                new BeatMap("test", "whitechoke", "cool Atrigst", 10, 100.0, 124, 3.5, 3.0, 1.5, 8.0, "")    
+                new BeatMap("test", "whitechoke", "cool Atrigst", 10, 100.0, 124, 3.5, 3.0, 1.5, 8.0, "C:\\Users\\WhiteChoke\\Desktop\\Rectangle 11.png")    
                     
             };
             _observeGameService = observeGameService;
