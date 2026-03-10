@@ -14,7 +14,7 @@ public class ReplayInfo
     public static async Task<Dictionary<string, object>> Get(string replayPath, string gamePath)
     {
         var result = new Dictionary<string, object>();
-        var osuDb = DatabaseDecoder.DecodeOsu(@"D:\osu!\osu!.db");
+        var osuDb = DatabaseDecoder.DecodeOsu(Path.Combine(gamePath, "osu!.db"));
         var replay = ReplayDecoder.Decode(replayPath);
         var beatmap = osuDb.Beatmaps.Find(beatmap => replay.BeatmapMD5Hash == beatmap.MD5Hash);
         var bgPath = Directory.GetFiles(Path.Combine(gamePath, "Songs", beatmap.FolderName), "*.jpg");

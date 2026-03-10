@@ -10,11 +10,16 @@ using OsuStat.UI.MVVM.Model;
 
 namespace OsuStat.UI.Service.Impl;
 
-public class ObserveGameService(ISettingsService settings) : ObservableObject, IObserveGameService
+public class ObserveGameService : ObservableObject, IObserveGameService
 {
     private FileSystemWatcher watcher;
     private ObservableCollection<BeatMap> _beatmaps;
     private ISettingsService _settings;
+
+    public ObserveGameService(ISettingsService settings)
+    {
+        _settings = settings;
+    }
     
     public void Start(ObservableCollection<BeatMap> Beatmaps)
     {
