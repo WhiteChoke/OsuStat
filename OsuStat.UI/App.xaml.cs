@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.ViewModel;
@@ -13,6 +15,7 @@ namespace OsuStat.UI
 
         public App()
         {
+            
             IServiceCollection services = new ServiceCollection();
 
             services.AddSingleton<MainWindow>(provider => new MainWindow
@@ -33,6 +36,12 @@ namespace OsuStat.UI
             );
             
             _serviceProvider = services.BuildServiceProvider();
+
+            var applicationPath = _serviceProvider.GetRequiredService<ISettingsService>().ApplicationFolder;
+            
+            //TEMP
+            Process.Start(Path.Combine(Directory.GetParent(applicationPath).FullName, "Endpoints" ,"api.exe"));
+            Console.WriteLine("Application started");
         }
 
         protected override void OnStartup(StartupEventArgs e)

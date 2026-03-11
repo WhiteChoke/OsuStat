@@ -1,10 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Net.Http;
 using System.Windows;
-using OsuParsers.Beatmaps;
 using OsuStat.Core;
-using OsuStat.UI.Dto;
 using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
 
@@ -38,8 +35,6 @@ public class ObserveGameService : ObservableObject, IObserveGameService
         watcher.Filter = "*.osr";
 
         watcher.Changed += AppendBeatMap;
-        watcher.Created += AppendBeatMap;
-        
         watcher.EnableRaisingEvents = true;
     }
 
@@ -71,6 +66,8 @@ public class ObserveGameService : ObservableObject, IObserveGameService
                 _beatmaps.Add(beatmap);
             });
         }
+        
+        Console.WriteLine($"Triggered beatmap append {e.ChangeType}" );
     }
     
     
