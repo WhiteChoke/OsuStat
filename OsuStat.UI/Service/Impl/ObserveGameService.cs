@@ -12,9 +12,11 @@ public class ObserveGameService : ObservableObject, IObserveGameService
     private FileSystemWatcher watcher;
     private ObservableCollection<BeatMap> _beatmaps;
     private ISettingsService _settings;
+    private PlayerStat _playerStat;
 
-    public ObserveGameService(ISettingsService settings)
+    public ObserveGameService(ISettingsService settings, PlayerStat playerStat)
     {
+        _playerStat = playerStat;
         _settings = settings;
     }
     
@@ -69,6 +71,13 @@ public class ObserveGameService : ObservableObject, IObserveGameService
             result.MaxCombo,
             DateTime.Now.ToLongDateString()
         );
+
+        var writeCount = _playerStat.WriteCount;
+        _playerStat.AvgAccuracy = 98;
+        _playerStat.AvgStarRate = result.StarRate.CompareTo(2);
+        _playerStat.AvgBpm = result.Bpm;
+        _playerStat.PpGained = result.PpGained;
+        _playerStat.MapPlayed = writeCount;
 
         if (!_beatmaps.Any(map => map.Equals(beatmap)))
         {

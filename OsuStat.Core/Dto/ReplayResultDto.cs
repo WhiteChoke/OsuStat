@@ -12,5 +12,6 @@ public record ReplayResultDto(
     double Ar,
     string BgPath,
     double PpGained,
-    ushort MaxCombo
+    ushort MaxCombo,
+    double accuracy
     );

@@ -42,8 +42,8 @@
             </StackPanel>
             <StackPanel  Grid.Row="1" Margin="24 0">
             <TextBlock Text="Today" FontSize="40"/>
-                <TextBlock FontSize="20" Text="{Binding PlayerStat.PlayTime, StringFormat='Play time {0}'}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding PlayerStat.MapsPlayed, StringFormat='Maps played {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.PlayTimeMin, StringFormat='Play time {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.MapPlayed, StringFormat='Maps played {0}'}" Margin="6 0 0 10 "/>
                 <TextBlock FontSize="20" Text="{Binding PlayerStat.PpGained, StringFormat='PP gained {0}'}" Margin="6 0 0 10 "/>
                 <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgBpm, StringFormat='AVG Bpm {0}'}" Margin="6 0 0 10 "/>
                 <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgStarRate, StringFormat='AVG StarRate {0}'}" Margin="6 0 0 10 "/>

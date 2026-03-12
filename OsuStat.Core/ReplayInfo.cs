@@ -48,7 +48,8 @@ public class ReplayInfo
                 response.beatmap.Ar,
                 bgPath.Length != 0 ? bgPath.First() : "",
                 response.Pp,
-                replay.Combo
+                replay.Combo,
+                99
             );
         }
         catch (Exception e)

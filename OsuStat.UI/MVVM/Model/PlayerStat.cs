@@ -29,7 +29,7 @@ public class PlayerStat : ObservableObject
         get;
         set
         {
-            field = value;
+            field = (field+value)/WriteCount;
             OnPropertyChanged();
         }
     } = 0;
@@ -39,7 +39,7 @@ public class PlayerStat : ObservableObject
         get;
         set
         {
-            field = value;
+            field = (field+value)/WriteCount;
             OnPropertyChanged();
         }
     } = 0;
@@ -49,7 +49,7 @@ public class PlayerStat : ObservableObject
         get;
         set
         {
-            field = value;
+            field = (field+value)/WriteCount;
             OnPropertyChanged();
         }
     } = 0;
@@ -59,8 +59,17 @@ public class PlayerStat : ObservableObject
         get;
         set
         {
-            field = value;
+            field = (field+value)/WriteCount;
             OnPropertyChanged();
+        }
+    } = 0;
+
+    public int WriteCount
+    {
+        get
+        {
+            field++;
+            return field;
         }
     } = 0;
 
