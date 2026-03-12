@@ -72,12 +72,11 @@ public class ObserveGameService : ObservableObject, IObserveGameService
             DateTime.Now.ToLongDateString()
         );
 
-        var writeCount = _playerStat.WriteCount;
+        _playerStat.MapPlayed = 1;
         _playerStat.AvgAccuracy = 98;
-        _playerStat.AvgStarRate = result.StarRate.CompareTo(2);
+        _playerStat.AvgStarRate = result.StarRate;
         _playerStat.AvgBpm = result.Bpm;
         _playerStat.PpGained = result.PpGained;
-        _playerStat.MapPlayed = writeCount;
 
         if (!_beatmaps.Any(map => map.Equals(beatmap)))
         {
