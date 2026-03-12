@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using OsuStat.UI.MVVM.Core;
+using OsuStat.UI.MVVM.Model;
 using OsuStat.UI.MVVM.ViewModel;
 using OsuStat.UI.Service;
 using OsuStat.UI.Service.Impl;
@@ -34,6 +35,8 @@ namespace OsuStat.UI
             (
                 provider => viewModelType => (ViewModel)provider.GetRequiredService(viewModelType)
             );
+            
+            services.AddSingleton<PlayerStat>();
             
             _serviceProvider = services.BuildServiceProvider();
 

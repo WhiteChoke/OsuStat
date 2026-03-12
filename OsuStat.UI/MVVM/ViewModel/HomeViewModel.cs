@@ -11,13 +11,20 @@ namespace OsuStat.UI.MVVM.ViewModel
         private readonly ISettingsService _settings;
         private readonly IObserveGameService _observeGameService;
         public Player User { get; set; } = new();
+        public PlayerStat PlayerStat { get; set; }
 
 
         private readonly ObservableCollection<BeatMap> _beatMaps;
         public ObservableCollection<BeatMap> BeatMaps { get => _beatMaps; }
 
-        public HomeViewModel(ISettingsService settingsService, IObserveGameService observeGameService)
+        public HomeViewModel
+        (
+            ISettingsService settingsService,
+            IObserveGameService observeGameService,
+            PlayerStat playerStat
+            ) 
         {
+            PlayerStat = playerStat;
             _settings = settingsService;
             _beatMaps = new ObservableCollection<BeatMap>()
             {
@@ -30,7 +37,6 @@ namespace OsuStat.UI.MVVM.ViewModel
                 {
                     LoadData();
                 }
-                
             };
             LoadData();
         }
