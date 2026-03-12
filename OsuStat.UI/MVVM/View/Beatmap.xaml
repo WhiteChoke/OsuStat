@@ -52,60 +52,62 @@
         </Border>
         </Expander.Header>
         <Expander.Content>
+            <StackPanel>
                 <Border BorderThickness="1" 
                         Padding="10"
-                        CornerRadius="17">
-                    <Border.Background>
-                        <ImageBrush ImageSource="{Binding BgPath}"
-                                    Stretch="UniformToFill"/>                                     
-                    </Border.Background>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Border CornerRadius="10"
-                                Background="#86000000"
-                                Margin="0 0 0 20"
-                                Padding="10 0">
-                            <StackPanel Height="auto" Width="187" Margin="6" HorizontalAlignment="Left">
-                                <TextBlock FontSize="26" Text="{Binding Name}"/>
-                                <TextBlock FontSize="18"
-                                           Text="{Binding Artist, StringFormat='By {0}'}"/>
-                                <TextBlock FontSize="18"
-                                           Margin="0 25 0 0"
-                                           Text="{Binding Mapper, StringFormat='Mapper: {0}'}" />
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Row="1"
-                                CornerRadius="10"
-                                Background="#86000000"
-                                Padding="10 8">
-                            <TextBlock FontSize="28"
-                                       Text="{Binding PlayCount, StringFormat='played: {0}'}"/>
-                        </Border>
-                        <Border Grid.Column="1"
-                                CornerRadius="10"
-                                Background="#86000000"
-                                Width="auto"
-                                Padding="7"
-                                Height="auto"
-                                Margin="0 0 0 20"
-                                HorizontalAlignment="Right">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                        CornerRadius="5">
+                        <Border.Background>
+                            <ImageBrush ImageSource="{Binding BgPath}"
+                                        Stretch="UniformToFill"/>                                     
+                        </Border.Background>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border CornerRadius="10"
+                                    Background="#86000000"
+                                    Margin="0 0 0 20"
+                                    Padding="10 0">
+                                <StackPanel Height="auto" Width="187" Margin="6" HorizontalAlignment="Left">
+                                    <TextBlock FontSize="26" Text="{Binding Name}"/>
+                                    <TextBlock FontSize="18"
+                                               Text="{Binding Artist, StringFormat='By {0}'}"/>
+                                    <TextBlock FontSize="18"
+                                               Margin="0 25 0 0"
+                                               Text="{Binding Mapper, StringFormat='Mapper: {0}'}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Row="1"
+                                    CornerRadius="10"
+                                    Background="#86000000"
+                                    Padding="10 8">
+                                <TextBlock FontSize="28"
+                                           Text="{Binding PlayCount, StringFormat='played: {0}'}"/>
+                            </Border>
+                            <Border Grid.Column="1"
+                                    CornerRadius="10"
+                                    Background="#86000000"
+                                    Width="auto"
+                                    Padding="7"
+                                    Height="auto"
+                                    Margin="0 0 0 20"
+                                    HorizontalAlignment="Right">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Row="0" Grid.Column="0" 
                                                FontSize="26" 
                                                HorizontalAlignment="Left"
@@ -133,6 +135,25 @@
                         </Border>
                     </Grid>
                 </Border>
+                <Border Background="#86000000"
+                        CornerRadius="5"
+                        Margin="0 12">
+                    <Grid Margin="9">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" FontSize="20" Margin="0 0 0 8" Text="{Binding Date, StringFormat='Date {0}'}"/>
+                        <TextBlock Grid.Row="1" FontSize="16" Text="{Binding MaxCombo, StringFormat='Max combo {0}'}"/>
+                        <TextBlock Grid.Row="2" FontSize="16" Text="{Binding PpGained, StringFormat='Pp gained {0}'}"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
         </Expander.Content>
     </Expander>    
 </UserControl>

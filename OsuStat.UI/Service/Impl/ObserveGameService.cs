@@ -43,21 +43,32 @@ public class ObserveGameService : ObservableObject, IObserveGameService
         
         var result = await ReplayInfo.Get(e.FullPath, _settings.GetGameFolder());
 
+        if (result == null)
+        {
+            MessageBox.Show("Failed to load beatmap information", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+        
+        var bg = result.BgPath.Length != 0
+            ? result.BgPath
+            : Path.Combine(_settings.ApplicationFolder, "Assets", "Images", "Bg fuck up.jpg");
+        
         var beatmap = new BeatMap(
-            (string) result["Name"],
-            (string) result["Artist"],
-            (string) result["Mapper"],
+            result.Name,
+            result.Artist,
+            result.Mapper,
             0,
-            (double) result["Bpm"],
-            (int) result["Length"],
-            (double) result["StarRate"],
-            (double) result["Hp"],
-            (double) result["Cs"],
-            (double) result["Ar"],
-            (string) result["BgPath"]
+            result.Bpm,
+            result.Length,
+            result.StarRate,
+            result.Hp,
+            result.Cs,
+            result.Ar,
+            bg,
+            result.PpGained,
+            result.MaxCombo,
+            DateTime.Now.ToLongDateString()
         );
-
-
 
         if (!_beatmaps.Any(map => map.Equals(beatmap)))
         {
