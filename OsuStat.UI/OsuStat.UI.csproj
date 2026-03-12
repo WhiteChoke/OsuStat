@@ -26,4 +26,12 @@
     <ProjectReference Include="..\OsuStat.Core\OsuStat.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="MVVM\View\Beatmap.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

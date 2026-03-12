@@ -74,24 +74,19 @@
                                 Padding="10 0">
                             <StackPanel Height="auto" Width="187" Margin="6" HorizontalAlignment="Left">
                                 <TextBlock FontSize="26" Text="{Binding Name}"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock FontSize="18" Text="by "/>
-                                    <TextBlock FontSize="18" Text="{Binding Artist}"/>
-                                </StackPanel>
-                                <StackPanel Margin="0 25 0 0" Orientation="Horizontal">
-                                    <TextBlock FontSize="18" Text="Mapper: " />
-                                    <TextBlock FontSize="18" Text="{Binding Mapper}" />
-                                </StackPanel>
+                                <TextBlock FontSize="18"
+                                           Text="{Binding Artist, StringFormat='By {0}'}"/>
+                                <TextBlock FontSize="18"
+                                           Margin="0 25 0 0"
+                                           Text="{Binding Mapper, StringFormat='Mapper: {0}'}" />
                             </StackPanel>
                         </Border>
                         <Border Grid.Row="1"
                                 CornerRadius="10"
                                 Background="#86000000"
                                 Padding="10 8">
-                            <StackPanel Orientation="Horizontal">
-                               <TextBlock FontSize="28" Text="played: "/>
-                                <TextBlock FontSize="28" Text="{Binding PlayCount}"/>
-                            </StackPanel>
+                            <TextBlock FontSize="28"
+                                       Text="{Binding PlayCount, StringFormat='played: {0}'}"/>
                         </Border>
                         <Border Grid.Column="1"
                                 CornerRadius="10"
@@ -111,37 +106,31 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" >
-                                    <TextBlock FontSize="26" HorizontalAlignment="Left" Text="Bpm "/>
-                                    <TextBlock FontSize="26" HorizontalAlignment="Left" Text="{Binding Bpm}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                                    <TextBlock FontSize="18" HorizontalAlignment="Left" Text="Length "/>
-                                    <TextBlock FontSize="18" HorizontalAlignment="Left" Text="{Binding Length}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
-                                    <TextBlock FontSize="18" HorizontalAlignment="Left" Text="Hp "/>
-                                    <TextBlock FontSize="18" HorizontalAlignment="Left" Text="{Binding Hp}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="30 0 0 0">
-                                    <TextBlock FontSize="26" Text="{Binding StarRate}"/>
-                                    <Image Source="/Assets/Images/Star.jpeg" Height="24"/>
-                                </StackPanel>
-                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="30 0 0 0">
-                                    <TextBlock FontSize="18" Text="Ar "/>
-                                    <TextBlock FontSize="18" Text="{Binding Ar}"/>
-                                </StackPanel>
-                                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Margin="30 0 0 0">
-                                    <TextBlock FontSize="18" Text="Cs "/>
-                                    <TextBlock FontSize="18" Text="{Binding Cs}"/>
-                                </StackPanel>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" 
+                                               FontSize="26" 
+                                               HorizontalAlignment="Left"
+                                                Text="{Binding Bpm, StringFormat='Bpm {0}'}"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" 
+                                               FontSize="18" 
+                                               HorizontalAlignment="Left"
+                                                Text="{Binding Length, StringFormat='Length {0}'}"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="0" 
+                                               FontSize="18" 
+                                               HorizontalAlignment="Left" 
+                                               Text="{Binding Hp, StringFormat='Hp {0}'}"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" 
+                                               Margin="30 0 0 0"
+                                               FontSize="26" Text="{Binding StarRate}"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" 
+                                               Margin="30 0 0 0"
+                                               FontSize="18" 
+                                               Text="{Binding Ar, StringFormat='Ar {0}'}"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" 
+                                               Margin="30 0 0 0"
+                                               FontSize="18" 
+                                               Text="{Binding Cs, StringFormat='Cs {0}'}"/>
                             </Grid>
                         </Border>
-                        <Button Grid.Row="1" Grid.Column="1"
-                                Content="-"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Command="{Binding CollapseMenu}"/>
                     </Grid>
                 </Border>
         </Expander.Content>
