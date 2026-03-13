@@ -13,11 +13,11 @@ namespace OsuStat.UI.Service
             try
             {
                 var pfpBytes = await HttpClient.GetByteArrayAsync(Url + id);
-                await SetAvatarWithRetry(path, pfpBytes, 3);
+                await SetAvatarWithRetry(path, pfpBytes, 5);
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Network error: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Network error\n {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -33,12 +33,12 @@ namespace OsuStat.UI.Service
                 catch (IOException e)
                 {
                     if (i == retryCount - 1)
-                        MessageBox.Show($"Failed to set avatar: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Failed to set avatar", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     await Task.Delay(500);
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show($"Failed to set avatar: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Failed to set avatar\n {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

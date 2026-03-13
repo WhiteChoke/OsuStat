@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using OsuStat.Core;
@@ -9,23 +10,63 @@ namespace OsuStat.UI.Service.Impl;
 
 public class ObserveGameService : ObservableObject, IObserveGameService
 {
-    private FileSystemWatcher watcher;
+    private FileSystemWatcher _watcher;
     private ObservableCollection<BeatMap> _beatmaps;
-    private ISettingsService _settings;
-    private PlayerStat _playerStat;
+    private readonly ISettingsService _settings;
+    private readonly PlayerStat _playerStat;
+    private System.Timers.Timer _searchTimer;
+    private System.Timers.Timer _playTimer;
+    private Process? _monitoredProcess;
+    private const string ProcessName = "osu!";
+    private const int AddTimeMs = 60000;
 
     public ObserveGameService(ISettingsService settings, PlayerStat playerStat)
     {
         _playerStat = playerStat;
         _settings = settings;
     }
-    
+
     public void Start(ObservableCollection<BeatMap> Beatmaps)
     {
-        watcher = new FileSystemWatcher(Path.Combine(_settings.GetGameFolder(), "Data", "r"));
         _beatmaps = Beatmaps;
+
+        BeatMapWatcher();
+        _searchTimer = new System.Timers.Timer(2000);
+        _searchTimer.Elapsed += (sender, args) => CheckForProcess();
+        _searchTimer.Start();
+
+        _playTimer = new System.Timers.Timer(AddTimeMs);
+        _playTimer.Elapsed += (sender, args) => _playerStat.PlayTimeMin = 1;
+    }
+
+
+    private void CheckForProcess()
+    {
+        var process = Process.GetProcessesByName(ProcessName).FirstOrDefault();
+        if (process != null && _monitoredProcess == null)
+        {
+            Console.WriteLine($"{ProcessName} is running");
+            _monitoredProcess = process;
+            _monitoredProcess.Exited += MonitoredProcessOnExited;
+            _monitoredProcess.EnableRaisingEvents = true;
+            _playTimer.Start();
+        }
+    }
+
+    private void MonitoredProcessOnExited(object? sender, EventArgs e)
+    {
+        Console.WriteLine($"Process {_monitoredProcess.ProcessName} exited");
+        _monitoredProcess.Dispose();
+        _monitoredProcess = null;
+        _searchTimer.Start();
+        _playTimer.Stop();
+    }
+
+    private void BeatMapWatcher()
+    {
+        _watcher = new FileSystemWatcher(Path.Combine(_settings.GetGameFolder(), "Data", "r"));
         
-        watcher.NotifyFilter = NotifyFilters.Attributes
+        _watcher.NotifyFilter = NotifyFilters.Attributes
                                | NotifyFilters.CreationTime
                                | NotifyFilters.DirectoryName
                                | NotifyFilters.FileName
@@ -34,13 +75,15 @@ public class ObserveGameService : ObservableObject, IObserveGameService
                                | NotifyFilters.Security
                                | NotifyFilters.Size;
         
-        watcher.Filter = "*.osr";
+        _watcher.Filter = "*.osr";
 
-        watcher.Changed += AppendBeatMap;
-        watcher.EnableRaisingEvents = true;
+        _watcher.Changed += AppendBeatMapEvent;
+        _watcher.EnableRaisingEvents = true;
+        
+        Console.WriteLine($"Beatmap watcher started");
     }
 
-    private async void AppendBeatMap(object sender, FileSystemEventArgs e)
+    private async void AppendBeatMapEvent(object sender, FileSystemEventArgs e)
     {
         
         var result = await ReplayInfo.Get(e.FullPath, _settings.GetGameFolder());

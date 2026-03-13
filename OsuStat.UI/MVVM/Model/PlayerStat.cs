@@ -9,7 +9,7 @@ public class PlayerStat : ObservableObject
         get;
         set
         {
-            field = value;
+            field += value;
             OnPropertyChanged();
         }
     } = 0;
