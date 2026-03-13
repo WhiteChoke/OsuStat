@@ -1,5 +1,4 @@
-﻿using System.DirectoryServices.ActiveDirectory;
-using OsuStat.UI.MVVM.Core;
+﻿using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
 using System.IO;
 using System.Text.Json;

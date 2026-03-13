@@ -13,18 +13,11 @@ public class BeatMap
     public double Cs { get; set; }
     public double Ar { get; set; }
     public string BgPath { get; set; }
+    public double PpGained { get; set; }
+    public ushort MaxCombo  { get; set; }
+    public string Date { get; set; }
 
-    public BeatMap(
-        string name, 
-        string artist, 
-        string mapper, 
-        int playCount, 
-        double bpm, int length, 
-        double starRate, 
-        double hp, 
-        double cs, 
-        double ar, 
-        string bgPath)
+    public BeatMap(string name, string artist, string mapper, int playCount, double bpm, int length, double starRate, double hp, double cs, double ar, string bgPath, double ppGained, ushort maxCombo, string date)
     {
         Name = name;
         Artist = artist;
@@ -37,6 +30,9 @@ public class BeatMap
         Cs = cs;
         Ar = ar;
         BgPath = bgPath;
+        PpGained = ppGained;
+        MaxCombo = maxCombo;
+        Date = date;
     }
 
     public override bool Equals(object? obj)

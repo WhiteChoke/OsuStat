@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OsuStat.UI.MVVM.View"
+             xmlns:components="clr-namespace:OsuStat.UI.Components"
              mc:Ignorable="d" 
              d:DesignHeight="850" d:DesignWidth="572"
              Background="{StaticResource BackgroundBlack}">
@@ -41,12 +42,12 @@
             </StackPanel>
             <StackPanel  Grid.Row="1" Margin="24 0">
             <TextBlock Text="Today" FontSize="40"/>
-                <TextBlock FontSize="20" Text="{Binding PlayTime}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding MapsPlayed}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding PpGained}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding AvgBpm}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding AvgStarRate}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding AvgAccuracy}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.PlayTimeMin, StringFormat='Play time {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.MapPlayed, StringFormat='Maps played {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.PpGained, StringFormat='PP gained {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgBpm, StringFormat='AVG Bpm {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgStarRate, StringFormat='AVG StarRate {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgAccuracy, StringFormat='AVG Accuracy {0}'}" Margin="6 0 0 10 "/>
             </StackPanel>
             <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Margin="20 0">
                 <TextBlock Text="Best score" FontSize="23"/>
@@ -77,54 +78,16 @@
                 Background="{StaticResource RaspberryRed}"
                 CornerRadius="17"
                 Margin="20">
-            <ItemsControl ItemsSource="{Binding BeatMaps}"
-                          Margin="10 25">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border CornerRadius="5"
-                                BorderBrush="Black"
-                                BorderThickness="1"
-                                Margin="0 0 0 20"
-                                Height="56"
-                                >
-                            <Border.Background>
-                                <ImageBrush ImageSource="{Binding BgPath}"
-                                            Stretch="UniformToFill"/>
-                            </Border.Background>
-                            <Grid Margin="15 0 9 0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Border HorizontalAlignment="Left"
-                                        Background="#86000000"
-                                        Width="130"
-                                        VerticalAlignment="Center"
-                                        Height="auto">
-                                    <TextBlock Text="{Binding Name}"
-                                               FontSize="26"
-                                               Padding="6 0 10 0"/>
-                                </Border>
-                                <Border HorizontalAlignment="Right"
-                                        Background="#86000000"
-                                        Width="auto"
-                                        Grid.Column="1"
-                                        Padding="2 2 4 2"
-                                        VerticalAlignment="Center"
-                                        Height="auto">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding StarRate}"
-                                                   FontSize="26"
-                                                   Margin="0 0 20 0"/>
-                                        <Image Source="/Assets/Images/Star.jpeg"  Width="24"/>
-                                    </StackPanel>
-                                </Border>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                
-            </ItemsControl>
+            <ScrollViewer Margin="10 25">
+                <ItemsControl ItemsSource="{Binding BeatMaps}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <components:Beatmap/>                        
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    
+                </ItemsControl>
+            </ScrollViewer>
             
         </Border>
     </Grid>

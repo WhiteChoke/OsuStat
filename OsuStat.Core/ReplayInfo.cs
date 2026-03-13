@@ -8,19 +8,18 @@ namespace OsuStat.Core;
 
 public class ReplayInfo
 {
-    private static readonly HttpClient _httpClient = new();
-    private static readonly string _url = "http://127.0.0.1:727/pp-calculate/beatmap/";
+    private static readonly HttpClient HttpClient = new();
+    private const string Url = "http://127.0.0.1:727/pp-calculate/beatmap/";
     
-    public static async Task<Dictionary<string, object>> Get(string replayPath, string gamePath)
+    public static async Task<ReplayResultDto?> Get(string replayPath, string gamePath)
     {
-        var result = new Dictionary<string, object>();
-        var osuDb = DatabaseDecoder.DecodeOsu(@"D:\osu!\osu!.db");
+        var osuDb = DatabaseDecoder.DecodeOsu(Path.Combine(gamePath, "osu!.db"));
         var replay = ReplayDecoder.Decode(replayPath);
         var beatmap = osuDb.Beatmaps.Find(beatmap => replay.BeatmapMD5Hash == beatmap.MD5Hash);
         var bgPath = Directory.GetFiles(Path.Combine(gamePath, "Songs", beatmap.FolderName), "*.jpg");
 
         var requestBody = new GetBeatMapStatRequestDto(
-            $"{gamePath}/Songs/{beatmap.FolderName}/{beatmap.FileName}",
+            string.Join("/",$"{gamePath}/Songs/{beatmap.FolderName}/{beatmap.FileName}".Split('\\')),
             replay.Count300,
             replay.Count100,
             replay.Count50,
@@ -28,31 +27,35 @@ public class ReplayInfo
             replay.Combo,
             0
             );
-        
-        var httpResponse = await _httpClient.PostAsync(
-            _url, 
-            JsonContent.Create(requestBody)
-            );
-        var response = await httpResponse.Content.ReadFromJsonAsync<GetBeatMapStatResponseDto>();
 
-        if (response != null)
+        try
         {
-            result.Add("Name", beatmap.FileName);
-            result.Add("Artist", beatmap.Artist);
-            result.Add("Mapper", beatmap.Creator);
-            result.Add("Bpm", response.beatmap.Bpm);
-            result.Add("Length", replay.ReplayLength);
-            result.Add("StarRate", response.beatmap.Sr);
-            result.Add("Hp", response.beatmap.Hp);
-            result.Add("Cs", response.beatmap.Cs);
-            result.Add("Ar", response.beatmap.Ar);
-            result.Add("BgPath", bgPath[0]);
+            var httpResponse = await HttpClient.PostAsync(
+                Url, 
+                JsonContent.Create(requestBody)
+            );
+            var response = await httpResponse.Content.ReadFromJsonAsync<GetBeatMapStatResponseDto>();
+        
+            return new ReplayResultDto(
+                beatmap.FileName,
+                beatmap.Artist,
+                beatmap.Creator,
+                response.beatmap.Bpm,
+                replay.ReplayLength,
+                response.beatmap.Sr,
+                response.beatmap.Hp,
+                response.beatmap.Cs,
+                response.beatmap.Ar,
+                bgPath.Length != 0 ? bgPath.First() : "",
+                response.Pp,
+                replay.Combo,
+                99
+            );
         }
-        else
+        catch (Exception e)
         {
-            throw new NullReferenceException("Beatmap not found");
+            Console.WriteLine(e);
+            return null;
         }
-      
-        return result;
     }
 }
