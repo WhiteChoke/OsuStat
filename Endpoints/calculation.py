@@ -3,7 +3,7 @@ import rosu_pp_py as rosu
 from pydantic import BaseModel
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/pp-calculate", tags=["🌟 GET"])
+router = APIRouter(prefix="/pp-calculate", tags=["🌟 POST"])
 
 class classniy_class(BaseModel):
     filePath: str
@@ -50,6 +50,12 @@ async def Upload(schema: classniy_class):
 
         current_pp = round(attrs.pp, 2)
         maximum_pp = round(attrs_max_pp.pp, 2)
+        
+        total_objects = schema.n300 + schema.n100 + schema.n50 + schema.misses
+        if total_objects > 0:
+            accuracy = round((schema.n300 * 300 + schema.n100 * 100 + schema.n50 * 50) / (300 * total_objects) * 100, 2)
+        else:
+            accuracy = 0.0
 
         return {
             "STATE": "Success",
@@ -62,7 +68,7 @@ async def Upload(schema: classniy_class):
                 "OD": float(f"{beatmap.od:.1f}"),
                 "SR": float(f"{gradual_diff.stars:.1f}")
             },
-            
+            "acc": accuracy,
             "pp": current_pp,
             "max_pp": maximum_pp
         }
