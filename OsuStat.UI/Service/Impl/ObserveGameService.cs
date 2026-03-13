@@ -115,7 +115,7 @@ public class ObserveGameService : ObservableObject, IObserveGameService
             DateTime.Now.ToLongDateString()
         );
 
-        _playerStat.MapPlayed = 1;
+        _playerStat.MapPlayed += 1;
         _playerStat.AvgAccuracy = result.accuracy;
         _playerStat.AvgStarRate = result.StarRate;
         _playerStat.AvgBpm = result.Bpm;

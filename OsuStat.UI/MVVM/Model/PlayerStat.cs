@@ -13,7 +13,7 @@ public class PlayerStat : ObservableObject
             OnPropertyChanged();
         }
     } = 0;
-
+    
     public int MapPlayed
     {
         get;
@@ -23,44 +23,48 @@ public class PlayerStat : ObservableObject
             OnPropertyChanged();
         }
     } = 0;
-
     public double PpGained
     {
         get;
         set
         {
-            field = (field+value)/MapPlayed;
+            field = Math.Round(field + value, 1);
             OnPropertyChanged();
         }
     } = 0;
 
+    private double _totalBpm;
     public double AvgBpm
     {
         get;
         set
         {
-            field = (field+value)/MapPlayed;
+            _totalBpm += value;
+            field = Math.Round(_totalBpm / MapPlayed, 1);
             OnPropertyChanged();
         }
     } = 0;
 
+    private double _totalStarRate;
     public double AvgStarRate
     {
         get;
         set
         {
-            field = (field+value)/MapPlayed;
+            _totalStarRate += value;
+            field = Math.Round(_totalStarRate / MapPlayed, 1);
             OnPropertyChanged();
         }
     } = 0;
 
+    private double _totalAccuracy;
     public double AvgAccuracy
     {
         get;
         set
         {
-            
-            field = (field+value)/MapPlayed;
+            _totalAccuracy += value;
+            field = Math.Round(_totalAccuracy / MapPlayed, 1);
             OnPropertyChanged();
         }
     } = 0;
