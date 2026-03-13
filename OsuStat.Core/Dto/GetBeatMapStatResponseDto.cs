@@ -2,7 +2,8 @@
 
 public record GetBeatMapStatResponseDto(
     string State,
-    BeatMapDto beatmap,
+    BeatMapDto Beatmap,
     double Pp,
-    double MaxPp
+    double MaxPp,
+    double Acc
     );

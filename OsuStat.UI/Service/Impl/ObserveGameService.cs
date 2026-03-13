@@ -116,7 +116,7 @@ public class ObserveGameService : ObservableObject, IObserveGameService
         );
 
         _playerStat.MapPlayed = 1;
-        _playerStat.AvgAccuracy = 98;
+        _playerStat.AvgAccuracy = result.accuracy;
         _playerStat.AvgStarRate = result.StarRate;
         _playerStat.AvgBpm = result.Bpm;
         _playerStat.PpGained = result.PpGained;

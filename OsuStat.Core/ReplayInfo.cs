@@ -40,16 +40,16 @@ public class ReplayInfo
                 beatmap.FileName,
                 beatmap.Artist,
                 beatmap.Creator,
-                response.beatmap.Bpm,
+                response.Beatmap.Bpm,
                 replay.ReplayLength,
-                response.beatmap.Sr,
-                response.beatmap.Hp,
-                response.beatmap.Cs,
-                response.beatmap.Ar,
+                response.Beatmap.Sr,
+                response.Beatmap.Hp,
+                response.Beatmap.Cs,
+                response.Beatmap.Ar,
                 bgPath.Length != 0 ? bgPath.First() : "",
                 response.Pp,
                 replay.Combo,
-                99
+                response.Acc
             );
         }
         catch (Exception e)
