@@ -37,6 +37,7 @@ namespace OsuStat.UI
             );
             
             services.AddSingleton<PlayerStat>();
+            services.AddSingleton<IDataService, DataService>();
             
             _serviceProvider = services.BuildServiceProvider();
 

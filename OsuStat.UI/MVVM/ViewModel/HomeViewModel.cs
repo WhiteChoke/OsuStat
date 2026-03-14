@@ -3,6 +3,7 @@ using OsuStat.UI.MVVM.Model;
 using OsuStat.UI.Service;
 using System.ComponentModel;
 using System.Windows;
+using OsuStat.UI.Service.Impl;
 
 namespace OsuStat.UI.MVVM.ViewModel
 {
@@ -10,6 +11,7 @@ namespace OsuStat.UI.MVVM.ViewModel
     {
         private readonly ISettingsService _settings;
         private readonly IObserveGameService _observeGameService;
+        private readonly IDataService _dataService;
         public Player User { get; set; } = new();
         public PlayerStat PlayerStat { get; set; }
 
@@ -21,18 +23,20 @@ namespace OsuStat.UI.MVVM.ViewModel
         (
             ISettingsService settingsService,
             IObserveGameService observeGameService,
-            PlayerStat playerStat
+            PlayerStat playerStat,
+            IDataService dataService
             ) 
         {
             PlayerStat = playerStat;
             _settings = settingsService;
             _beatMaps = new ObservableCollection<BeatMap>();
             _observeGameService = observeGameService;
+            _dataService = dataService;
             _settings.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == nameof(_settings.SetGameFolder))
                 {
-                    LoadData();
+                    Task.Run(async () => await LoadUserData.LoadData(User, _settings.GetGameFolder(), _settings.ApplicationFolder));
                 }
             };
             LoadData();
@@ -44,6 +48,7 @@ namespace OsuStat.UI.MVVM.ViewModel
             {
                 await LoadUserData.LoadData(User, _settings.GetGameFolder(), _settings.ApplicationFolder);
                 _observeGameService.Start(_beatMaps);
+                _dataService.UploadData(_beatMaps);
             }
             catch (Exception e)
             {

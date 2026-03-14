@@ -1,7 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using OsuStat.Core;
 using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
@@ -17,13 +19,15 @@ public class ObserveGameService : ObservableObject, IObserveGameService
     private System.Timers.Timer _searchTimer;
     private System.Timers.Timer _playTimer;
     private Process? _monitoredProcess;
+    private IDataService _dataService;
     private const string ProcessName = "osu!";
     private const int AddTimeMs = 60000;
 
-    public ObserveGameService(ISettingsService settings, PlayerStat playerStat)
+    public ObserveGameService(ISettingsService settings, PlayerStat playerStat, IDataService dataService)
     {
         _playerStat = playerStat;
         _settings = settings;
+        _dataService = dataService;
     }
 
     public void Start(ObservableCollection<BeatMap> Beatmaps)
@@ -36,7 +40,11 @@ public class ObserveGameService : ObservableObject, IObserveGameService
         _searchTimer.Start();
 
         _playTimer = new System.Timers.Timer(AddTimeMs);
-        _playTimer.Elapsed += (sender, args) => _playerStat.PlayTimeMin = 1;
+        _playTimer.Elapsed += (sender, args) =>
+        {
+            _playerStat.PlayTimeMin = 1;
+            _dataService.SaveStatistics(_playerStat);
+        };
     }
 
 
@@ -66,14 +74,8 @@ public class ObserveGameService : ObservableObject, IObserveGameService
     {
         _watcher = new FileSystemWatcher(Path.Combine(_settings.GetGameFolder(), "Data", "r"));
         
-        _watcher.NotifyFilter = NotifyFilters.Attributes
-                               | NotifyFilters.CreationTime
-                               | NotifyFilters.DirectoryName
-                               | NotifyFilters.FileName
-                               | NotifyFilters.LastAccess
-                               | NotifyFilters.LastWrite
-                               | NotifyFilters.Security
-                               | NotifyFilters.Size;
+        _watcher.NotifyFilter = NotifyFilters.CreationTime
+                                | NotifyFilters.LastWrite;
         
         _watcher.Filter = "*.osr";
 
@@ -129,8 +131,9 @@ public class ObserveGameService : ObservableObject, IObserveGameService
             });
         }
         
+        _dataService.SaveStatistics(_playerStat);
+        _dataService.SaveScore(_beatmaps.ToList());
+        
         Console.WriteLine($"Triggered beatmap append {e.ChangeType}" );
     }
-    
-    
 }

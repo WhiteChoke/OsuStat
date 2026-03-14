@@ -8,24 +8,42 @@ namespace OsuStat.UI.Service.Impl
     public class SettingsService : ObservableObject ,ISettingsService
     {
         public string ApplicationFolder { get; }
-        
-        private readonly string _jsonPath = 
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Osu stat\settings.json";
 
+        private readonly string _jsonPath;
+        public string DataDirectoryPath { get; } = 
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Osu stat"
+            );
+        
+        public string SavePlayerStatDirectoryPath { get; }
+        public string SaveScoreDirectoryPath { get; }
         private Settings CurrentSettings { get; }
 
         public SettingsService()
         {
             // TODO: TEMP
             ApplicationFolder = Directory.GetParent(AppContext.BaseDirectory).Parent.Parent.Parent.FullName;
+            
+            _jsonPath = Path.Combine(DataDirectoryPath, "settings.json");
+            SavePlayerStatDirectoryPath = Path.Combine(DataDirectoryPath, "player");
+            SaveScoreDirectoryPath = Path.Combine(DataDirectoryPath, "scores");
+            
             try
             {
                 CurrentSettings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(_jsonPath)) 
                                   ?? new Settings();
             }
+
             catch (IOException)
             {
                 CreateSettingFile();
+            }
+            if (
+                !Directory.Exists(SavePlayerStatDirectoryPath) 
+                || !Directory.Exists(SaveScoreDirectoryPath)
+                )
+            {
+                CreateSaveDirectories();
             }
         }
 
@@ -50,6 +68,13 @@ namespace OsuStat.UI.Service.Impl
         {
             Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Osu stat");
             File.WriteAllText(_jsonPath, JsonSerializer.Serialize(CurrentSettings));
+        }
+            
+        
+        private void CreateSaveDirectories()
+        {
+            Directory.CreateDirectory(SavePlayerStatDirectoryPath);
+            Directory.CreateDirectory(SaveScoreDirectoryPath);
         }
     }
 }
