@@ -10,7 +10,6 @@ namespace OsuStat.UI.MVVM.ViewModel
     public class HomeViewModel : Core.ViewModel
     {
         private readonly ISettingsService _settings;
-        private readonly IObserveGameService _observeGameService;
         private readonly IDataService _dataService;
         public Player User { get; set; } = new();
         public PlayerStat PlayerStat { get; set; }
@@ -22,15 +21,14 @@ namespace OsuStat.UI.MVVM.ViewModel
         public HomeViewModel
         (
             ISettingsService settingsService,
-            IObserveGameService observeGameService,
             PlayerStat playerStat,
-            IDataService dataService
+            IDataService dataService,
+            ObservableCollection<BeatMap> beatMaps
             ) 
         {
             PlayerStat = playerStat;
             _settings = settingsService;
-            _beatMaps = new ObservableCollection<BeatMap>();
-            _observeGameService = observeGameService;
+            _beatMaps = beatMaps;
             _dataService = dataService;
             _settings.PropertyChanged += (sender, args) =>
             {
@@ -47,7 +45,6 @@ namespace OsuStat.UI.MVVM.ViewModel
             try
             {
                 await LoadUserData.LoadData(User, _settings.GetGameFolder(), _settings.ApplicationFolder);
-                _observeGameService.Start(_beatMaps);
                 _dataService.UploadData(_beatMaps);
             }
             catch (Exception e)

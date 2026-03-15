@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +41,8 @@ namespace OsuStat.UI
             
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<ISettingsService, SettingsService>();
-            services.AddSingleton<IObserveGameService, ObserveGameService>();
+            services.AddSingleton<IReplayWatcher, ReplayWatcher>();
+            services.AddSingleton<IProcessMonitoringService, ProcessMonitoringService>();
             services.AddSingleton<IDataService, DataService>();
             
             services.AddSingleton<Func<Type, ViewModel>>
@@ -49,6 +51,7 @@ namespace OsuStat.UI
             );
             
             services.AddSingleton<PlayerStat>();
+            services.AddSingleton<ObservableCollection<BeatMap>>();
             
             _serviceProvider = services.BuildServiceProvider();
 
@@ -63,6 +66,7 @@ namespace OsuStat.UI
         {
             _serviceProvider.GetRequiredService<INavigationService>().NavigateTo<HomeViewModel>();
             _serviceProvider.GetRequiredService<ISettingsService>();
+            _serviceProvider.GetRequiredService<IProcessMonitoringService>().Run();
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
             base.OnStartup(e);
