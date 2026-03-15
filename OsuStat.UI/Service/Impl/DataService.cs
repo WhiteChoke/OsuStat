@@ -1,7 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Net.Http;
 using System.Text.Json;
+using System.Windows;
 using Microsoft.Extensions.Logging;
+using OsuStat.Core;
 using OsuStat.UI.MVVM.Model;
 
 namespace OsuStat.UI.Service.Impl;
@@ -11,7 +14,9 @@ public class DataService : IDataService
     private readonly ISettingsService _settingsService;
     private readonly PlayerStat _playerStat;
     private readonly ILogger<DataService> _logger;
-
+    private readonly HttpClient _httpClient = new();
+    private const string Url = "https://a.ppy.sh/";
+    
     public DataService(PlayerStat playerStat, ISettingsService settingsService, ILogger<DataService> logger)
     {
         _logger = logger;
@@ -40,7 +45,7 @@ public class DataService : IDataService
         }
     }
     
-    public async Task UploadData(ObservableCollection<BeatMap> beatmaps)
+    public async Task LoadStatisticAsync(ObservableCollection<BeatMap> beatmaps)
     {
         try
         {
@@ -77,6 +82,66 @@ public class DataService : IDataService
             _logger.LogError("unexpected error: {}", e.Message);
             throw;
         }
+    }
+
+    public async Task LoadUserInformationAsync(Player player)
+    {
+        player.AvatarPath = Path.Combine(_settingsService.ApplicationFolder, "Assets", "Images", "Default avatar.jpeg");
+
+        try
+        {
+            var playerInfo = PlayerInfo.GetPlayerInfo(_settingsService.GameFolder);
+            player.Nickname = playerInfo.Nickname;
+            player.GlobalRanking = "#" + playerInfo.Ranking;
+
+            var avatarPath = await GetAvatar(playerInfo.Id, 5);
+            if (avatarPath == null)
+            {
+                MessageBox.Show($"Failed to load avatar :(", "Failed", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            player.AvatarPath = avatarPath;
+        }
+        catch (IOException e)
+        {
+            MessageBox.Show("Unable to find the osu folder\nPlease select the game folder in settings", "Invalid folder", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to load player data: {Message}", e.Message);
+            throw;
+        }
+    }
+    
+    private async Task<string?> GetAvatar(int id,int retryCount)
+    {
+        try
+        {
+            var pfpBytes = await _httpClient.GetByteArrayAsync(Url + id);
+            var path = Path.Combine(_settingsService.ApplicationFolder, "Assets", "Images", "Avatar.jpeg");
+
+            for (int i = 0; i < retryCount; i++)
+            {
+                try
+                {
+                    await File.WriteAllBytesAsync(path, pfpBytes);
+                    return path;
+                }
+                catch (IOException e)
+                {
+                    if (i == retryCount - 1)
+                        _logger.LogError("Failed to write avatar: {}", e.Message);
+                    await Task.Delay(500);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("unexpected error: {}", e.Message);
+        }
+        return null;
     }
 
     private string GetTodayFilePath(string directory)

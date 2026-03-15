@@ -3,6 +3,7 @@ using OsuStat.UI.MVVM.Model;
 using OsuStat.UI.Service;
 using System.ComponentModel;
 using System.Windows;
+using Microsoft.Extensions.Logging;
 using OsuStat.UI.Service.Impl;
 
 namespace OsuStat.UI.MVVM.ViewModel
@@ -11,6 +12,7 @@ namespace OsuStat.UI.MVVM.ViewModel
     {
         private readonly ISettingsService _settings;
         private readonly IDataService _dataService;
+        private readonly ILogger<HomeViewModel> _logger;
         public Player User { get; set; } = new();
         public PlayerStat PlayerStat { get; set; }
 
@@ -23,18 +25,20 @@ namespace OsuStat.UI.MVVM.ViewModel
             ISettingsService settingsService,
             PlayerStat playerStat,
             IDataService dataService,
-            ObservableCollection<BeatMap> beatMaps
+            ObservableCollection<BeatMap> beatMaps,
+            ILogger<HomeViewModel> logger
             ) 
         {
             PlayerStat = playerStat;
+            _logger = logger;
             _settings = settingsService;
             _beatMaps = beatMaps;
             _dataService = dataService;
-            _settings.PropertyChanged += (sender, args) =>
+            _settings.PropertyChanged += async (sender, args) =>
             {
                 if (args.PropertyName == nameof(_settings.SetGameFolder))
                 {
-                    Task.Run(async () => await LoadUserData.LoadData(User, _settings.GameFolder, _settings.ApplicationFolder));
+                        await _dataService.LoadUserInformationAsync(User);
                 }
             };
             LoadData();
@@ -44,8 +48,8 @@ namespace OsuStat.UI.MVVM.ViewModel
         {
             try
             {
-                await LoadUserData.LoadData(User, _settings.GameFolder, _settings.ApplicationFolder);
-                _dataService.UploadData(_beatMaps);
+                await _dataService.LoadUserInformationAsync(User);
+                await _dataService.LoadStatisticAsync(_beatMaps);
             }
             catch (Exception e)
             {

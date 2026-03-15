@@ -4,7 +4,7 @@ namespace OsuStat.UI.MVVM.Model
 {
     public class Player : ObservableObject
     {
-        private string _nickname;
+        private string _nickname = "Unknown";
         public string Nickname
         {
             get => _nickname;
@@ -15,7 +15,7 @@ namespace OsuStat.UI.MVVM.Model
             }
         }
         
-        private string _globalRanking;
+        private string _globalRanking = "0";
         public string GlobalRanking
         {
             get => _globalRanking;
