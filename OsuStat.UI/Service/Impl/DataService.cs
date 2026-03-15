@@ -75,7 +75,6 @@ public class DataService : IDataService
         catch (IOException e)
         {
             _logger.LogError("Failed to read data file: {}", e.Message);
-            throw;
         }
         catch (Exception e)
         {

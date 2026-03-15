@@ -74,6 +74,7 @@ namespace OsuStat.UI
 
         protected override void OnExit(ExitEventArgs e)
         {
+            Process.GetProcessesByName("api").FirstOrDefault()?.Kill();
             Log.CloseAndFlush();
             base.OnExit(e);
         }
