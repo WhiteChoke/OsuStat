@@ -5,20 +5,20 @@ using System.Windows;
 
 namespace OsuStat.UI.Service
 {
-    public class LoadUserData
+    public static class LoadUserData
     {
         public static async Task LoadData(Player user, string gameFolderPath ,string rootPath)
         {
             try
             {              
-                var info = await PlayerInfo.GetPlayerInfo(gameFolderPath);
+                var playerInfo = PlayerInfo.GetPlayerInfo(gameFolderPath);
 
-                user.Nickname = info["Nickname"];
-                user.GlobalRanking = "#" + info["GlobalRanking"];
+                user.Nickname = playerInfo.Nickname;
+                user.GlobalRanking = "#" + playerInfo.Ranking;
 
-                string avatarPath = Path.Combine(rootPath, "Assets", "Avatar.jpeg");
+                var avatarPath = Path.Combine(rootPath, "Assets", "Avatar.jpeg");
 
-                await LoadUserAvatar.Load(info["Id"], avatarPath);
+                await LoadUserAvatar.Load(playerInfo.Id, avatarPath);
 
                 user.AvatarPath = avatarPath;
 

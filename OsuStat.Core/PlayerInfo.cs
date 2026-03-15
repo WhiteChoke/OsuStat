@@ -1,31 +1,25 @@
 ﻿using OsuParsers.Database;
 using OsuParsers.Decoders;
+using OsuStat.UI.Dto;
 
 namespace OsuStat.Core
 {
-    public class PlayerInfo
+    public static class PlayerInfo
     {
-        public async static Task<Dictionary<string, string>> GetPlayerInfo(string osuDirectoryPath)
+        public static PlayerInfoResponseDto GetPlayerInfo(string osuDirectoryPath)
         {
-            var info = new Dictionary<string, string>();
-
-            OsuDatabase osuDb = DatabaseDecoder.DecodeOsu(osuDirectoryPath + @"\osu!.db");
-            PresenceDatabase presence = DatabaseDecoder.DecodePresence(osuDirectoryPath + @"\presence.db");
+            var osuDbPath = Path.Combine(osuDirectoryPath, "osu!.db");
+            var presenceDbPath = Path.Combine(osuDirectoryPath, "presence.db");
+            
+            var osuDb = DatabaseDecoder.DecodeOsu(osuDbPath);
+            var presenceDb = DatabaseDecoder.DecodePresence(presenceDbPath);
                        
-            var currentPlayer = presence.Players.Find(player => player.Username.Equals(osuDb.PlayerName)) ;
+            var currentPlayer = presenceDb.Players.Find(player => player.Username.Equals(osuDb.PlayerName)) ;
 
-            if (currentPlayer != null)
-            {
-                info.Add("Nickname", osuDb.PlayerName);
-                info.Add("Id", currentPlayer.UserId.ToString());
-                info.Add("GlobalRanking", currentPlayer.Rank.ToString());
-            } 
-            else
-            {
+            if (currentPlayer == null)
                 throw new ArgumentNullException($"Not found user in presence with playername: {osuDb.PlayerName}");
-            }
-
-            return info;
+            
+            return new PlayerInfoResponseDto(currentPlayer.Username, currentPlayer.UserId, currentPlayer.Rank);
         }
     }
 }

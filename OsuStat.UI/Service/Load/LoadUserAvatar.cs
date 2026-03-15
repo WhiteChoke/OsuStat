@@ -4,11 +4,11 @@ using System.Windows;
 
 namespace OsuStat.UI.Service
 {
-    public class LoadUserAvatar
+    public static class LoadUserAvatar
     {
         private static readonly HttpClient HttpClient = new();
         private const string Url = "https://a.ppy.sh/";
-        public static async Task Load(string id, string path)
+        public static async Task Load(int id, string path)
         {
             try
             {
