@@ -34,7 +34,7 @@ namespace OsuStat.UI.MVVM.ViewModel
         {
             Navigation = navigationService;
             _settings = settingsService;
-            CurrentFolder = _settings.GetGameFolder();
+            CurrentFolder = _settings.GameFolder;
             SelectFolderCommand = new RelayCommand(o => { SelectFolder(); });
             NavigateToHomeCommand = new RelayCommand(o => { Navigation.NavigateTo<HomeViewModel>(); });
         }

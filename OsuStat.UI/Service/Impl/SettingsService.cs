@@ -2,11 +2,13 @@
 using OsuStat.UI.MVVM.Model;
 using System.IO;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace OsuStat.UI.Service.Impl
 {
     public class SettingsService : ObservableObject ,ISettingsService
     {
+        private readonly ILogger<SettingsService> _logger;
         public string ApplicationFolder { get; }
 
         private readonly string _jsonPath;
@@ -14,67 +16,61 @@ namespace OsuStat.UI.Service.Impl
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Osu stat"
             );
-        
         public string SavePlayerStatDirectoryPath { get; }
         public string SaveScoreDirectoryPath { get; }
+        public string GameFolder => CurrentSettings.GameFolder;
+        public string Language => CurrentSettings.Language;
         private Settings CurrentSettings { get; }
 
-        public SettingsService()
+        public SettingsService(ILogger<SettingsService> logger)
         {
+            _logger = logger;
             // TODO: TEMP
             ApplicationFolder = Directory.GetParent(AppContext.BaseDirectory).Parent.Parent.Parent.FullName;
-            
             _jsonPath = Path.Combine(DataDirectoryPath, "settings.json");
             SavePlayerStatDirectoryPath = Path.Combine(DataDirectoryPath, "player");
             SaveScoreDirectoryPath = Path.Combine(DataDirectoryPath, "scores");
             
-            try
+            Directory.CreateDirectory(DataDirectoryPath);
+            Directory.CreateDirectory(SavePlayerStatDirectoryPath);
+            Directory.CreateDirectory(SaveScoreDirectoryPath);
+            
+            if (File.Exists(_jsonPath))
             {
-                CurrentSettings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(_jsonPath)) 
-                                  ?? new Settings();
+                try
+                {
+                    CurrentSettings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(_jsonPath))
+                        ?? new Settings();
+                    _logger.LogInformation("Settings file loaded");
+                }
+                catch (IOException e)
+                {
+                    CurrentSettings = new Settings();
+                    _logger.LogError("Failed to load settings: {}", e.Message);
+                }
             }
-
-            catch (IOException)
+            else
             {
-                CreateSettingFile();
-            }
-            if (
-                !Directory.Exists(SavePlayerStatDirectoryPath) 
-                || !Directory.Exists(SaveScoreDirectoryPath)
-                )
-            {
-                CreateSaveDirectories();
+                CurrentSettings = new Settings();
+                File.WriteAllText(_jsonPath, JsonSerializer.Serialize(CurrentSettings));
+                _logger.LogInformation("Created new settings file");
             }
         }
 
         public void SetGameFolder(string folderPath)
         {
             CurrentSettings.GameFolder = folderPath;
-            using var createStream = File.Create(_jsonPath);
-            JsonSerializer.SerializeAsync(createStream, CurrentSettings);
+            
+            var json = JsonSerializer.Serialize(CurrentSettings);
+            File.WriteAllText(_jsonPath, json);
+            
             OnPropertyChanged();
+            _logger.LogInformation("Game folder changed");
         }
 
         public void SetLanguage()
         {
             throw new NotImplementedException();
-        }
-
-        public string GetGameFolder() { return CurrentSettings.GameFolder; }
-
-        public string GetLanguage() { return CurrentSettings.Language; }
-
-        private void CreateSettingFile()
-        {
-            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Osu stat");
-            File.WriteAllText(_jsonPath, JsonSerializer.Serialize(CurrentSettings));
-        }
-            
-        
-        private void CreateSaveDirectories()
-        {
-            Directory.CreateDirectory(SavePlayerStatDirectoryPath);
-            Directory.CreateDirectory(SaveScoreDirectoryPath);
         }
     }
 }

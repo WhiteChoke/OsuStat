@@ -34,7 +34,7 @@ namespace OsuStat.UI.MVVM.ViewModel
             {
                 if (args.PropertyName == nameof(_settings.SetGameFolder))
                 {
-                    Task.Run(async () => await LoadUserData.LoadData(User, _settings.GetGameFolder(), _settings.ApplicationFolder));
+                    Task.Run(async () => await LoadUserData.LoadData(User, _settings.GameFolder, _settings.ApplicationFolder));
                 }
             };
             LoadData();
@@ -44,7 +44,7 @@ namespace OsuStat.UI.MVVM.ViewModel
         {
             try
             {
-                await LoadUserData.LoadData(User, _settings.GetGameFolder(), _settings.ApplicationFolder);
+                await LoadUserData.LoadData(User, _settings.GameFolder, _settings.ApplicationFolder);
                 _dataService.UploadData(_beatMaps);
             }
             catch (Exception e)

@@ -27,7 +27,7 @@ public class ReplayWatcher : IReplayWatcher
 
     public void Start()
     { 
-        _watcher = new FileSystemWatcher(Path.Combine(_settings.GetGameFolder(), "Data", "r"));
+        _watcher = new FileSystemWatcher(Path.Combine(_settings.GameFolder, "Data", "r"));
         
         _watcher.NotifyFilter = NotifyFilters.CreationTime
                                 | NotifyFilters.LastWrite;
@@ -52,7 +52,7 @@ public class ReplayWatcher : IReplayWatcher
     {
         try
         {
-            var result = await ReplayInfo.Get(e.FullPath, _settings.GetGameFolder());
+            var result = await ReplayInfo.Get(e.FullPath, _settings.GameFolder);
 
             if (result == null)
             {

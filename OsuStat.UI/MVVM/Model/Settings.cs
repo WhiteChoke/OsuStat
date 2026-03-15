@@ -4,5 +4,6 @@
     {
         public string GameFolder { get; set; } = "None";
         public string Language { get; set; } = "en";
+        
     }
 }

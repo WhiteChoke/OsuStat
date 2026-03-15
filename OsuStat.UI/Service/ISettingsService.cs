@@ -11,7 +11,7 @@ namespace OsuStat.UI.Service
         public string SaveScoreDirectoryPath { get; }
         void SetGameFolder(string folderPath);
         void SetLanguage();
-        string GetGameFolder();
-        string GetLanguage();
+        string GameFolder { get; }
+        string Language { get; }
     }
 }
