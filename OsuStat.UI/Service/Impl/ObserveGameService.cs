@@ -40,10 +40,10 @@ public class ObserveGameService : ObservableObject, IObserveGameService
         _searchTimer.Start();
 
         _playTimer = new System.Timers.Timer(AddTimeMs);
-        _playTimer.Elapsed += (sender, args) =>
+        _playTimer.Elapsed += async (sender, args) =>
         {
             _playerStat.PlayTimeMin = 1;
-            _dataService.SaveStatistics(_playerStat);
+            await _dataService.SaveDataAsync(_playerStat, _settings.SavePlayerStatDirectoryPath);
         };
     }
 
@@ -130,9 +130,16 @@ public class ObserveGameService : ObservableObject, IObserveGameService
                 _beatmaps.Add(beatmap);
             });
         }
-        
-        _dataService.SaveStatistics(_playerStat);
-        _dataService.SaveScore(_beatmaps.ToList());
+
+        try
+        {
+            await _dataService.SaveDataAsync(_playerStat, _settings.SavePlayerStatDirectoryPath);
+            await _dataService.SaveDataAsync(_beatmaps.ToList(), _settings.SaveScoreDirectoryPath);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
         
         Console.WriteLine($"Triggered beatmap append {e.ChangeType}" );
     }

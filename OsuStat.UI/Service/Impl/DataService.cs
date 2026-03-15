@@ -1,93 +1,86 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
-using System.Windows;
+using Microsoft.Extensions.Logging;
 using OsuStat.UI.MVVM.Model;
 
 namespace OsuStat.UI.Service.Impl;
 
 public class DataService : IDataService
 {
-    private readonly ISettingsService _settings;
+    private readonly ISettingsService _settingsService;
     private readonly PlayerStat _playerStat;
-    
-    public DataService(ISettingsService settingsService, PlayerStat playerStat)
+    private readonly ILogger<DataService> _logger;
+
+    public DataService(PlayerStat playerStat, ISettingsService settingsService, ILogger<DataService> logger)
     {
+        _logger = logger;
         _playerStat = playerStat;
-        _settings = settingsService;
+        _settingsService = settingsService;
     }
     
-    public void SaveScore(List<BeatMap> beatmap)
+    public async Task SaveDataAsync<T>(T data, string directory)
     {
         try
         {
-            var json = JsonSerializer.Serialize(beatmap);
-            File.WriteAllTextAsync(
-                Path.Combine(_settings.SaveScoreDirectoryPath, DateTime.Today.ToShortDateString()) + ".json", json);
-            Console.WriteLine("Score saved");
+            var path = GetTodayFilePath(directory);
+            var json = JsonSerializer.Serialize(data);
+            await File.WriteAllTextAsync(path, json);
+            _logger.LogInformation("Saved data to {path}", path);
         }
         catch (IOException e)
         {
-            MessageBox.Show($"Failed to save score\n{e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            _logger.LogError("Failed to save data: {}", e.Message);
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("unexpected error: {}", e.Message);
+            throw;
+        }
+    }
+    
+    public async Task UploadData(ObservableCollection<BeatMap> beatmaps)
+    {
+        try
+        {
+            var playerFilePath = GetTodayFilePath(_settingsService.SavePlayerStatDirectoryPath);
+            var scoreFilePath =  GetTodayFilePath(_settingsService.SaveScoreDirectoryPath);
+            
+            var jsonPlayer = await File.ReadAllTextAsync(playerFilePath);
+            var jsonScores = await File.ReadAllTextAsync(scoreFilePath);
+            
+            var playerStat = JsonSerializer.Deserialize<PlayerStat>(jsonPlayer) 
+                ?? _playerStat;
+            var scores = JsonSerializer.Deserialize<List<BeatMap>>(jsonScores)
+                         ?? [];
+            
+            _playerStat.MapPlayed = playerStat.MapPlayed;
+            _playerStat.AvgAccuracy = playerStat.AvgAccuracy ;
+            _playerStat.AvgBpm = playerStat.AvgBpm;
+            _playerStat.AvgStarRate = playerStat.AvgStarRate;
+            _playerStat.PlayTimeMin = playerStat.PlayTimeMin;
+            _playerStat.PpGained = playerStat.PpGained;
+            
+            foreach (var beatmap in scores)
+                beatmaps.Add(beatmap);
+            
+            _logger.LogInformation("Data successful upload");
+        }
+        catch (IOException e)
+        {
+            _logger.LogError("Failed to read data file: {}", e.Message);
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("unexpected error: {}", e.Message);
+            throw;
         }
     }
 
-    public void SaveStatistics(PlayerStat playerStat)
+    private string GetTodayFilePath(string directory)
     {
-        try
-        {
-            var json = JsonSerializer.Serialize(playerStat);
-            File.WriteAllTextAsync(
-                Path.Combine(_settings.SavePlayerStatDirectoryPath, DateTime.Today.ToShortDateString()) + ".json", json);
-            Console.WriteLine("Player statistic saved");
-        }
-        catch (IOException e)
-        {
-            MessageBox.Show($"Failed to save player statistic\n{e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
-    public async void UploadData(ObservableCollection<BeatMap> beatmaps)
-    {
-        try
-        {
-            if (File.Exists(Path.Combine(_settings.SavePlayerStatDirectoryPath, DateTime.Today.ToShortDateString()) + ".json"))
-            {
-                var json = await File.ReadAllTextAsync(
-                    Path.Combine(_settings.SavePlayerStatDirectoryPath ,DateTime.Today.ToShortDateString() + ".json")
-                    );
-                
-                var result = JsonSerializer.Deserialize<PlayerStat>(json);
-                
-                _playerStat.MapPlayed = result.MapPlayed;
-                _playerStat.AvgAccuracy = result.AvgAccuracy ;
-                _playerStat.AvgBpm = result.AvgBpm;
-                _playerStat.AvgStarRate = result.AvgStarRate;
-                _playerStat.PlayTimeMin = result.PlayTimeMin;
-                _playerStat.PpGained = result.PpGained;
-                
-                Console.WriteLine("Player statistic uploaded");
-            }
-
-            if (File.Exists(Path.Combine(_settings.SaveScoreDirectoryPath, DateTime.Today.ToShortDateString()) + ".json"))
-            {
-                var json = await File.ReadAllTextAsync(
-                    Path.Combine(_settings.SaveScoreDirectoryPath, DateTime.Today.ToShortDateString()) + ".json"
-                );
-                
-                var scores = JsonSerializer.Deserialize<List<BeatMap>>(json) ?? [];
-
-                foreach (var beatmap in scores)
-                {
-                    beatmaps.Add(beatmap);
-                }
-                
-                Console.WriteLine("Scores uploaded");
-            }
-        }
-        catch (IOException e)
-        {
-            MessageBox.Show($"Failed to upload statistic\n{e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        return Path.Combine(directory, $"{DateTime.Today:yy-MM-dd}.json");
     }
 }

@@ -2,11 +2,14 @@
 using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
 using OsuStat.UI.MVVM.ViewModel;
 using OsuStat.UI.Service;
 using OsuStat.UI.Service.Impl;
+using Serilog;
+using Serilog.Core;
 
 namespace OsuStat.UI
 {
@@ -16,13 +19,21 @@ namespace OsuStat.UI
 
         public App()
         {
+            Log.Logger = GetLogger();
             
             IServiceCollection services = new ServiceCollection();
 
+            services.AddLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddSerilog();
+            });
+            
             services.AddSingleton<MainWindow>(provider => new MainWindow
             {
                 DataContext = provider.GetRequiredService<MainWindowViewModel>()
             });
+            
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<HomeViewModel>();
             services.AddSingleton<SettingsViewModel>();
@@ -30,6 +41,7 @@ namespace OsuStat.UI
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<IObserveGameService, ObserveGameService>();
+            services.AddSingleton<IDataService, DataService>();
             
             services.AddSingleton<Func<Type, ViewModel>>
             (
@@ -37,7 +49,6 @@ namespace OsuStat.UI
             );
             
             services.AddSingleton<PlayerStat>();
-            services.AddSingleton<IDataService, DataService>();
             
             _serviceProvider = services.BuildServiceProvider();
 
@@ -55,6 +66,25 @@ namespace OsuStat.UI
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
             base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Log.CloseAndFlush();
+            base.OnExit(e);
+        }
+
+        private Logger GetLogger()
+        {
+            return new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File(
+                    Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Osu stat", "Logs", "log.txt"),
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 7)
+                .CreateLogger();
         }
     }
 
