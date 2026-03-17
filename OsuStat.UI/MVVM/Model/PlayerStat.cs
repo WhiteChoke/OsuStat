@@ -4,71 +4,63 @@ namespace OsuStat.UI.MVVM.Model;
 
 public class PlayerStat : ObservableObject
 {
-    private double _playTimeMin = 0;
     public double PlayTimeMin
     {
-        get => _playTimeMin;
+        get;
         set
         {
-            _playTimeMin = value;
+            field = value;
             OnPropertyChanged();
         }
     }
-
-    private int _mapPlayed = 0;
     public int MapPlayed
     {
-        get => _mapPlayed;
+        get;
         set
         {
-            _mapPlayed = value;
+            field = value;
             OnPropertyChanged();
         }
     }
-
-    private double _ppGained = 0;
     public double PpGained
     {
-        get => _ppGained;
+        get;
         set
         {
-            _ppGained = value;
+            field = value;
             OnPropertyChanged();
         }
     }
 
     private double _totalBpm;
-    private double _avgBpm = 0;
     public double AvgBpm
     {
-        get => _avgBpm;
+        get;
         set
         {
-            _avgBpm = value;
+            field = value;
             OnPropertyChanged();
         }
     }
 
     private double _totalStarRate;
-    private double _avgStarRate = 0;
     public double AvgStarRate
     {
-        get => _avgStarRate;
+        get;
         set
         {
-            _avgStarRate = value;
+            field = value;
             OnPropertyChanged();
         }
     }
 
     private double _totalAccuracy;
-    private double _avgAccuracy = 0;
     public double AvgAccuracy
     {
-        get => _avgAccuracy;
+        get;
         set
         {
-            _avgAccuracy = value;
+            field = value;
             OnPropertyChanged();
         }
     }
@@ -76,7 +68,7 @@ public class PlayerStat : ObservableObject
     public void Update(double bpm, double pp, double starRate, double accuracy)
     {
         MapPlayed++;
-        PpGained += pp; 
+        PpGained += Math.Round(pp, 2); 
         _totalBpm += bpm;
         _totalStarRate += starRate;
         _totalAccuracy += accuracy;

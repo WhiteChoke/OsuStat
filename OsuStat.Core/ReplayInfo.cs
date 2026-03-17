@@ -1,6 +1,8 @@
 ﻿using System.Net.Http.Json;
+using OsuParsers.Beatmaps;
 using OsuParsers.Decoders;
 using OsuParsers.Enums;
+using OsuParsers.Enums.Database;
 using OsuParsers.Replays;
 using OsuStat.UI.Dto;
 
@@ -22,21 +24,23 @@ public static class ReplayInfo
         
         if (beatmap == null)
             throw new NullReferenceException("Beatmap not found!");
+
+        var bgPath = Directory
+            .GetFiles(Path.Combine(osuDirectoryPath, "Songs", beatmap.FolderName))
+            .FirstOrDefault(f => f.EndsWith(".jpg") || f.EndsWith(".jpeg") || f.EndsWith(".png"));
         
-        var bgPath = Directory.GetFiles(Path.Combine(osuDirectoryPath, "Songs", beatmap.FolderName), "*.jpg");
-
-        var requestBody = new GetBeatMapStatRequestDto(
-            string.Join("/",$"{osuDirectoryPath}/Songs/{beatmap.FolderName}/{beatmap.FileName}".Split('\\')),
-            replay.Count300,
-            replay.Count100,
-            replay.Count50,
-            replay.CountMiss,
-            replay.Combo,
-            (short) replay.Mods
-            );
-
         try
         {
+            var requestBody = new GetBeatMapStatRequestDto(
+                string.Join("/",$"{osuDirectoryPath}/Songs/{beatmap.FolderName}/{beatmap.FileName}".Split('\\')),
+                replay.Count300,
+                replay.Count100,
+                replay.Count50,
+                replay.CountMiss,
+                replay.Combo,
+                (short) replay.Mods
+            );
+
             var httpResponse = await HttpClient.PostAsync(
                 Url, 
                 JsonContent.Create(requestBody)
@@ -45,19 +49,24 @@ public static class ReplayInfo
         
             if (response == null)
                 throw new NullReferenceException($"Failed to create beatmap!\nResponse status: {httpResponse.StatusCode}");
+
+            var ppGained = 
+                beatmap.RankedStatus.Equals(RankedStatus.Ranked) 
+                ? response.Pp 
+                : 0.0;
             
             return new ReplayResultDto(
-                beatmap.FileName,
+                beatmap.Title,
                 beatmap.Artist,
                 beatmap.Creator,
                 response.Beatmap.Bpm,
-                replay.ReplayLength,
+                beatmap.TotalTime,
                 response.Beatmap.Sr,
                 response.Beatmap.Hp,
                 response.Beatmap.Cs,
                 response.Beatmap.Ar,
-                bgPath.Length != 0 ? bgPath.First() : "",
-                response.Pp,
+                bgPath,
+                ppGained,
                 replay.Combo,
                 response.Acc
             );

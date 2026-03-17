@@ -62,9 +62,7 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
                 return;
             }
 
-            var bg = result.BgPath.Length != 0
-                ? result.BgPath
-                : Path.Combine(_settings.ApplicationFolder, "Assets", "Images", "Bg fuck up.jpg");
+            var bg = result.BgPath ?? Path.Combine(_settings.ApplicationFolder, "Assets", "Images", "Bg fuck up.jpg");
 
             var beatmap = new BeatMap(
                 result.Name,

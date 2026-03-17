@@ -10,7 +10,7 @@ public record ReplayResultDto(
     double Hp,
     double Cs,
     double Ar,
-    string BgPath,
+    string? BgPath,
     double PpGained,
     ushort MaxCombo,
     double Accuracy
