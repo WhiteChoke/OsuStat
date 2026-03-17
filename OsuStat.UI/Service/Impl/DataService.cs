@@ -31,16 +31,16 @@ public class DataService : IDataService
             var path = GetTodayFilePath(directory);
             var json = JsonSerializer.Serialize(data);
             await File.WriteAllTextAsync(path, json);
-            _logger.LogInformation("Saved data to {path}", path);
+            _logger.LogInformation("Data saved to {path}", path);
         }
         catch (IOException e)
         {
-            _logger.LogError("Failed to save data: {}", e.Message);
+            _logger.LogError("Failed to save data: {Message}", e.Message);
             throw;
         }
         catch (Exception e)
         {
-            _logger.LogError("unexpected error: {}", e.Message);
+            _logger.LogError("Unexpected error: {Message}", e.Message);
             throw;
         }
     }
@@ -74,11 +74,11 @@ public class DataService : IDataService
         }
         catch (IOException e)
         {
-            _logger.LogError("Failed to read data file: {}", e.Message);
+            _logger.LogError("Failed to read data file: {Message}", e.Message);
         }
         catch (Exception e)
         {
-            _logger.LogError("unexpected error: {}", e.Message);
+            _logger.LogError("unexpected error: {Message}", e.Message);
             throw;
         }
     }

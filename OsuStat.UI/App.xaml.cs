@@ -58,7 +58,7 @@ namespace OsuStat.UI
             var applicationPath = _serviceProvider.GetRequiredService<ISettingsService>().ApplicationFolder;
             
             //TEMP
-            Process.Start(Path.Combine(Directory.GetParent(applicationPath).FullName, "Endpoints" ,"api.exe"));
+            Process.Start(Path.Combine(applicationPath,"api.exe"));
             Console.WriteLine("Application started");
         }
 

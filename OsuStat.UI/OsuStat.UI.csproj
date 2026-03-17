@@ -16,6 +16,16 @@
     <Resource Include="Assets\Fonts\Rubik.ttf" />
     <None Remove="Assets\Images\Star.jpeg" />
     <Resource Include="Assets\Images\Star.jpeg" />
+    <None Remove="Assets\Images\Avatar.jpeg" />
+    <Content Include="Assets\Images\Avatar.jpeg" />
+    <None Remove="Assets\Images\Default avatar.jpeg" />
+    <Content Include="Assets\Images\Default avatar.jpeg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Bg fuck up.jpg" />
+    <Content Include="Assets\Images\Bg fuck up.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

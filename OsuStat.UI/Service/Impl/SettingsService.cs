@@ -25,8 +25,7 @@ namespace OsuStat.UI.Service.Impl
         public SettingsService(ILogger<SettingsService> logger)
         {
             _logger = logger;
-            // TODO: TEMP
-            ApplicationFolder = Directory.GetParent(AppContext.BaseDirectory).Parent.Parent.Parent.FullName;
+            ApplicationFolder = AppContext.BaseDirectory;
             _jsonPath = Path.Combine(DataDirectoryPath, "settings.json");
             SavePlayerStatDirectoryPath = Path.Combine(DataDirectoryPath, "player");
             SaveScoreDirectoryPath = Path.Combine(DataDirectoryPath, "scores");
