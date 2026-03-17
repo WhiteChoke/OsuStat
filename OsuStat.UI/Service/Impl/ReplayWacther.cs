@@ -3,11 +3,12 @@ using System.IO;
 using System.Windows;
 using Microsoft.Extensions.Logging;
 using OsuStat.Core;
+using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
 
 namespace OsuStat.UI.Service.Impl;
 
-public class ReplayWatcher : IReplayWatcher
+public class ReplayWatcher : ObservableObject, IReplayWatcher
 {
     private FileSystemWatcher _watcher;
     private readonly ObservableCollection<BeatMap> _beatmaps;
@@ -69,7 +70,6 @@ public class ReplayWatcher : IReplayWatcher
                 result.Name,
                 result.Artist,
                 result.Mapper,
-                0,
                 result.Bpm,
                 result.Length,
                 result.StarRate,
@@ -78,20 +78,18 @@ public class ReplayWatcher : IReplayWatcher
                 result.Ar,
                 bg,
                 result.PpGained,
-                result.MaxCombo,
-                DateTime.Now.ToLongDateString()
+                result.MaxCombo
             );
 
-            _playerStat.MapPlayed += 1;
-            _playerStat.AvgBpm = result.Bpm;
-            _playerStat.PpGained = result.PpGained;
-            _playerStat.AvgStarRate = result.StarRate;
-            _playerStat.AvgAccuracy = result.accuracy;
-
-            if (!_beatmaps.Any(map => map.Equals(beatmap)))
-            {
-                await Application.Current.Dispatcher.InvokeAsync(() => { _beatmaps.Add(beatmap); });
-            }
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+                UpdateData(
+                    beatmap,
+                    result.Bpm, 
+                    result.PpGained, 
+                    result.StarRate,
+                    result.Accuracy
+                    )
+                );
 
             await _dataService.SaveDataAsync(_playerStat, _settings.SavePlayerStatDirectoryPath);
             await _dataService.SaveDataAsync(_beatmaps.ToList(), _settings.SaveScoreDirectoryPath);
@@ -101,6 +99,22 @@ public class ReplayWatcher : IReplayWatcher
         catch (Exception ex)
         {
             MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void UpdateData
+    (
+        BeatMap beatmap,
+        double bpm,
+        double pp,
+        double starRate,
+        double accuracy
+        ) {
+        _playerStat.Update(bpm, pp, starRate, accuracy);
+
+        if (!_beatmaps.Any(map => map.Equals(beatmap)))
+        {
+            _beatmaps.Add(beatmap);
         }
     }
 }

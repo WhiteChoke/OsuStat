@@ -17,12 +17,11 @@ public class BeatMap
     public ushort MaxCombo  { get; set; }
     public string Date { get; set; }
 
-    public BeatMap(string name, string artist, string mapper, int playCount, double bpm, int length, double starRate, double hp, double cs, double ar, string bgPath, double ppGained, ushort maxCombo, string date)
+    public BeatMap(string name, string artist, string mapper, double bpm, int length, double starRate, double hp, double cs, double ar, string bgPath, double ppGained, ushort maxCombo)
     {
         Name = name;
         Artist = artist;
         Mapper = mapper;
-        PlayCount = playCount;
         Bpm = bpm;
         Length = length;
         StarRate = starRate;
@@ -32,7 +31,7 @@ public class BeatMap
         BgPath = bgPath;
         PpGained = ppGained;
         MaxCombo = maxCombo;
-        Date = date;
+        Date = DateTime.Now.ToLongDateString();
     }
 
     public override bool Equals(object? obj)

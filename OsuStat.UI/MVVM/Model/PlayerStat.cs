@@ -4,69 +4,85 @@ namespace OsuStat.UI.MVVM.Model;
 
 public class PlayerStat : ObservableObject
 {
+    private double _playTimeMin = 0;
     public double PlayTimeMin
     {
-        get;
+        get => _playTimeMin;
         set
         {
-            field += value;
+            _playTimeMin = value;
             OnPropertyChanged();
         }
-    } = 0;
-    
+    }
+
+    private int _mapPlayed = 0;
     public int MapPlayed
     {
-        get;
+        get => _mapPlayed;
         set
         {
-            field++;
+            _mapPlayed = value;
             OnPropertyChanged();
         }
-    } = 0;
+    }
+
+    private double _ppGained = 0;
     public double PpGained
     {
-        get;
+        get => _ppGained;
         set
         {
-            field = Math.Round(field + value, 1);
+            _ppGained = value;
             OnPropertyChanged();
         }
-    } = 0;
+    }
 
     private double _totalBpm;
+    private double _avgBpm = 0;
     public double AvgBpm
     {
-        get;
+        get => _avgBpm;
         set
         {
-            _totalBpm += value;
-            field = Math.Round(_totalBpm / MapPlayed, 1);
+            _avgBpm = value;
             OnPropertyChanged();
         }
-    } = 0;
+    }
 
     private double _totalStarRate;
+    private double _avgStarRate = 0;
     public double AvgStarRate
     {
-        get;
+        get => _avgStarRate;
         set
         {
-            _totalStarRate += value;
-            field = Math.Round(_totalStarRate / MapPlayed, 1);
+            _avgStarRate = value;
             OnPropertyChanged();
         }
-    } = 0;
+    }
 
     private double _totalAccuracy;
+    private double _avgAccuracy = 0;
     public double AvgAccuracy
     {
-        get;
+        get => _avgAccuracy;
         set
         {
-            _totalAccuracy += value;
-            field = Math.Round(_totalAccuracy / MapPlayed, 1);
+            _avgAccuracy = value;
             OnPropertyChanged();
         }
-    } = 0;
+    }
 
+    public void Update(double bpm, double pp, double starRate, double accuracy)
+    {
+        MapPlayed++;
+        PpGained += pp; 
+        _totalBpm += bpm;
+        _totalStarRate += starRate;
+        _totalAccuracy += accuracy;
+    
+        AvgBpm = Math.Round(_totalBpm / MapPlayed, 2);
+        AvgAccuracy = Math.Round(_totalAccuracy / MapPlayed, 2);
+        AvgStarRate = Math.Round(_totalStarRate / MapPlayed, 2);
+    }
 }

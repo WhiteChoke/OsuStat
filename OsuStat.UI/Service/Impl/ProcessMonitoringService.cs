@@ -35,7 +35,7 @@ public class ProcessMonitoringService : IProcessMonitoringService
 
         _playTimer.Elapsed += async (sender, args) =>
         {
-            _playerStat.PlayTimeMin = 1;
+            _playerStat.PlayTimeMin += 1;
             await _dataService.SaveDataAsync(_playerStat, _settings.SavePlayerStatDirectoryPath);
         };
     }
