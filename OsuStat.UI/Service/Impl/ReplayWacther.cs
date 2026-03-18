@@ -80,13 +80,7 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
             );
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
-                UpdateData(
-                    beatmap,
-                    result.Bpm, 
-                    result.PpGained, 
-                    result.StarRate,
-                    result.Accuracy
-                    )
+                UpdateData(beatmap, result.Accuracy)
                 );
 
             await _dataService.SaveDataAsync(_playerStat, _settings.SavePlayerStatDirectoryPath);
@@ -100,19 +94,25 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
         }
     }
 
-    private void UpdateData
-    (
-        BeatMap beatmap,
-        double bpm,
-        double pp,
-        double starRate,
-        double accuracy
-        ) {
-        _playerStat.Update(bpm, pp, starRate, accuracy);
+    private void UpdateData(BeatMap beatmap, double accuracy) {
+        _playerStat.Update(beatmap.Bpm, beatmap.PpGained, beatmap.StarRate, accuracy);
 
-        if (!_beatmaps.Any(map => map.Equals(beatmap)))
+        if (_beatmaps.Contains(beatmap))
         {
-            _beatmaps.Add(beatmap);
+            var oldBeatmap = _beatmaps.First(b => b.Equals(beatmap));
+            _beatmaps.Remove(oldBeatmap);
+            
+            beatmap.PpGained = oldBeatmap.PpGained > beatmap.PpGained
+                ? oldBeatmap.PpGained
+                : beatmap.PpGained;
+            
+            beatmap.PlayCount = oldBeatmap.PlayCount + 1;
         }
+        else
+        {
+            beatmap.PlayCount = 1;
+        }
+        
+        _beatmaps.Insert(0, beatmap);
     }
 }

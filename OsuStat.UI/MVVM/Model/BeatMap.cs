@@ -42,7 +42,6 @@ public class BeatMap
         return Name == other.Name &&
                Artist == other.Artist &&
                Mapper == other.Mapper &&
-               StarRate.Equals(other.StarRate) &&
-               BgPath == other.BgPath;
+               StarRate.Equals(other.StarRate);
     }
 }
