@@ -1,6 +1,6 @@
 ﻿using OsuParsers.Enums;
 
-namespace OsuStat.UI.Dto;
+namespace OsuStat.Core.Dto;
 
 public record ReplayResultDto(
     string Name,
@@ -16,5 +16,6 @@ public record ReplayResultDto(
     double PpGained,
     ushort MaxCombo,
     double Accuracy,
-    List<Mods> Mods
+    List<Mods> Mods,
+    Grade Grade
     );

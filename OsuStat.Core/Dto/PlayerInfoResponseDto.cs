@@ -1,4 +1,4 @@
-﻿namespace OsuStat.UI.Dto;
+﻿namespace OsuStat.Core.Dto;
 
 public record PlayerInfoResponseDto(
     string Nickname,

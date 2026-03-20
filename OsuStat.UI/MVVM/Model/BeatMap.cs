@@ -1,4 +1,6 @@
-﻿namespace OsuStat.UI.MVVM.Model;
+﻿using OsuStat.Core;
+
+namespace OsuStat.UI.MVVM.Model;
 
 public class BeatMap
 {
@@ -18,6 +20,7 @@ public class BeatMap
     public string Date { get; set; }
     public double Accuracy { get; set; }
     public List<string> Mods { get; set; }
+    public Grade Grade { get; set; }
 
     public BeatMap(
         string name, 
@@ -32,7 +35,8 @@ public class BeatMap
         double ppGained, 
         ushort maxCombo,
         double accuracy,
-        List<string> mods
+        List<string> mods,
+        Grade grade
         )
     {
         Name = name;
@@ -49,6 +53,7 @@ public class BeatMap
         MaxCombo = maxCombo;
         Accuracy = accuracy;
         Mods = mods;
+        Grade = grade;
         
         Date = DateTime.Now.ToLongDateString();
     }

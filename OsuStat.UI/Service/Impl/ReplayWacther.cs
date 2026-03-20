@@ -81,7 +81,8 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
                 result.PpGained,
                 result.MaxCombo,
                 result.Accuracy,
-                modIcons
+                modIcons,
+                result.Grade
             );
 
             await Application.Current.Dispatcher.InvokeAsync(() =>

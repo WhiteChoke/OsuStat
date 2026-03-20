@@ -1,5 +1,6 @@
 ﻿using OsuParsers.Database;
 using OsuParsers.Decoders;
+using OsuStat.Core.Dto;
 using OsuStat.UI.Dto;
 
 namespace OsuStat.Core
