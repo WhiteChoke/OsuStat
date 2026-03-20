@@ -9,6 +9,7 @@ namespace OsuStat.UI.Service
         public string ApplicationFolder { get; }
         public string SavePlayerStatDirectoryPath { get; }
         public string SaveScoreDirectoryPath { get; }
+        public string ModIconsFolder { get; }
         void SetGameFolder(string folderPath);
         void SetLanguage();
         string GameFolder { get; }

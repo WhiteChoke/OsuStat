@@ -55,6 +55,11 @@ public static class ReplayInfo
                 ? response.Pp 
                 : 0.0;
             
+            var mods = Enum.GetValues(typeof(Mods))
+                .Cast<Mods>()
+                .Where(m => m != Mods.None && ((int) replay.Mods & (int) m) == (int) m)
+                .ToList();
+            
             return new ReplayResultDto(
                 beatmap.Title,
                 beatmap.Artist,
@@ -68,7 +73,8 @@ public static class ReplayInfo
                 bgPath,
                 ppGained,
                 replay.Combo,
-                response.Acc
+                response.Acc,
+                mods
             );
         }
         catch (Exception e)

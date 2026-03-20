@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using Microsoft.Extensions.Logging;
+using OsuParsers.Enums;
 using OsuStat.Core;
 using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
@@ -64,6 +65,8 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
 
             var bg = result.BgPath ?? Path.Combine(_settings.ApplicationFolder, "Assets", "Images", "Bg fuck up.jpg");
 
+            var modIcons = GetIconPathList(result.Mods);
+            
             var beatmap = new BeatMap(
                 result.Name,
                 result.Artist,
@@ -76,7 +79,9 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
                 result.Ar,
                 bg,
                 result.PpGained,
-                result.MaxCombo
+                result.MaxCombo,
+                result.Accuracy,
+                modIcons
             );
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -114,5 +119,13 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
         }
         
         _beatmaps.Insert(0, beatmap);
+    }
+
+    private List<string> GetIconPathList(List<Mods> mods)
+    {
+        return 
+            mods.Select(mod => 
+                Path.Combine(_settings.ModIconsFolder, $"{mod}.png"))
+                .ToList();
     }
 }

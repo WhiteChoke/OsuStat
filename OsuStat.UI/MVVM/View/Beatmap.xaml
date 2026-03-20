@@ -140,6 +140,7 @@
                         Margin="0 12">
                     <Grid Margin="9">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
@@ -148,9 +149,23 @@
                             <RowDefinition/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" FontSize="20" Margin="0 0 0 8" Text="{Binding Date, StringFormat='Date {0}'}"/>
-                        <TextBlock Grid.Row="1" FontSize="16" Text="{Binding MaxCombo, StringFormat='Max combo {0}'}"/>
-                        <TextBlock Grid.Row="2" FontSize="16" Text="{Binding PpGained, StringFormat='Pp gained {0}'}"/>
+                        <TextBlock Grid.Row="0" FontSize="18" Text="{Binding MaxCombo, StringFormat='Combo: {0}'}"/>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock FontSize="18" Margin="0 0 10 8" Text="{Binding PpGained, StringFormat='Pp gained: {0}'}"/>
+                            <TextBlock FontSize="18" Text="{Binding Accuracy, StringFormat='Accuracy: {0}'}"/>
+                        </StackPanel>
+                        <ItemsControl Grid.Row="2" ItemsSource="{Binding Mods}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding}" Height="50"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </Grid>
                 </Border>
             </StackPanel>

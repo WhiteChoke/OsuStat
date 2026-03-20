@@ -1,4 +1,6 @@
-﻿namespace OsuStat.UI.Dto;
+﻿using OsuParsers.Enums;
+
+namespace OsuStat.UI.Dto;
 
 public record ReplayResultDto(
     string Name,
@@ -13,5 +15,6 @@ public record ReplayResultDto(
     string? BgPath,
     double PpGained,
     ushort MaxCombo,
-    double Accuracy
+    double Accuracy,
+    List<Mods> Mods
     );

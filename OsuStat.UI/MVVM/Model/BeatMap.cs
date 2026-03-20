@@ -16,8 +16,24 @@ public class BeatMap
     public double PpGained { get; set; }
     public ushort MaxCombo  { get; set; }
     public string Date { get; set; }
+    public double Accuracy { get; set; }
+    public List<string> Mods { get; set; }
 
-    public BeatMap(string name, string artist, string mapper, double bpm, int length, double starRate, double hp, double cs, double ar, string bgPath, double ppGained, ushort maxCombo)
+    public BeatMap(
+        string name, 
+        string artist, string mapper, 
+        double bpm, 
+        int length, 
+        double starRate, 
+        double hp, 
+        double cs, 
+        double ar, 
+        string bgPath,
+        double ppGained, 
+        ushort maxCombo,
+        double accuracy,
+        List<string> mods
+        )
     {
         Name = name;
         Artist = artist;
@@ -31,6 +47,9 @@ public class BeatMap
         BgPath = bgPath;
         PpGained = ppGained;
         MaxCombo = maxCombo;
+        Accuracy = accuracy;
+        Mods = mods;
+        
         Date = DateTime.Now.ToLongDateString();
     }
 

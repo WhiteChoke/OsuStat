@@ -26,6 +26,70 @@
     <Content Include="Assets\Images\Bg fuck up.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Remove="Assets\Images\Mod icons\autoplay.png" />
+    <Content Include="Assets\Images\Mod icons\AutoPlay.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\cinema.png" />
+    <Content Include="Assets\Images\Mod icons\Cinema.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\doubletime.png" />
+    <Content Include="Assets\Images\Mod icons\DoubleTime.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\easy.png" />
+    <Content Include="Assets\Images\Mod icons\Easy.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\flashlight.png" />
+    <Content Include="Assets\Images\Mod icons\Flashlight.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\halftime.png" />
+    <Content Include="Assets\Images\Mod icons\HalfTime.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\hardrock.png" />
+    <Content Include="Assets\Images\Mod icons\HardRock.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\hidden.png" />
+    <Content Include="Assets\Images\Mod icons\Hidden.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\nightcore.png" />
+    <Content Include="Assets\Images\Mod icons\Nightcore.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\nofail.png" />
+    <Content Include="Assets\Images\Mod icons\NoFail.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\perfect.png" />
+    <Content Include="Assets\Images\Mod icons\Perfect.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\pilot.png" />
+    <Content Include="Assets\Images\Mod icons\Pilot.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\relax.png" />
+    <Content Include="Assets\Images\Mod icons\Relax.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\spunout.png" />
+    <Content Include="Assets\Images\Mod icons\SpunOut.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\suddendeath.png" />
+    <Content Include="Assets\Images\Mod icons\SuddenDeath.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Images\Mod icons\target.png" />
+    <Content Include="Assets\Images\Mod icons\Target.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

@@ -20,6 +20,7 @@ namespace OsuStat.UI.Service.Impl
         public string SaveScoreDirectoryPath { get; }
         public string GameFolder => CurrentSettings.GameFolder;
         public string Language => CurrentSettings.Language;
+        public string ModIconsFolder { get; }
         private Settings CurrentSettings { get; }
 
         public SettingsService(ILogger<SettingsService> logger)
@@ -29,6 +30,7 @@ namespace OsuStat.UI.Service.Impl
             _jsonPath = Path.Combine(DataDirectoryPath, "settings.json");
             SavePlayerStatDirectoryPath = Path.Combine(DataDirectoryPath, "player");
             SaveScoreDirectoryPath = Path.Combine(DataDirectoryPath, "scores");
+            ModIconsFolder = Path.Combine(ApplicationFolder, "Assets", "Images", "Mod icons");
             
             Directory.CreateDirectory(DataDirectoryPath);
             Directory.CreateDirectory(SavePlayerStatDirectoryPath);
