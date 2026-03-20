@@ -15,16 +15,24 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
     private readonly ObservableCollection<BeatMap> _beatmaps;
     private readonly ISettingsService _settings;
     private readonly PlayerStat _playerStat;
+    private readonly BestScore _bestScore;
     private readonly ILogger<ReplayWatcher> _logger;
     private readonly IDataService _dataService;
 
-    public ReplayWatcher(ObservableCollection<BeatMap> beatmaps, ISettingsService settings, PlayerStat playerStat, ILogger<ReplayWatcher> logger, IDataService dataService)
+    public ReplayWatcher(
+        ObservableCollection<BeatMap> beatmaps, 
+        ISettingsService settings,
+        PlayerStat playerStat,
+        ILogger<ReplayWatcher> logger, 
+        IDataService dataService,
+        BestScore bestScore)
     {
         _beatmaps = beatmaps;
         _settings = settings;
         _playerStat = playerStat;
         _logger = logger;
         _dataService = dataService;
+        _bestScore = bestScore;
     }
 
     public void Start()
@@ -91,6 +99,7 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
 
             await _dataService.SaveDataAsync(_playerStat, _settings.SavePlayerStatDirectoryPath);
             await _dataService.SaveDataAsync(_beatmaps.ToList(), _settings.SaveScoreDirectoryPath);
+            await _dataService.SaveDataAsync(_bestScore, Path.Combine(_settings.SaveScoreDirectoryPath, "Best"));
 
             _logger.LogInformation("Beatmap added: {name}", beatmap.Name);
         }
@@ -103,6 +112,13 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
     private void UpdateData(BeatMap beatmap, double accuracy) {
         _playerStat.Update(beatmap.Bpm, beatmap.PpGained, beatmap.StarRate, accuracy);
 
+        if (beatmap.PpGained > _bestScore.Pp)
+        {
+            _bestScore.Pp = beatmap.PpGained;
+            _bestScore.MapName = beatmap.Name;
+            _bestScore.BgPath = beatmap.BgPath;
+        }
+        
         if (_beatmaps.Contains(beatmap))
         {
             var oldBeatmap = _beatmaps.First(b => b.Equals(beatmap));

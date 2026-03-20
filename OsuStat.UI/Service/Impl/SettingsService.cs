@@ -27,14 +27,16 @@ namespace OsuStat.UI.Service.Impl
         {
             _logger = logger;
             ApplicationFolder = AppContext.BaseDirectory;
-            _jsonPath = Path.Combine(DataDirectoryPath, "settings.json");
-            SavePlayerStatDirectoryPath = Path.Combine(DataDirectoryPath, "player");
-            SaveScoreDirectoryPath = Path.Combine(DataDirectoryPath, "scores");
+            _jsonPath = Path.Combine(DataDirectoryPath, "Settings.json");
+            SavePlayerStatDirectoryPath = Path.Combine(DataDirectoryPath, "Player");
+            SaveScoreDirectoryPath = Path.Combine(DataDirectoryPath, "Scores");
             ModIconsFolder = Path.Combine(ApplicationFolder, "Assets", "Images", "Mod icons");
             
             Directory.CreateDirectory(DataDirectoryPath);
             Directory.CreateDirectory(SavePlayerStatDirectoryPath);
             Directory.CreateDirectory(SaveScoreDirectoryPath);
+            Directory.CreateDirectory(Path.Combine(SaveScoreDirectoryPath, "Best"));
+            
             
             if (File.Exists(_jsonPath))
             {

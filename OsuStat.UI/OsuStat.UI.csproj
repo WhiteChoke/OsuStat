@@ -90,6 +90,10 @@
     <Content Include="Assets\Images\Mod icons\Target.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Remove="Assets\Images\Best score bg.jpg" />
+    <Content Include="Assets\Images\Best score bg.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

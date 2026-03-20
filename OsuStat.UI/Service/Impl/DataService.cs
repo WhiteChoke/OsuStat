@@ -13,15 +13,21 @@ public class DataService : IDataService
 {
     private readonly ISettingsService _settingsService;
     private readonly PlayerStat _playerStat;
+    private readonly BestScore _bestScore;
     private readonly ILogger<DataService> _logger;
     private readonly HttpClient _httpClient = new();
     private const string Url = "https://a.ppy.sh/";
     
-    public DataService(PlayerStat playerStat, ISettingsService settingsService, ILogger<DataService> logger)
+    public DataService(
+        PlayerStat playerStat,
+        ISettingsService settingsService,
+        ILogger<DataService> logger,
+        BestScore bestScore)
     {
         _logger = logger;
         _playerStat = playerStat;
         _settingsService = settingsService;
+        _bestScore = bestScore;
     }
     
     public async Task SaveDataAsync<T>(T data, string directory)
@@ -47,40 +53,59 @@ public class DataService : IDataService
     
     public async Task LoadStatisticAsync(ObservableCollection<BeatMap> beatmaps)
     {
-        try
-        {
-            var playerFilePath = GetTodayFilePath(_settingsService.SavePlayerStatDirectoryPath);
-            var scoreFilePath =  GetTodayFilePath(_settingsService.SaveScoreDirectoryPath);
-            
-            var jsonPlayer = await File.ReadAllTextAsync(playerFilePath);
-            var jsonScores = await File.ReadAllTextAsync(scoreFilePath);
-            
-            var playerStat = JsonSerializer.Deserialize<PlayerStat>(jsonPlayer) 
-                ?? _playerStat;
-            var scores = JsonSerializer.Deserialize<List<BeatMap>>(jsonScores)
-                         ?? [];
-            
-            _playerStat.MapPlayed = playerStat.MapPlayed;
-            _playerStat.AvgAccuracy = playerStat.AvgAccuracy ;
-            _playerStat.AvgBpm = playerStat.AvgBpm;
-            _playerStat.AvgStarRate = playerStat.AvgStarRate;
-            _playerStat.PlayTimeMin = playerStat.PlayTimeMin;
-            _playerStat.PpGained = playerStat.PpGained;
-            
-            foreach (var beatmap in scores)
-                beatmaps.Add(beatmap);
-            
-            _logger.LogInformation("Data successful upload");
-        }
-        catch (IOException e)
-        {
-            _logger.LogError("Failed to read data file: {Message}", e.Message);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError("unexpected error: {Message}", e.Message);
-            throw;
-        }
+           var playerFilePath = GetTodayFilePath(_settingsService.SavePlayerStatDirectoryPath);
+           var scoreFilePath =  GetTodayFilePath(_settingsService.SaveScoreDirectoryPath);
+           var bestScorePath = GetTodayFilePath(Path.Combine(_settingsService.SaveScoreDirectoryPath, "Best"));
+           
+           _bestScore.BgPath = Path.Combine(_settingsService.ApplicationFolder, "Assets", "Images", "Best score bg.jpg");
+           
+           try
+           {
+               var jsonPlayer = await File.ReadAllTextAsync(playerFilePath);
+               var playerStat = JsonSerializer.Deserialize<PlayerStat>(jsonPlayer) 
+                                ?? _playerStat;
+               _playerStat.MapPlayed = playerStat.MapPlayed;
+               _playerStat.AvgAccuracy = playerStat.AvgAccuracy ;
+               _playerStat.AvgBpm = playerStat.AvgBpm;
+               _playerStat.AvgStarRate = playerStat.AvgStarRate;
+               _playerStat.PlayTimeMin = playerStat.PlayTimeMin;
+               _playerStat.PpGained = playerStat.PpGained;
+               
+               _logger.LogInformation("Player statistic successful upload");
+           }
+           catch (Exception e)
+           {
+               _logger.LogError("Failed to load player statistic: {Message}", e.Message);
+           }
+
+           try
+           {
+               var jsonScores = await File.ReadAllTextAsync(scoreFilePath);
+               var scores = JsonSerializer.Deserialize<List<BeatMap>>(jsonScores) 
+                            ?? [];
+
+               foreach (var beatmap in scores)
+                   beatmaps.Add(beatmap);
+           }
+           catch (Exception e)
+           {
+               _logger.LogError("Failed to load scores: {Message}", e.Message);
+           }
+
+           try
+           {
+               var jsonBestScore = await File.ReadAllTextAsync(bestScorePath);
+               var bestScore = JsonSerializer.Deserialize<BestScore>(jsonBestScore) 
+                           ?? _bestScore;
+               
+               _bestScore.BgPath = bestScore.BgPath;
+               _bestScore.MapName = bestScore.MapName;
+               _bestScore.Pp = bestScore.Pp;
+           }
+           catch (Exception e)
+           {
+               _logger.LogError("Failed to load best score: {Message}", e.Message);
+           }
     }
 
     public async Task LoadUserInformationAsync(Player player)
@@ -113,7 +138,7 @@ public class DataService : IDataService
             throw;
         }
     }
-    
+
     private async Task<string?> GetAvatar(int id,int retryCount)
     {
         try

@@ -51,13 +51,13 @@ namespace OsuStat.UI
             );
             
             services.AddSingleton<PlayerStat>();
+            services.AddSingleton<BestScore>();
             services.AddSingleton<ObservableCollection<BeatMap>>();
             
             _serviceProvider = services.BuildServiceProvider();
 
             var applicationPath = _serviceProvider.GetRequiredService<ISettingsService>().ApplicationFolder;
             
-            //TEMP
             Process.Start(Path.Combine(applicationPath,"api.exe"));
             Console.WriteLine("Application started");
         }

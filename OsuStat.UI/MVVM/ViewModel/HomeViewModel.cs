@@ -15,6 +15,7 @@ namespace OsuStat.UI.MVVM.ViewModel
         private readonly ILogger<HomeViewModel> _logger;
         public Player User { get; set; } = new();
         public PlayerStat PlayerStat { get; set; }
+        public BestScore BestScore { get; set; } 
 
 
         private readonly ObservableCollection<BeatMap> _beatMaps;
@@ -26,10 +27,12 @@ namespace OsuStat.UI.MVVM.ViewModel
             PlayerStat playerStat,
             IDataService dataService,
             ObservableCollection<BeatMap> beatMaps,
-            ILogger<HomeViewModel> logger
+            ILogger<HomeViewModel> logger,
+            BestScore bestScore
             ) 
         {
             PlayerStat = playerStat;
+            BestScore = bestScore;
             _logger = logger;
             _settings = settingsService;
             _beatMaps = beatMaps;

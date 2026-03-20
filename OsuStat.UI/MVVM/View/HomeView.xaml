@@ -42,32 +42,29 @@
             </StackPanel>
             <StackPanel  Grid.Row="1" Margin="24 0">
                 <TextBlock Text="Today" FontSize="40"/>
-                <TextBlock FontSize="20" Text="{Binding PlayerStat.PlayTimeMin, StringFormat='Play time {0}'}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding PlayerStat.MapPlayed, StringFormat='Maps played {0}'}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding PlayerStat.PpGained, StringFormat='PP gained {0}'}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgBpm, StringFormat='AVG Bpm {0}'}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgStarRate, StringFormat='AVG StarRate {0}'}" Margin="6 0 0 10 "/>
-                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgAccuracy, StringFormat='AVG Accuracy {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.PlayTimeMin, StringFormat='• Play time {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.MapPlayed, StringFormat='• Maps played {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.PpGained, StringFormat='• PP gained {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgBpm, StringFormat='• AVG Bpm {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgStarRate, StringFormat='• AVG StarRate {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgAccuracy, StringFormat='• AVG Accuracy {0}'}" Margin="6 0 0 10 "/>
             </StackPanel>
             <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Margin="20 0">
                 <TextBlock Text="Best score" FontSize="23"/>
                 <Border Width="210" Height="210" 
-                            CornerRadius="10" HorizontalAlignment="Left">
+                        CornerRadius="10" HorizontalAlignment="Left">
                     <Border.Background>
-                        <ImageBrush ImageSource="{Binding MapAvatarPath}" Stretch="UniformToFill" />
+                        <ImageBrush ImageSource="{Binding BestScore.BgPath}" Stretch="UniformToFill" />
                     </Border.Background>
                     <DockPanel VerticalAlignment="Bottom" Margin="8">
-                        <Border  Width="auto" Height="auto" CornerRadius="4">
-                            <Border.Background>
-                                <SolidColorBrush Color="Black" Opacity=".7"/>
-                            </Border.Background>
-                            <TextBlock Text="{Binding MapName}" FontSize="20"/>
+                        <Border CornerRadius="4" Background="#86000000">
+                            <TextBlock Text="{Binding BestScore.MapName}" FontSize="20"/>
                         </Border>
-                        <Border  Width="auto" Height="auto" CornerRadius="4" HorizontalAlignment="Right">
+                        <Border CornerRadius="4" HorizontalAlignment="Right">
                             <Border.Background>
                                 <SolidColorBrush Color="Black" Opacity=".7"/>
                             </Border.Background>
-                            <TextBlock Text="{Binding Pp}" FontSize="20"/>
+                            <TextBlock Text="{Binding BestScore.Pp}" FontSize="20"/>
                         </Border>
                     </DockPanel>
                 </Border>
