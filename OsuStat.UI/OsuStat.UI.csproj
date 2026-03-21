@@ -18,10 +18,6 @@
     <Resource Include="Assets\Images\Star.jpeg" />
     <None Remove="Assets\Images\Avatar.jpeg" />
     <Content Include="Assets\Images\Avatar.jpeg" />
-    <None Remove="Assets\Images\Default avatar.jpeg" />
-    <Content Include="Assets\Images\Default avatar.jpeg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Remove="Assets\Images\Bg fuck up.jpg" />
     <Content Include="Assets\Images\Bg fuck up.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -94,6 +90,8 @@
     <Content Include="Assets\Images\Best score bg.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Remove="Assets\Images\Settings.png" />
+    <Resource Include="Assets\Images\Settings.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -110,6 +108,11 @@
 
   <ItemGroup>
     <Page Update="MVVM\View\Beatmap.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MVVM\View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <XamlRuntime>Wpf</XamlRuntime>
       <SubType>Designer</SubType>

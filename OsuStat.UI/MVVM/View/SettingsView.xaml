@@ -9,27 +9,26 @@
              Background="{StaticResource BackgroundBlack}">
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15, 30">
         <StackPanel>
-            <TextBlock Text="{Binding CurrentFolder}" FontSize="30"/>
-            <Border BorderThickness="1" 
-                    CornerRadius="2" 
-                    BorderBrush="White" 
+            <TextBlock Text="{Binding CurrentFolder, StringFormat='Current folder {0}'}" 
+                       FontSize="30" Margin="0 0 50 0"/>
+            <Button Content="Change folder"
+                    Background="Transparent" 
+                    FontSize="16" 
                     Width="auto" 
+                    Padding="5"
                     HorizontalAlignment="Left"
                     Margin="0, 10"
-                    Padding="3">
-                <Button Content="Change folder" 
-                        Background="Transparent" 
-                        FontSize="16" 
-                        BorderThickness="0"
-                        Command="{Binding SelectFolderCommand}"/>
-            </Border>
+                    Command="{Binding SelectFolderCommand}"
+                    BorderThickness="1"/>
         </StackPanel>
         <Button Height="30" 
                 Background="Transparent"
-                Content="✖"
+                FontSize="20"
+                Content="➜"
                 Width="30"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
-                Command="{Binding NavigateToHomeCommand}"/>
+                Command="{Binding NavigateToHomeCommand}"
+                BorderThickness="0"/>
     </Grid>
 </UserControl>

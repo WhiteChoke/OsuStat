@@ -22,6 +22,7 @@ public class PlayerStat : ObservableObject
             OnPropertyChanged();
         }
     }
+    private double _ppGained = 0;
     public double PpGained
     {
         get;
@@ -68,11 +69,12 @@ public class PlayerStat : ObservableObject
     public void Update(double bpm, double pp, double starRate, double accuracy)
     {
         MapPlayed++;
-        PpGained += Math.Round(pp, 2); 
+        _ppGained += pp;
         _totalBpm += bpm;
         _totalStarRate += starRate;
         _totalAccuracy += accuracy;
     
+        PpGained = Math.Round(_ppGained, 2); 
         AvgBpm = Math.Round(_totalBpm / MapPlayed, 2);
         AvgAccuracy = Math.Round(_totalAccuracy / MapPlayed, 2);
         AvgStarRate = Math.Round(_totalStarRate / MapPlayed, 2);

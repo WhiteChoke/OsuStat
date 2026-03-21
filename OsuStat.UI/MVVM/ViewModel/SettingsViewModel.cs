@@ -13,7 +13,7 @@ namespace OsuStat.UI.MVVM.ViewModel
             get;
             set
             {
-                field = "Current folder " + value;
+                field = value;
                 OnPropertyChanged();
             }
         }
