@@ -7,7 +7,7 @@ public record ReplayResultDto(
     string Artist,
     string Mapper,
     double Bpm,
-    int Length,
+    string Length,
     double StarRate,
     double Hp,
     double Cs,

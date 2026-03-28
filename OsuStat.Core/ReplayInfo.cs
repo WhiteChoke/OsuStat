@@ -38,7 +38,7 @@ public static class ReplayInfo
                     ? replayStat.Pp
                     : 0.0;
 
-            var mods = Enum.GetValues(typeof(Mods))
+            var mods = Enum.GetValues<Mods>()
                 .Cast<Mods>()
                 .Where(m => m != Mods.None && ((int)replay.Mods & (int)m) == (int)m)
                 .ToList();
@@ -49,12 +49,16 @@ public static class ReplayInfo
                 replay.Count50,
                 replay.CountMiss);
 
+            var totalTime = TimeSpan
+                .FromMilliseconds(beatmap.TotalTime)
+                .ToString(@"mm\:ss");
+
             return new ReplayResultDto(
                 beatmap.Title,
                 beatmap.Artist,
                 beatmap.Creator,
                 replayStat.Beatmap.Bpm,
-                beatmap.TotalTime,
+                totalTime,
                 replayStat.Beatmap.Sr,
                 replayStat.Beatmap.Hp,
                 replayStat.Beatmap.Cs,
