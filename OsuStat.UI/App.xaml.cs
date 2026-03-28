@@ -55,16 +55,24 @@ namespace OsuStat.UI
             services.AddSingleton<ObservableCollection<BeatMap>>();
             
             _serviceProvider = services.BuildServiceProvider();
-
-            var applicationPath = _serviceProvider.GetRequiredService<ISettingsService>().ApplicationFolder;
-            
-            Process.Start(Path.Combine(applicationPath,"api.exe"));
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            Log.Logger.Information("Application starting");
+            try
+            {
+                var applicationFolder = _serviceProvider.GetRequiredService<ISettingsService>().ApplicationFolder;
+                Process.Start(Path.Combine(applicationFolder, "api.exe"));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to run applications due to missing components\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Log.Logger.Fatal("Failed to open api.exe");
+                Shutdown(); 
+            }
+            
             _serviceProvider.GetRequiredService<INavigationService>().NavigateTo<HomeViewModel>();
-            _serviceProvider.GetRequiredService<ISettingsService>();
             _serviceProvider.GetRequiredService<IProcessMonitoringService>().Run();
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
