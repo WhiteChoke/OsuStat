@@ -75,7 +75,7 @@ public class DataService : IDataService
            }
            catch (Exception e)
            {
-               _logger.LogError("Failed to load player statistic: {Message}", e.Message);
+               _logger.LogWarning("Failed to load player statistic: {Message}", e.Message);
            }
 
            try
@@ -89,7 +89,7 @@ public class DataService : IDataService
            }
            catch (Exception e)
            {
-               _logger.LogError("Failed to load scores: {Message}", e.Message);
+               _logger.LogWarning("Failed to load scores: {Message}", e.Message);
            }
 
            try
@@ -104,7 +104,7 @@ public class DataService : IDataService
            }
            catch (Exception e)
            {
-               _logger.LogError("Failed to load best score: {Message}", e.Message);
+               _logger.LogWarning("Failed to load best score: {Message}", e.Message);
            }
     }
 

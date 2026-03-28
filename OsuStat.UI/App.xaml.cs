@@ -59,7 +59,6 @@ namespace OsuStat.UI
             var applicationPath = _serviceProvider.GetRequiredService<ISettingsService>().ApplicationFolder;
             
             Process.Start(Path.Combine(applicationPath,"api.exe"));
-            Console.WriteLine("Application started");
         }
 
         protected override void OnStartup(StartupEventArgs e)
