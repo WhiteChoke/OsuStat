@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
+using OsuStat.UI.MVVM.View;
 using OsuStat.UI.MVVM.ViewModel;
 using OsuStat.UI.Service;
 using OsuStat.UI.Service.Impl;
@@ -81,7 +82,12 @@ namespace OsuStat.UI
 
         protected override void OnExit(ExitEventArgs e)
         {
-            Process.GetProcessesByName("api").FirstOrDefault()?.Kill();
+            var process = Process.GetProcessesByName("api");
+            foreach (var p in process)
+            {
+                p.Kill();
+                p.WaitForExit();
+            }
             Log.CloseAndFlush();
             base.OnExit(e);
         }

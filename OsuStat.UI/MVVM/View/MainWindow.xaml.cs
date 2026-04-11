@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace OsuStat.UI
+namespace OsuStat.UI.MVVM.View
 {
     public partial class MainWindow : Window
     {
