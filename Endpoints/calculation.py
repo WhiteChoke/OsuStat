@@ -27,7 +27,7 @@ async def Upload(schema: classniy_class):
             od = beatmap.od,
             lazer = False
         )
-        
+                
         gradual_diff = diff.calculate(beatmap)
         
         if beatmap.is_suspicious():
@@ -39,7 +39,8 @@ async def Upload(schema: classniy_class):
             n50=schema.n50,
             combo=schema.combo,
             misses=schema.misses,
-            mods=schema.mods
+            mods=schema.mods,
+            lazer=False
         )
 
         attrs = perf.calculate(beatmap)

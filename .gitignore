@@ -9,3 +9,4 @@ packages
 _ReSharper.*
 .idea
 Avatar.jpeg
+__pycache__
