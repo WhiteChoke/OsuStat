@@ -1,6 +1,21 @@
-﻿namespace OsuStat.UI.Config;
+﻿using System.IO;
+using Serilog;
+using Serilog.Core;
 
-public class LoggerConfig
+namespace OsuStat.UI.Config;
+
+public static class LoggerConfig
 {
-    
+    public static Logger GetLogger()
+    {
+        return new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .WriteTo.File(
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Osu stat", "Logs", "log.txt"),
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 7)
+            .CreateLogger();
+    }
 }

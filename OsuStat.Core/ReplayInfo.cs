@@ -5,6 +5,7 @@ using OsuParsers.Enums;
 using OsuParsers.Enums.Database;
 using OsuParsers.Replays;
 using OsuStat.Core.Dto;
+using OsuStat.Core.Dto.BeatmapDto;
 using OsuStat.UI.Dto;
 
 namespace OsuStat.Core;
@@ -39,7 +40,6 @@ public static class ReplayInfo
                     : 0.0;
 
             var mods = Enum.GetValues<Mods>()
-                .Cast<Mods>()
                 .Where(m => m != Mods.None && ((int)replay.Mods & (int)m) == (int)m)
                 .ToList();
             

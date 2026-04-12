@@ -1,4 +1,4 @@
-﻿namespace OsuStat.UI.Dto;
+﻿namespace OsuStat.Core.Dto.BeatmapDto;
 
 public record BeatMapDto(
        double Ar,

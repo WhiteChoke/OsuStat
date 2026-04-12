@@ -1,10 +1,22 @@
-﻿namespace OsuStat.UI.Config;
+﻿using System.Collections.ObjectModel;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using OsuStat.UI.MVVM.Core;
+using OsuStat.UI.MVVM.Model;
+using OsuStat.UI.MVVM.View;
+using OsuStat.UI.MVVM.ViewModel;
+using OsuStat.UI.Service;
+using OsuStat.UI.Service.Impl;
+using Serilog;
+using Serilog.Core;
 
-public class RegisterDi
+namespace OsuStat.UI.Config;
+
+public static class DiConfig
 {
-    public ServiceProvider GetServiceProvider(serviceProvider)
+    public static ServiceProvider GetServiceProvider(Logger logger)
     {
-        Log.Logger = GetLogger();
+        Log.Logger = logger;
             
         IServiceCollection services = new ServiceCollection();
 

@@ -1,82 +1,36 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using OsuStat.UI.MVVM.Core;
-using OsuStat.UI.MVVM.Model;
+using OsuStat.UI.Config;
 using OsuStat.UI.MVVM.View;
 using OsuStat.UI.MVVM.ViewModel;
 using OsuStat.UI.Service;
-using OsuStat.UI.Service.Impl;
 using Serilog;
-using Serilog.Core;
 
 namespace OsuStat.UI
 {
     public partial class App : Application
     {
         private readonly ServiceProvider _serviceProvider;
-
         public App()
         {
-            Log.Logger = GetLogger();
-            
-            IServiceCollection services = new ServiceCollection();
-
-            services.AddLogging(logging =>
-            {
-                logging.ClearProviders();
-                logging.AddSerilog();
-            });
-            
-            services.AddSingleton<MainWindow>(provider => new MainWindow
-            {
-                DataContext = provider.GetRequiredService<MainWindowViewModel>()
-            });
-            
-            services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<HomeViewModel>();
-            services.AddSingleton<SettingsViewModel>();
-            
-            services.AddSingleton<INavigationService, NavigationService>();
-            services.AddSingleton<ISettingsService, SettingsService>();
-            services.AddSingleton<IReplayWatcher, ReplayWatcher>();
-            services.AddSingleton<IProcessMonitoringService, ProcessMonitoringService>();
-            services.AddSingleton<IDataService, DataService>();
-            
-            services.AddSingleton<Func<Type, ViewModel>>
-            (
-                provider => viewModelType => (ViewModel)provider.GetRequiredService(viewModelType)
-            );
-            
-            services.AddSingleton<PlayerStat>();
-            services.AddSingleton<BestScore>();
-            services.AddSingleton<ObservableCollection<BeatMap>>();
-            
-            _serviceProvider = services.BuildServiceProvider();
+            var logger = LoggerConfig.GetLogger();
+            _serviceProvider = DiConfig.GetServiceProvider(logger);
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             Log.Logger.Information("Application starting");
-            try
-            {
-                var applicationFolder = _serviceProvider.GetRequiredService<ISettingsService>().ApplicationFolder;
-                Process.Start(Path.Combine(applicationFolder, "api.exe"));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Unable to run applications due to missing components\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                Log.Logger.Fatal("Failed to open api.exe");
-                Shutdown(); 
-            }
+
+            RunApi();
             
             _serviceProvider.GetRequiredService<INavigationService>().NavigateTo<HomeViewModel>();
             _serviceProvider.GetRequiredService<IProcessMonitoringService>().Run();
+            
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
+            
             base.OnStartup(e);
         }
 
@@ -92,18 +46,18 @@ namespace OsuStat.UI
             base.OnExit(e);
         }
 
-        private Logger GetLogger()
+        private void RunApi()
         {
-            return new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Console()
-                .WriteTo.File(
-                    Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Osu stat", "Logs", "log.txt"),
-                    rollingInterval: RollingInterval.Day,
-                    retainedFileCountLimit: 7)
-                .CreateLogger();
+            try
+            {
+                var applicationFolder = _serviceProvider.GetRequiredService<ISettingsService>().ApplicationFolder;
+                Process.Start(Path.Combine(applicationFolder, "api.exe"));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to run applications due to missing components\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Log.Logger.Fatal("Failed to open api.exe");
+            }
         }
     }
-
 }
