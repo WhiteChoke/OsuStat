@@ -1,9 +1,49 @@
+import os
 import rosu_pp_py as rosu
+
+from dotenv import load_dotenv
+
+from osu import (Client,
+                 UserScoreType, 
+                 GameModeStr)
 
 from pydantic import BaseModel
 from fastapi import APIRouter
+from datetime import datetime
+
+load_dotenv()
+
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+CLIENT_ID = os.getenv("CLIENT_ID")
+
+redirect_url = "http://127.0.0.1:8080"
+client = Client.from_credentials(CLIENT_ID, CLIENT_SECRET, redirect_url)
+client.set_api_version("20220704")
 
 router = APIRouter(prefix="/pp-calculate", tags=["🌟 POST"])
+
+top_scores = client.get_user_scores(7562902, UserScoreType.BEST, limit=100)
+
+async def get_score_pos(top_scores):
+    scores = []
+    try:
+        for index, score in enumerate(top_scores):
+            if score.pp != None:
+                scores.append(int(score.pp))
+        return scores
+    except Exception as e:
+         print(f"An error occured {e}")
+
+# Calculates output pp value based on user's 100 previous top scores ( 1 step before ),
+# then applying new user score to the current top 100 and reversing it.
+# At the end applying step 1 to with new_total and calculating the final value "new_total - old_total"
+
+async def calculate_pp_gain(current_top_scores, new_score_pp):
+    old_total = sum(pp * (0.95 ** i) for i, pp in enumerate(current_top_scores))
+    new_top_scores = sorted(current_top_scores + [new_score_pp], reverse=True)[:100]
+    new_total = sum(pp * (0.95 ** i) for i, pp in enumerate(new_top_scores))
+    
+    return new_total - old_total
 
 class classniy_class(BaseModel):
     filePath: str
@@ -14,13 +54,17 @@ class classniy_class(BaseModel):
     combo: int
     mods: int | None = None
 
+class Stat(BaseModel):
+      score_id: int
+      user_id: int | None = None
+
 @router.post("/beatmap/")
-async def Upload(schema: classniy_class):
+async def Upload(ClassSchema: classniy_class, BaseSchema: Stat):
     try:
-        beatmap = rosu.Beatmap(path=schema.filePath)
+        beatmap = rosu.Beatmap(path=ClassSchema.filePath)
 
         diff = rosu.Difficulty(
-            mods = schema.mods,
+            mods = ClassSchema.mods,
             ar = beatmap.ar,
             cs = beatmap.cs,
             hp = beatmap.hp,
@@ -34,30 +78,40 @@ async def Upload(schema: classniy_class):
             return {"ERROR": "Beatmap is suspicious"}
 
         perf = rosu.Performance(
-            n300=schema.n300,
-            n100=schema.n100,
-            n50=schema.n50,
-            combo=schema.combo,
-            misses=schema.misses,
-            mods=schema.mods
+            n300=ClassSchema.n300,
+            n100=ClassSchema.n100,
+            n50=ClassSchema.n50,
+            combo=ClassSchema.combo,
+            misses=ClassSchema.misses,
+            mods=ClassSchema.mods
         )
 
-        attrs = perf.calculate(beatmap)
         perf.set_accuracy(100)
         perf.set_misses(0)
         perf.set_combo(None)
         attrs_max_pp = perf.calculate(beatmap)
 
-        current_pp = round(attrs.pp, 2)
         maximum_pp = round(attrs_max_pp.pp, 2)
         
-        total_objects = schema.n300 + schema.n100 + schema.n50 + schema.misses
+        total_objects = ClassSchema.n300 + ClassSchema.n100 + ClassSchema.n50 + ClassSchema.misses
+
         if total_objects > 0:
-            accuracy = round((schema.n300 * 300 + schema.n100 * 100 + schema.n50 * 50) / (300 * total_objects) * 100, 2)
+            accuracy = round((ClassSchema.n300 * 300 + ClassSchema.n100 * 100 + ClassSchema.n50 * 50) / (300 * total_objects) * 100, 2)
         else:
             accuracy = 0.0
 
-        return {
+        obj = client.get_score_by_id_only(Stat.score_id)
+        score_pp = int(obj.pp)
+        value = await get_score_pos(top_scores)
+        pp_gained = await calculate_pp_gain(value, score_pp)
+
+        user = client.get_user(BaseSchema.user_id)
+        time = str(user.last_visit)
+        converted_time = datetime.fromisoformat(time)
+        last_time_logged_days = int(converted_time.strftime("%d"))
+        last_time_logged_time = converted_time.strftime("%H:%M:%S")
+
+        obj = {
             "STATE": "Success",
             
             "beatmap": {
@@ -68,9 +122,17 @@ async def Upload(schema: classniy_class):
                 "OD": float(f"{beatmap.od:.1f}"),
                 "SR": float(f"{gradual_diff.stars:.1f}")
             },
-            "acc": accuracy,
-            "pp": current_pp,
-            "max_pp": maximum_pp
+            "user": {
+                "acc": accuracy,
+                "pp_gained": pp_gained,
+                "max_pp": maximum_pp,
+                "last_seen": {
+                    "daysAgo": last_time_logged_days,
+                    "timeAgo": last_time_logged_time
+                }
+            }
         }
+
+        return obj
     except Exception as e:
         return {"ERROR": f"The map is fucked: {str(e)}"}
