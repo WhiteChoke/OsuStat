@@ -1,33 +1,21 @@
-import os
 import rosu_pp_py as rosu
 
-from dotenv import load_dotenv
-
-from osu import (Client,
-                 UserScoreType, 
-                 GameModeStr)
+from osu import UserScoreType
 
 from pydantic import BaseModel
 from fastapi import APIRouter
 from datetime import datetime
 
-load_dotenv()
+from Endpoints.osu_manager import client
 
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-CLIENT_ID = os.getenv("CLIENT_ID")
-
-redirect_url = "http://127.0.0.1:8080"
-client = Client.from_credentials(CLIENT_ID, CLIENT_SECRET, redirect_url)
 client.set_api_version("20220704")
 
 router = APIRouter(prefix="/pp-calculate", tags=["🌟 POST"])
 
-top_scores = client.get_user_scores(7562902, UserScoreType.BEST, limit=100)
-
 async def get_score_pos(top_scores):
     scores = []
     try:
-        for index, score in enumerate(top_scores):
+        for score in top_scores:
             if score.pp != None:
                 scores.append(int(score.pp))
         return scores
@@ -56,11 +44,12 @@ class classniy_class(BaseModel):
 
 class Stat(BaseModel):
       score_id: int
-      user_id: int | None = None
+      user_id: int 
 
 @router.post("/beatmap/")
 async def Upload(ClassSchema: classniy_class, BaseSchema: Stat):
     try:
+        top_scores = client.get_user_scores(BaseSchema.user_id, UserScoreType.BEST, limit=100)
         beatmap = rosu.Beatmap(path=ClassSchema.filePath)
 
         diff = rosu.Difficulty(
