@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="/Styles/ExpanderStyle.xaml"/>
                 <ResourceDictionary Source="/Styles/TextBlockStyle.xaml"/>
                 <ResourceDictionary Source="/Styles/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="/Localization/en-us.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
