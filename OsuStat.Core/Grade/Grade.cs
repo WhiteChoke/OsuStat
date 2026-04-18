@@ -1,4 +1,4 @@
-﻿namespace OsuStat.Core;
+﻿namespace OsuStat.Core.Grade;
 
 public enum Grade
 {
@@ -9,3 +9,4 @@ public enum Grade
     C,
     D,
 }
+

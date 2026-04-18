@@ -1,20 +1,19 @@
 ﻿using System.Net.Http.Json;
-using OsuParsers.Beatmaps;
 using OsuParsers.Decoders;
 using OsuParsers.Enums;
 using OsuParsers.Enums.Database;
-using OsuParsers.Replays;
 using OsuStat.Core.Dto;
+using OsuStat.Core.Grade;
 using OsuStat.UI.Dto;
 
-namespace OsuStat.Core;
+namespace OsuStat.Core.Replay;
 
-public static class ReplayInfo
+public class ReplayInfoOffline : IReplayInfo
 {
-    private static readonly HttpClient HttpClient = new();
+    private readonly HttpClient _httpClient = new();
     private const string Url = "http://127.0.0.1:727/pp-calculate/beatmap/";
 
-    public static async Task<ReplayResultDto?> Get(string replayPath, string osuDirectoryPath)
+    public async Task<ReplayResultDto?> Get(string replayPath, string osuDirectoryPath)
     {
         var osuDbPath = Path.Combine(osuDirectoryPath, "osu!.db");
 
@@ -43,7 +42,7 @@ public static class ReplayInfo
                 .Where(m => m != Mods.None && ((int)replay.Mods & (int)m) == (int)m)
                 .ToList();
             
-            var grade = CalculateGrade(replayStat.Acc, 
+            var grade = GradeCalculation.CalculateGrade(replayStat.Acc, 
                 replay.Count300, 
                 replay.Count100, 
                 replay.Count50,
@@ -74,23 +73,7 @@ public static class ReplayInfo
         }
 
     }
-
-    private static Grade CalculateGrade(double accuracy, ushort n300, ushort n100, ushort n50, ushort miss)
-    {
-        var total = n300 + n100 + n50 + miss;
-        
-        var percent300 = n300 * 100 / total;
-        var percent50 = n50 * 100 / total;
-        
-        if (accuracy.Equals(100)) return Grade.SS;
-        if ( percent300 > 90 && percent50 < 1 && miss == 0 ) return Grade.S;
-        if ( (percent300 > 80 && miss == 0) || percent300 > 90 ) return Grade.A;
-        if ( (percent300 > 70 && miss == 0) || percent300 > 80 ) return Grade.B;
-        if ( percent300 > 60 ) return Grade.C;
-        return Grade.D;
-    }
-
-    private static async Task<GetBeatMapStatResponseDto> GetReplayStat(string filePath, Replay replay)
+    private async Task<GetBeatMapStatResponseDto> GetReplayStat(string filePath, OsuParsers.Replays.Replay replay)
     {
         var requestBody = new GetBeatMapStatRequestDto(
             filePath,
@@ -102,7 +85,7 @@ public static class ReplayInfo
             (short) replay.Mods
         );
 
-        var httpResponse = await HttpClient.PostAsync(
+        var httpResponse = await _httpClient.PostAsync(
             Url, 
             JsonContent.Create(requestBody)
         );

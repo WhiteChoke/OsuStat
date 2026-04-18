@@ -17,5 +17,5 @@ public record ReplayResultDto(
     ushort MaxCombo,
     double Accuracy,
     List<Mods> Mods,
-    Grade Grade
+    Grade.Grade Grade
     );

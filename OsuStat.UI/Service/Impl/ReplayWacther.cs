@@ -4,6 +4,7 @@ using System.Windows;
 using Microsoft.Extensions.Logging;
 using OsuParsers.Enums;
 using OsuStat.Core;
+using OsuStat.Core.Replay;
 using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
 
@@ -18,6 +19,7 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
     private readonly BestScore _bestScore;
     private readonly ILogger<ReplayWatcher> _logger;
     private readonly IDataService _dataService;
+    private readonly IReplayInfo _replayInfo;
 
     public ReplayWatcher(
         ObservableCollection<BeatMap> beatmaps, 
@@ -25,7 +27,8 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
         PlayerStat playerStat,
         ILogger<ReplayWatcher> logger, 
         IDataService dataService,
-        BestScore bestScore)
+        BestScore bestScore,
+        IReplayInfo replayInfo)
     {
         _beatmaps = beatmaps;
         _settings = settings;
@@ -33,6 +36,7 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
         _logger = logger;
         _dataService = dataService;
         _bestScore = bestScore;
+        _replayInfo = replayInfo;
     }
 
     public void Start()
@@ -62,7 +66,7 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
     {
         try
         {
-            var result = await ReplayInfo.Get(e.FullPath, _settings.GameFolder);
+            var result = await _replayInfo.Get(e.FullPath, _settings.GameFolder);
 
             if (result == null)
             {
