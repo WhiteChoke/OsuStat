@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="Today">За сегодня</sys:String>
+    <sys:String x:Key="PlayTime">Время игры</sys:String>
+    <sys:String x:Key="MapsPassed">Карт сыграно</sys:String>
+    <sys:String x:Key="PpGained">Получено pp</sys:String>
+    <sys:String x:Key="AvgAccuracy">Ср точность</sys:String>
+    <sys:String x:Key="AvgStarRate">Ср сложность</sys:String>
+    <sys:String x:Key="AvgBpm">Ср BPM</sys:String>
+    <sys:String x:Key="BestScore">Лучный рекорд</sys:String>
+    <sys:String x:Key="LastSession">Последняя сессия</sys:String>
+</ResourceDictionary>

@@ -1,9 +1,8 @@
 import rosu_pp_py as rosu
-
 from pydantic import BaseModel
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/pp-calculate", tags=["🌟 POST"])
+router = APIRouter(prefix="/beatmap", tags=["🌟 POST"])
 
 class classniy_class(BaseModel):
     filePath: str
@@ -14,13 +13,13 @@ class classniy_class(BaseModel):
     combo: int
     mods: int | None = None
 
-@router.post("/beatmap/")
-async def Upload(schema: classniy_class):
+@router.post("/result")
+async def Upload(ClassSchema: classniy_class):
     try:
-        beatmap = rosu.Beatmap(path=schema.filePath)
+        beatmap = rosu.Beatmap(path=ClassSchema.filePath)
 
         diff = rosu.Difficulty(
-            mods = schema.mods,
+            mods = ClassSchema.mods,
             ar = beatmap.ar,
             cs = beatmap.cs,
             hp = beatmap.hp,
@@ -34,31 +33,29 @@ async def Upload(schema: classniy_class):
             return {"ERROR": "Beatmap is suspicious"}
 
         perf = rosu.Performance(
-            n300=schema.n300,
-            n100=schema.n100,
-            n50=schema.n50,
-            combo=schema.combo,
-            misses=schema.misses,
-            mods=schema.mods,
-            lazer=False
+            n300=ClassSchema.n300,
+            n100=ClassSchema.n100,
+            n50=ClassSchema.n50,
+            combo=ClassSchema.combo,
+            misses=ClassSchema.misses,
+            mods=ClassSchema.mods
         )
 
-        attrs = perf.calculate(beatmap)
         perf.set_accuracy(100)
         perf.set_misses(0)
         perf.set_combo(None)
         attrs_max_pp = perf.calculate(beatmap)
 
-        current_pp = round(attrs.pp, 2)
         maximum_pp = round(attrs_max_pp.pp, 2)
         
-        total_objects = schema.n300 + schema.n100 + schema.n50 + schema.misses
+        total_objects = ClassSchema.n300 + ClassSchema.n100 + ClassSchema.n50 + ClassSchema.misses
+
         if total_objects > 0:
-            accuracy = round((schema.n300 * 300 + schema.n100 * 100 + schema.n50 * 50) / (300 * total_objects) * 100, 2)
+            accuracy = round((ClassSchema.n300 * 300 + ClassSchema.n100 * 100 + ClassSchema.n50 * 50) / (300 * total_objects) * 100, 2)
         else:
             accuracy = 0.0
 
-        return {
+        obj = {
             "STATE": "Success",
             
             "beatmap": {
@@ -67,11 +64,13 @@ async def Upload(schema: classniy_class):
                 "CS": float(f"{beatmap.cs:.1f}"),
                 "HP": float(f"{beatmap.hp:.1f}"),
                 "OD": float(f"{beatmap.od:.1f}"),
-                "SR": float(f"{gradual_diff.stars:.1f}")
-            },
-            "acc": accuracy,
-            "pp": current_pp,
-            "max_pp": maximum_pp
+                "SR": float(f"{gradual_diff.stars:.1f}"),
+                "stat": {
+                    "acc": accuracy,
+                    "max_pp": maximum_pp
+                }
+            }
         }
+        return obj
     except Exception as e:
         return {"ERROR": f"The map is fucked: {str(e)}"}

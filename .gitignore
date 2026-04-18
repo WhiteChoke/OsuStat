@@ -9,4 +9,9 @@ packages
 _ReSharper.*
 .idea
 Avatar.jpeg
+
+# Python
 __pycache__
+.pytest_cache
+conftest.py
+tests
