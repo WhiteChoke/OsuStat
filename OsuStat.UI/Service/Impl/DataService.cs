@@ -114,7 +114,7 @@ public class DataService : IDataService
 
         try
         {
-            var playerInfo = PlayerInfo.GetPlayerInfo(_settingsService.GameFolder);
+            var playerInfo = PlayerInfo.Get(_settingsService.GameFolder);
             player.Nickname = playerInfo.Nickname;
             player.GlobalRanking = "#" + playerInfo.Ranking;
 

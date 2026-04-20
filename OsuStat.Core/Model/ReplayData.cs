@@ -1,6 +1,6 @@
 ﻿using OsuParsers.Enums;
 
-namespace OsuStat.Core.Replay;
+namespace OsuStat.Core.Model;
 
 public class ReplayData
 {
@@ -23,8 +23,7 @@ public class ReplayData
     
     public override string ToString()
     {
-        // Объединяем список модов в строку через запятую, если они есть
-        string modsString = (Mods != null && Mods.Count > 0) 
+        var modsString = (Mods.Count > 0) 
             ? string.Join(", ", Mods) 
             : "None";
 
@@ -32,6 +31,7 @@ public class ReplayData
                $"SR: {StarRate:F2}* | BPM: {Bpm} | Length: {Length}\n" +
                $"CS: {Cs} | AR: {Ar} | HP: {Hp}\n" +
                $"Result: {Grade} | {Accuracy:F2}% | {Combo}x | {PpGained:F2}pp\n" +
-               $"Mods: {modsString} | ID: {OnlineScoreId}";
+               $"Mods: {modsString} | ID: {OnlineScoreId}" +
+               BgPath;
     }
 }

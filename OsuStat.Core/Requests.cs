@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Json;
-
-namespace OsuStat.Core.Replay;
+﻿namespace OsuStat.Core;
 
 public static class Requests
 {
