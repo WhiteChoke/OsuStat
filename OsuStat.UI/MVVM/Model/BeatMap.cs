@@ -1,4 +1,4 @@
-﻿using OsuStat.Core.Grade;
+﻿using OsuStat.Core.Enums;
 
 namespace OsuStat.UI.MVVM.Model;
 

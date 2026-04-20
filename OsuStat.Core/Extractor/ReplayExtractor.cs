@@ -1,5 +1,6 @@
 ﻿using OsuParsers.Decoders;
 using OsuParsers.Enums;
+using OsuStat.Core.Enums;
 using OsuStat.Core.Model;
 
 namespace OsuStat.Core.Extractor;
@@ -94,18 +95,18 @@ public static class ReplayExtractor
         return (int)Math.Ceiling(60 * 1000 / bpm);
     }
     
-    private static Grade.Grade CalculateGrade(double accuracy, ushort n300, ushort n100, ushort n50, ushort nMiss)
+    private static Grade CalculateGrade(double accuracy, ushort n300, ushort n100, ushort n50, ushort nMiss)
     {
         var total = n300 + n100 + n50 + nMiss;
     
         var percent300 = n300 * 100 / total;
         var percent50 = n50 * 100 / total;
     
-        if (accuracy.Equals(100)) return Grade.Grade.SS;
-        if ( percent300 > 90 && percent50 < 1 && nMiss == 0 ) return Grade.Grade.S;
-        if ( (percent300 > 80 && nMiss == 0) || percent300 > 90 ) return Grade.Grade.A;
-        if ( (percent300 > 70 && nMiss == 0) || percent300 > 80 ) return Grade.Grade.B;
-        if ( percent300 > 60 ) return Grade.Grade.C;
-        return Grade.Grade.D;
+        if (accuracy.Equals(100)) return Grade.SS;
+        if ( percent300 > 90 && percent50 < 1 && nMiss == 0 ) return Grade.S;
+        if ( (percent300 > 80 && nMiss == 0) || percent300 > 90 ) return Grade.A;
+        if ( (percent300 > 70 && nMiss == 0) || percent300 > 80 ) return Grade.B;
+        if ( percent300 > 60 ) return Grade.C;
+        return Grade.D;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using OsuParsers.Enums;
+using OsuStat.Core.Enums;
 
 namespace OsuStat.Core.Model;
 
@@ -19,7 +20,7 @@ public class ReplayData
     public ushort Combo {get; set;}
     public double Accuracy {get; set;}
     public List<Mods> Mods {get; set;}
-    public Grade.Grade Grade {get; set;}
+    public Grade Grade {get; set;}
     
     public override string ToString()
     {
