@@ -11,7 +11,7 @@ namespace OsuStat.UI.Service.Impl;
 
 public class ReplayWatcher : ObservableObject, IReplayWatcher
 {
-    private FileSystemWatcher _watcher;
+    private FileSystemWatcher? _watcher;
     private readonly ObservableCollection<BeatMap> _beatmaps;
     private readonly ISettingsService _settings;
     private readonly PlayerStat _playerStat;
@@ -52,8 +52,8 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
 
     public void Stop()
     {
-        _watcher.EnableRaisingEvents = false;
-        _watcher.Dispose();
+        _watcher?.EnableRaisingEvents = false;
+        _watcher?.Dispose();
         
         _logger.LogInformation("Beatmap watcher stopped");
     }
@@ -63,13 +63,7 @@ public class ReplayWatcher : ObservableObject, IReplayWatcher
         try
         {
             var result = await ReplayInfo.Get(e.FullPath, _settings.GameFolder);
-
-            if (result == null)
-            {
-                MessageBox.Show("Failed to load beatmap information", "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                return;
-            }
+            
             
             var modIcons = GetIconPathList(result.Mods);
             

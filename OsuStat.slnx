@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="OsuStat.Core/OsuStat.Core.csproj" />
+  <Project Path="OsuStat.Data/OsuStat.Data.csproj" />
   <Project Path="OsuStat.UI/OsuStat.UI.csproj" />
 </Solution>

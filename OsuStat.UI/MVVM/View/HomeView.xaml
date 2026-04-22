@@ -40,37 +40,13 @@
                 <TextBlock Text="{Binding User.LastSession}" FontSize="17" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel  Grid.Row="1" Margin="24 0">
-                <TextBlock Text="{DynamicResource Today}" FontSize="40"/>
-                <TextBlock FontSize="20" Margin="6 0 0 10 ">
-                    <Run Text="•"/>
-                    <Run Text="{DynamicResource PlayTime}"/>
-                    <Run Text="{Binding PlayerStat.PlayTimeMin}"/>
-                </TextBlock>
-                <TextBlock FontSize="20" Margin="6 0 0 10 ">
-                    <Run Text="•"/>
-                    <Run Text="{DynamicResource MapsPassed}"/>
-                    <Run Text="{Binding PlayerStat.MapPlayed}"/>
-                </TextBlock>
-                <TextBlock FontSize="20" Margin="6 0 0 10 ">
-                    <Run Text="•"/>
-                    <Run Text="{DynamicResource PpGained}"/>
-                    <Run Text="{Binding PlayerStat.PpGained}"/>
-                </TextBlock>
-                <TextBlock FontSize="20" Margin="6 0 0 10 ">
-                    <Run Text="•"/>
-                    <Run Text="{DynamicResource AvgBpm}"/>
-                    <Run Text="{Binding PlayerStat.AvgBpm}"/>
-                </TextBlock>
-                <TextBlock FontSize="20" Margin="6 0 0 10 ">
-                    <Run Text="•"/>
-                    <Run Text="{DynamicResource AvgStarRate}"/>
-                    <Run Text="{Binding PlayerStat.AvgStarRate}"/>
-                </TextBlock>
-                <TextBlock FontSize="20" Margin="6 0 0 10 ">
-                    <Run Text="•"/>
-                    <Run Text="{DynamicResource AvgAccuracy}"/>
-                    <Run Text="{Binding PlayerStat.AvgAccuracy}"/>
-                </TextBlock>
+                <TextBlock Text="Today" FontSize="40"/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.PlayTimeMin, StringFormat='• Play time {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.MapPlayed, StringFormat='• Maps played {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.PpGained, StringFormat='• PP gained {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgBpm, StringFormat='• AVG Bpm {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgStarRate, StringFormat='• AVG StarRate {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="20" Text="{Binding PlayerStat.AvgAccuracy, StringFormat='• AVG Accuracy {0}'}" Margin="6 0 0 10 "/>
             </StackPanel>
             <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Margin="20 0">
                 <TextBlock Text="Best score" FontSize="23"/>
