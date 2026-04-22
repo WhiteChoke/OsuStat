@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Windows;
 using Microsoft.Extensions.Logging;
-using OsuStat.Core;
+using OsuStat.Core.Extractor;
 using OsuStat.UI.MVVM.Model;
 
 namespace OsuStat.UI.Service.Impl;
@@ -114,7 +114,7 @@ public class DataService : IDataService
 
         try
         {
-            var playerInfo = PlayerInfo.Get(_settingsService.GameFolder);
+            var playerInfo = PlayerExtractor.Extract(_settingsService.GameFolder);
             player.Nickname = playerInfo.Nickname;
             player.GlobalRanking = "#" + playerInfo.Ranking;
 

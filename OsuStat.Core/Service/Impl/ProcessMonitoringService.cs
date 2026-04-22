@@ -1,30 +1,25 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using Microsoft.Extensions.Logging;
-using OsuStat.UI.MVVM.Model;
+using OsuStat.Core.Service.Interfaces;
 
-namespace OsuStat.UI.Service.Impl;
+namespace OsuStat.Core.Service.Impl;
 
 public class ProcessMonitoringService : IProcessMonitoringService
 {
-    private FileSystemWatcher _watcher;
-    private readonly ISettingsService _settings;
-    private readonly PlayerStat _playerStat;
     private readonly System.Timers.Timer _searchProcessTimer = new(2000);
     private readonly System.Timers.Timer _playTimer =  new(60000);
     private Process? _monitoredProcess;
     private readonly ILogger<ProcessMonitoringService> _logger;
-    private readonly IDataService _dataService;
     private readonly IReplayWatcher _replayWatcher;
     private const string ProcessName = "osu!";
+    public event EventHandler? GameTimerElapsed; 
     
-    public ProcessMonitoringService(ISettingsService settings, PlayerStat playerStat, IDataService dataService, ILogger<ProcessMonitoringService> logger, IReplayWatcher replayWatcher)
+    public ProcessMonitoringService( 
+        ILogger<ProcessMonitoringService> logger,
+        IReplayWatcher replayWatcher
+        ) 
     {
         _logger = logger;
-        _playerStat = playerStat;
-        _settings = settings;
-        _dataService = dataService;
         _replayWatcher = replayWatcher;
     }
     
@@ -33,10 +28,9 @@ public class ProcessMonitoringService : IProcessMonitoringService
         _searchProcessTimer.Elapsed += (sender, args) => CheckForProcess();
         _searchProcessTimer.Start();
 
-        _playTimer.Elapsed += async (sender, args) =>
+        _playTimer.Elapsed += (sender, args) =>
         {
-            _playerStat.PlayTimeMin += 1;
-            await _dataService.SaveDataAsync(_playerStat, _settings.SavePlayerStatDirectoryPath);
+            GameTimerElapsed?.Invoke(sender, args);
         };
     }
     

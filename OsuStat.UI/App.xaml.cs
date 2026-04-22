@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using OsuStat.Core.Service.Interfaces;
 using OsuStat.UI.Config;
 using OsuStat.UI.MVVM.View;
 using OsuStat.UI.MVVM.ViewModel;
