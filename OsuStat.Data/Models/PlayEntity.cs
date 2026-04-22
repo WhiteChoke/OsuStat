@@ -13,5 +13,5 @@ public class PlayEntity
     public Grade Grade { get; set; }
     public DateTime PlayedAt { get; set; }
     public long BeatmapId { get; set; }
-    public Beatmap? Beatmap { get; set; }
+    public BeatmapEntity? Beatmap { get; set; }
 }

@@ -2,6 +2,7 @@
 
 public class PlayerStatEntity
 {
+    public long Id { get; set; }
     public double PlayTimeMin { get; set; }
     public int MapPlayed { get; set; }
     public double PpGained { get; set; }
