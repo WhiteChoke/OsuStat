@@ -1,7 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OsuStat.Core;
+using OsuStat.Core.Config;
+using OsuStat.Core.Service.Impl;
+using OsuStat.Core.Service.Interfaces;
 using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
 using OsuStat.UI.MVVM.View;
@@ -38,9 +40,8 @@ public static class DiConfig
             
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<ISettingsService, SettingsService>();
-        services.AddSingleton<IReplayWatcher, ReplayWatcher>();
-        services.AddSingleton<IProcessMonitoringService, ProcessMonitoringService>();
         services.AddSingleton<IDataService, DataService>();
+        services.AddCoreServices(); 
             
         services.AddSingleton<Func<Type, ViewModel>>
         (

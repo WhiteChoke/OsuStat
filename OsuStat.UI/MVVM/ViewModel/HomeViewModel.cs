@@ -1,10 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using OsuStat.UI.MVVM.Model;
 using OsuStat.UI.Service;
-using System.ComponentModel;
 using System.Windows;
 using Microsoft.Extensions.Logging;
-using OsuStat.UI.Service.Impl;
 
 namespace OsuStat.UI.MVVM.ViewModel
 {
