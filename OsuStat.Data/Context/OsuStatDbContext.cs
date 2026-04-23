@@ -2,9 +2,9 @@
 using OsuStat.Data.Config;
 using OsuStat.Data.Models;
 
-namespace OsuStat.Data;
+namespace OsuStat.Data.Context;
 
-public class OsuStatDbContext : DbContext
+public class OsuStatDbContext(DbContextOptions<OsuStatDbContext> options) : DbContext(options)
 {
     public DbSet<BeatmapEntity>  Beatmaps { get; set; }
     public DbSet<PlayEntity>  Plays { get; set; }

@@ -9,6 +9,9 @@ packages
 _ReSharper.*
 .idea
 Avatar.jpeg
+*.db
+Migrations
+
 
 # Python
 __pycache__
