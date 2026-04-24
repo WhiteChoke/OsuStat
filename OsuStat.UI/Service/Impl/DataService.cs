@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Windows;
 using Microsoft.Extensions.Logging;
 using OsuStat.Core.Extractor;
+using OsuStat.Data.Repository;
 using OsuStat.UI.MVVM.Model;
 
 namespace OsuStat.UI.Service.Impl;
@@ -17,13 +18,21 @@ public class DataService : IDataService
     private readonly ILogger<DataService> _logger;
     private readonly HttpClient _httpClient = new();
     private const string Url = "https://a.ppy.sh/";
+    private readonly PlayerStatRepository _playerStatRepository;
+    private readonly PlayRepository _playRepository;
+    
+
     
     public DataService(
         PlayerStat playerStat,
         ISettingsService settingsService,
         ILogger<DataService> logger,
-        BestScore bestScore)
+        BestScore bestScore,
+        PlayerStatRepository playerStatRepository,
+        PlayRepository playRepository)
     {
+        _playRepository = playRepository;
+        _playerStatRepository = playerStatRepository;
         _logger = logger;
         _playerStat = playerStat;
         _settingsService = settingsService;
@@ -53,59 +62,55 @@ public class DataService : IDataService
     
     public async Task LoadStatisticAsync(ObservableCollection<BeatMap> beatmaps)
     {
-           var playerFilePath = GetTodayFilePath(_settingsService.SavePlayerStatDirectoryPath);
-           var scoreFilePath =  GetTodayFilePath(_settingsService.SaveScoreDirectoryPath);
-           var bestScorePath = GetTodayFilePath(Path.Combine(_settingsService.SaveScoreDirectoryPath, "Best"));
-           
-           _bestScore.BgPath = Path.Combine(_settingsService.ApplicationFolder, "Assets", "Images", "Best score bg.jpg");
-           
-           try
-           {
-               var jsonPlayer = await File.ReadAllTextAsync(playerFilePath);
-               var playerStat = JsonSerializer.Deserialize<PlayerStat>(jsonPlayer) 
-                                ?? _playerStat;
-               _playerStat.MapPlayed = playerStat.MapPlayed;
-               _playerStat.AvgAccuracy = playerStat.AvgAccuracy ;
-               _playerStat.AvgBpm = playerStat.AvgBpm;
-               _playerStat.AvgStarRate = playerStat.AvgStarRate;
-               _playerStat.PlayTimeMin = playerStat.PlayTimeMin;
-               _playerStat.PpGained = playerStat.PpGained;
-               
-               _logger.LogInformation("Player statistic successful upload");
-           }
-           catch (Exception e)
-           {
-               _logger.LogWarning("Failed to load player statistic: {Message}", e.Message);
-           }
+        
+        var statEntity = await _playerStatRepository.GetStatByDateAsync(DateTime.Today) ??
+                         await _playerStatRepository.CreateStat();
+        
+        _playerStat.MapPlayed = statEntity.MapPlayed;
+        _playerStat.PlayTimeMin = statEntity.PlayTimeMin;
+        _playerStat.AvgStarRate = statEntity.AvgStarRate;
+        _playerStat.AvgAccuracy = statEntity.AvgAccuracy;
+        _playerStat.AvgAccuracy = statEntity.AvgAccuracy;
+        _playerStat.AvgBpm = statEntity.AvgBpm;
+        
+        var playsEntityList = await _playRepository.GetPlaysByDate(DateTime.Today);
 
-           try
-           {
-               var jsonScores = await File.ReadAllTextAsync(scoreFilePath);
-               var scores = JsonSerializer.Deserialize<List<BeatMap>>(jsonScores) 
-                            ?? [];
+        if (playsEntityList.Count == 0)
+            return;
+        
 
-               foreach (var beatmap in scores)
-                   beatmaps.Add(beatmap);
-           }
-           catch (Exception e)
-           {
-               _logger.LogWarning("Failed to load scores: {Message}", e.Message);
-           }
+        var max = playsEntityList.MaxBy(p => p.PpGained);
 
-           try
-           {
-               var jsonBestScore = await File.ReadAllTextAsync(bestScorePath);
-               var bestScore = JsonSerializer.Deserialize<BestScore>(jsonBestScore) 
-                           ?? _bestScore;
-               
-               _bestScore.BgPath = bestScore.BgPath;
-               _bestScore.MapName = bestScore.MapName;
-               _bestScore.Pp = bestScore.Pp;
-           }
-           catch (Exception e)
-           {
-               _logger.LogWarning("Failed to load best score: {Message}", e.Message);
-           }
+        _bestScore.BgPath = max.Beatmap.BgPath;
+        _bestScore.MapName = max.Beatmap.Name;
+        _bestScore.Pp = max.PpGained;
+
+
+        foreach (var play in playsEntityList)
+        {
+            var mapPlayCount = playsEntityList.Count(p => p.Id == play.Id);
+            var beatmap = new BeatMap
+            {
+                PlayCount = mapPlayCount,
+                Mods = play.Mods,
+                Grade = play.Grade,
+                PpGained = play.PpGained,
+                MaxCombo = play.Combo,
+                Accuracy = play.Accuracy,
+                Name = play.Beatmap.Name,
+                Artist = play.Beatmap.Artist,
+                Mapper = play.Beatmap.Mapper,
+                Bpm = play.Beatmap.Bpm,
+                Length = play.Beatmap.Length,
+                StarRate = play.Beatmap.StarRate,
+                Hp = play.Beatmap.Hp,
+                Cs = play.Beatmap.Cs,
+                Ar = play.Beatmap.Ar,
+                BgPath = play.Beatmap.BgPath
+            };
+            
+            beatmaps.Add(beatmap);
+        }
     }
 
     public async Task LoadUserInformationAsync(Player player)
@@ -128,7 +133,7 @@ public class DataService : IDataService
 
             player.AvatarPath = avatarPath;
         }
-        catch (IOException e)
+        catch (IOException)
         {
             MessageBox.Show("Unable to find the osu folder\nPlease select the game folder in settings", "Invalid folder", MessageBoxButton.OK, MessageBoxImage.Information);
         }

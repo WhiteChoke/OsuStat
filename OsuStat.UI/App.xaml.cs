@@ -30,8 +30,6 @@ namespace OsuStat.UI
             _serviceProvider.GetRequiredService<INavigationService>().NavigateTo<HomeViewModel>();
             _serviceProvider.GetRequiredService<IProcessMonitoringService>().Run();
             
-            Task.Run(() => _serviceProvider.GetRequiredService<PlayerStatRepository>().CreateStat());
-            
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
             

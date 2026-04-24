@@ -3,6 +3,7 @@ using OsuStat.UI.MVVM.Model;
 using OsuStat.UI.Service;
 using System.Windows;
 using Microsoft.Extensions.Logging;
+using OsuStat.Data.Repository;
 
 namespace OsuStat.UI.MVVM.ViewModel
 {
@@ -14,8 +15,6 @@ namespace OsuStat.UI.MVVM.ViewModel
         public Player User { get; set; } = new();
         public PlayerStat PlayerStat { get; set; }
         public BestScore BestScore { get; set; } 
-
-
         private readonly ObservableCollection<BeatMap> _beatMaps;
         public ObservableCollection<BeatMap> BeatMaps { get => _beatMaps; }
 
@@ -35,6 +34,7 @@ namespace OsuStat.UI.MVVM.ViewModel
             _settings = settingsService;
             _beatMaps = beatMaps;
             _dataService = dataService;
+
             _settings.PropertyChanged += async (sender, args) =>
             {
                 if (args.PropertyName == nameof(_settings.SetGameFolder))
@@ -45,7 +45,7 @@ namespace OsuStat.UI.MVVM.ViewModel
             LoadData();
         }
 
-        private async void LoadData()
+        private async Task LoadData()
         {
             try
             {
@@ -56,6 +56,7 @@ namespace OsuStat.UI.MVVM.ViewModel
             {
                 MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            
         }
     }
 }

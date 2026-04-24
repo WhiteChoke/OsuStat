@@ -1,4 +1,5 @@
-﻿using OsuStat.UI.MVVM.Core;
+﻿using System.IO;
+using OsuStat.UI.MVVM.Core;
 
 namespace OsuStat.UI.MVVM.Model;
 
@@ -12,7 +13,7 @@ public class BestScore : ObservableObject
             field = value;
             OnPropertyChanged();
         }
-    }
+    } = string.Empty;
 
     public double Pp
     {
@@ -32,5 +33,5 @@ public class BestScore : ObservableObject
             field = value;
             OnPropertyChanged();
         }
-    }
+    } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Images", "Best score.bg.jpg");
 }
