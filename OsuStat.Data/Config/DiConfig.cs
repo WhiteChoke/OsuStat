@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using OsuStat.Data.Context;
+using OsuStat.Data.Models;
 using OsuStat.Data.Repository;
 
 namespace OsuStat.Data.Config;
@@ -11,6 +12,8 @@ public static class DiConfig
     {
         services.AddDbContext<OsuStatDbContext>(options => options.UseSqlite( "Data Source=osustat.db"));
         services.AddSingleton<PlayerStatRepository>();
+        services.AddSingleton<PlayRepository>();
+        services.AddSingleton<BeatmapRepository>();
         
         using (var scope = services.BuildServiceProvider().CreateScope())
         {

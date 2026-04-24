@@ -13,11 +13,11 @@ public class PlayerStatRepository
         _context = context;
     }
 
-    public async Task<PlayerStatEntity?> GetTodayStatAsync()
+    public async Task<PlayerStatEntity?> GetStatByDateAsync(DateTime date)
     {
         return await _context.PlayerStats
             .AsNoTracking()
-            .FirstOrDefaultAsync(stat => stat.Date == DateTime.Today);
+            .FirstOrDefaultAsync(stat => stat.Date == date);
     }
 
     public async Task UpdateTodayStatAsync(PlayerStatEntity playerStat)
@@ -33,20 +33,22 @@ public class PlayerStatRepository
                 );
     }
 
-    public async Task CreateStat()
+    public async Task<PlayerStatEntity> CreateStat()
     {
         var current = await _context.PlayerStats.AsNoTracking()
             .FirstOrDefaultAsync(stat => stat.Date == DateTime.Today);
 
-        if (current == null)
+        if (current != null)
+            return current;
+        
+        var entity = new PlayerStatEntity
         {
-            var entity = new PlayerStatEntity
-            {
-                Date = DateTime.Today
-            };
-            
-        await _context.AddAsync(entity);
+            Date = DateTime.Today
+        };
+
+        var saved = await _context.AddAsync(entity);
         await _context.SaveChangesAsync();
-        }
+        
+        return saved.Entity;
     }
 }
