@@ -22,10 +22,11 @@ public class BeatmapRepository
         return saved.Entity;
     }
 
-    public async Task<List<BeatmapEntity>> GetBeatmapsById(long id)
+    public async Task<BeatmapEntity?> GetBeatmapsByHashCode(string hash)
     {
         return await _context.Beatmaps
-            .Where(b => b.Id == id)
-            .ToListAsync();
+            .AsNoTracking()
+            .Where(b => b.BeatmapHash == hash)
+            .FirstOrDefaultAsync();
     } 
 }

@@ -15,10 +15,13 @@ public class PlayRepository
 
     public async Task<List<PlayEntity>> GetPlaysByDate(DateTime date)
     {
+        var startDate = DateTime.Today;
+        var endDate = startDate.AddDays(1);
+        
         return await _context.Plays
             .AsNoTracking()
             .Include(p => p.Beatmap)
-            .Where(p => p.PlayedAt == date)
+            .Where(p => p.PlayedAt >= startDate && p.PlayedAt < endDate)
             .ToListAsync();
     }
 

@@ -1,8 +1,10 @@
-﻿namespace OsuStat.Core.Service.Interfaces;
+﻿using OsuStat.Core.Model;
+
+namespace OsuStat.Core.Service.Interfaces;
 
 public interface IReplayWatcher
 {
     void Start();
     void Stop();
-    public event EventHandler? OnReplayRegistered;
+    public event EventHandler<ReplayData>? OnReplayRegistered;
 }

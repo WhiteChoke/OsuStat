@@ -69,7 +69,8 @@ public static class ReplayExtractor
             Combo = replay.Combo,
             Length = length,
             Accuracy = accuracy,
-            Bpm = bpm
+            Bpm = bpm,
+            BeatmapHash = dbBeatmap.MD5Hash
         };
     }
 

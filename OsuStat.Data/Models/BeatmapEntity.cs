@@ -13,5 +13,6 @@ public class BeatmapEntity
     public double Cs { get; set; }
     public double Ar { get; set; }
     public string BgPath { get; set; } = string.Empty;
+    public string BeatmapHash { get; set; } = string.Empty;
     public List<PlayEntity> Plays { get; set; } = [];
 }
