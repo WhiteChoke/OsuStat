@@ -30,6 +30,9 @@ public class PlayerStatRepository
                 .SetProperty(s => s.AvgBpm, playerStat.AvgBpm)
                 .SetProperty(s => s.MapPlayed, playerStat.MapPlayed)
                 .SetProperty(s => s.PpGained, playerStat.PpGained)
+                .SetProperty(s => s.SessionStarRateSum, playerStat.SessionStarRateSum)
+                .SetProperty(s => s.SessionAccuracySum, playerStat.SessionAccuracySum)
+                .SetProperty(s => s.SessionBpmSum, playerStat.SessionBpmSum)
                 );
     }
 

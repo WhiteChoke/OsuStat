@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OsuStat.Data.Context;
 
@@ -10,9 +11,11 @@ using OsuStat.Data.Context;
 namespace OsuStat.Data.Migrations
 {
     [DbContext(typeof(OsuStatDbContext))]
-    partial class OsuStatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260427093434_AddedSessionParams")]
+    partial class AddedSessionParams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.7");
