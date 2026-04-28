@@ -2,9 +2,9 @@
 
 namespace OsuStat.UI.MVVM.View;
 
-public partial class Beatmap : UserControl
+public partial class PlayStatistic : UserControl
 {
-    public Beatmap()
+    public PlayStatistic()
     {
         InitializeComponent();
     }

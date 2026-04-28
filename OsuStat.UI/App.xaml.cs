@@ -33,8 +33,8 @@ namespace OsuStat.UI
 
             Current.Dispatcher.InvokeAsync(async () =>
             {
-                await dataService.LoadStatisticAsync();
                 await dataService.LoadUserInformationAsync();
+                await dataService.LoadStatisticAsync();
             });
             
             var replayWatcher = _serviceProvider.GetRequiredService<IReplayWatcher>();
