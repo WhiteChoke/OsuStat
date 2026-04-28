@@ -33,5 +33,13 @@ public class BestScore : ObservableObject
             field = value;
             OnPropertyChanged();
         }
-    } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Images", "Best score.bg.jpg");
+    } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Images", "Best score bg.jpg");
+
+    public void Update(string mapName, double pp, string bgPath)
+    {
+        MapName = mapName;
+        Pp = pp;
+        BgPath = bgPath;
+        
+    }
 }
