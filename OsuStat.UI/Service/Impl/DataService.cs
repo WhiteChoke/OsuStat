@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using MapsterMapper;
 using Microsoft.Extensions.Logging;
@@ -8,7 +9,6 @@ using OsuStat.Core.Model;
 using OsuStat.Data.Context;
 using OsuStat.Data.Models;
 using OsuStat.Data.Repository;
-using OsuStat.UI.Mapper;
 using OsuStat.UI.MVVM.Model;
 
 namespace OsuStat.UI.Service.Impl;
@@ -23,7 +23,6 @@ public class DataService : IDataService
     private readonly IMapper _mapper;
     private readonly IDataStorage _dataStorage;
     private readonly OsuStatDbContext  _dbContext;
-    private readonly BeatmapMapper _beatmapMapper;
     
     public DataService(
         ISettingsService settingsService,
@@ -33,8 +32,7 @@ public class DataService : IDataService
         BeatmapRepository beatmapRepository,
         IMapper mapper,
         IDataStorage dataStorage,
-        OsuStatDbContext dbContext,
-        BeatmapMapper beatmapMapper)
+        OsuStatDbContext dbContext)
     {
         _dataStorage = dataStorage;
         _mapper = mapper;
@@ -44,7 +42,6 @@ public class DataService : IDataService
         _logger = logger;
         _settingsService = settingsService;
         _dbContext = dbContext;
-        _beatmapMapper = beatmapMapper;
     }
     
     public async void SaveAndUpdateAsyncEvent(object? sender, ReplayData replayData)
@@ -52,40 +49,42 @@ public class DataService : IDataService
         await using  var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            var beatmapUi = await SavePlayData(replayData);
+            var play = _mapper.Map<Play>(replayData);
+            var beatmap = await SavePlayData(replayData);
             var stat = await SaveStat(replayData);
+            await SavePlayData(replayData);
             await transaction.CommitAsync();
             
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 _dataStorage.PlayerStat.UpdateStatistic(stat);
 
-                if (beatmapUi.PpGained > _dataStorage.BestScore.Pp)
+                if (play.PpGained > _dataStorage.BestScore.Pp)
                 {
                     _dataStorage.BestScore.Update(
-                        beatmapUi.Name,
-                        beatmapUi.PpGained,
-                        beatmapUi.BgPath
+                        beatmap.Name,
+                        play.PpGained,
+                        beatmap.BgPath
                     );
                 }
 
-                if (_dataStorage.Beatmaps.Contains(beatmapUi))
+                if (_dataStorage.Beatmaps.Contains(beatmap))
                 {
-                    var oldBeatmap = _dataStorage.Beatmaps.First(b => b.Equals(beatmapUi));
-                    _dataStorage.Beatmaps.Remove(oldBeatmap);
+                    var observableBeatmap = _dataStorage.Beatmaps
+                        .Select((item, index) => new { item, index })
+                        .First(b => b.item.Equals(beatmap));
 
-                    beatmapUi.PpGained = oldBeatmap.PpGained >= beatmapUi.PpGained
-                        ? oldBeatmap.PpGained
-                        : beatmapUi.PpGained;
-
-                    beatmapUi.PlayCount = oldBeatmap.PlayCount + 1;
+                    observableBeatmap.item.PlayCount++;
+                    observableBeatmap.item.Plays.Add(play);
+                    
+                    _dataStorage.Beatmaps.Move(observableBeatmap.index, 0);
                 }
                 else
                 {
-                    beatmapUi.PlayCount = 1;
+                    beatmap.PlayCount = 1;
+                    _dataStorage.Beatmaps.Insert(0, beatmap);
                 }
 
-                _dataStorage.Beatmaps.Insert(0, beatmapUi);
             });
 
             _logger.Log(LogLevel.Information, "View successfully updated");
@@ -132,12 +131,11 @@ public class DataService : IDataService
         playToCreate.BeatmapId = beatmapEntity.Id;
         playToCreate.PlayedAt = DateTime.Now;
         
-        var savedPlay = await _playRepository.CreatePlay(playToCreate);
-        savedPlay.Beatmap = beatmapEntity;
+        await _playRepository.CreatePlay(playToCreate);
         
         _logger.LogInformation("Play saved successfully");
-        
-        return _beatmapMapper.ToBeatMap(savedPlay);
+
+        return _mapper.Map<BeatMap>(beatmapEntity);
     }
     
     public async Task LoadStatisticAsync()
@@ -159,12 +157,15 @@ public class DataService : IDataService
         _dataStorage.BestScore.MapName = max.Beatmap.Name;
         _dataStorage.BestScore.Pp = max.PpGained;
 
-
-        foreach (var play in playsEntityList)
+        var groupedPlays = playsEntityList.GroupBy(p => p.BeatmapId);
+        
+        foreach (var group in groupedPlays)
         {
-            var mapPlayCount = playsEntityList.Count(p => p.Beatmap.BeatmapHash == play.Beatmap.BeatmapHash);
-            var beatmap = _beatmapMapper.ToBeatMap(play);
-            beatmap.PlayCount = mapPlayCount;
+            var beatmap = _mapper.Map<BeatMap>(group.First().Beatmap);
+            
+            beatmap.PlayCount = group.Count();
+            
+            beatmap.Plays = new ObservableCollection<Play>(group.Select(p => _mapper.Map<Play>(p)));
             
             _dataStorage.Beatmaps.Add(beatmap);
         }

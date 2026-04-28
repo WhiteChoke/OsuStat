@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OsuStat.Core.Config;
 using OsuStat.Data.Config;
-using OsuStat.UI.Mapper;
 using OsuStat.UI.MVVM.Core;
 using OsuStat.UI.MVVM.Model;
 using OsuStat.UI.MVVM.View;
@@ -54,7 +53,6 @@ public static class DiConfig
         services.AddSingleton<PlayerStat>();
         services.AddSingleton<BestScore>();
         services.AddSingleton<ObservableCollection<BeatMap>>();
-        services.AddSingleton<BeatmapMapper>();
         
         services.AddDataServices();
         
