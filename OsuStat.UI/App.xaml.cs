@@ -3,7 +3,6 @@ using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using OsuStat.Core.Service.Interfaces;
-using OsuStat.Data.Repository;
 using OsuStat.UI.Config;
 using OsuStat.UI.MVVM.View;
 using OsuStat.UI.MVVM.ViewModel;
@@ -26,9 +25,30 @@ namespace OsuStat.UI
             Log.Logger.Information("Application starting");
 
             RunApi();
-            
+
             _serviceProvider.GetRequiredService<INavigationService>().NavigateTo<HomeViewModel>();
             _serviceProvider.GetRequiredService<IProcessMonitoringService>().Run();
+            
+            var dataService = _serviceProvider.GetRequiredService<IDataService>();
+
+            Current.Dispatcher.Invoke(async () =>
+            {
+                await dataService.LoadStatisticAsync();
+                await dataService.LoadUserInformationAsync();
+            });
+            
+            var replayWatcher = _serviceProvider.GetRequiredService<IReplayWatcher>();
+            replayWatcher.OnReplayRegistered += dataService.SaveAndUpdateAsyncEvent;
+            
+            var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
+            MapsterConfig.Configure(settingsService);
+            settingsService.PropertyChanged += async (sender, args) =>
+            {
+                if (args.PropertyName == nameof(settingsService.SetGameFolder))
+                {
+                    await dataService.LoadUserInformationAsync();
+                }
+            };
             
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
