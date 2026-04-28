@@ -32,30 +32,26 @@ public static class MapsterConfig
             .Map(dest => dest.Mods, src => src.Mods)
             .Map(dest => dest.Grade, src => src.Grade);
 
-        TypeAdapterConfig<PlayEntity, BeatMap>.NewConfig()
-            .Map(dest => dest.Grade, src => src.Grade)
-            .Map(dest => dest.MaxCombo, src => src.Combo)
+        TypeAdapterConfig<BeatmapEntity, BeatMap>.NewConfig()
+            .Map(dest => dest.Name, src => src.Name)
+            .Map(dest => dest.Artist, src => src.Artist)
+            .Map(dest => dest.Mapper, src => src.Mapper)
+            .Map(dest => dest.Bpm, src => src.Bpm)
+            .Map(dest => dest.Length, src => src.Length)
+            .Map(dest => dest.StarRate, src => src.StarRate)
+            .Map(dest => dest.Hp, src => src.Hp)
+            .Map(dest => dest.Cs, src => src.Cs)
+            .Map(dest => dest.Ar, src => src.Ar)
+            .Map(dest => dest.BgPath, src => src.BgPath);
+
+        TypeAdapterConfig<PlayerStat, PlayerStatEntity>.NewConfig()
+            .Map(dest => dest.PlayTimeMin, src => src.PlayTimeMin)
+            .Map(dest => dest.MapPlayed, src => src.MapPlayed)
             .Map(dest => dest.PpGained, src => src.PpGained)
-            .Map(dest => dest.Mods, src => ConvertMods(settingsService, src.Mods))
-            .Map(dest => dest.Accuracy, src => src.Accuracy)
-            .Map(dest => dest.Name, src => src.Beatmap.Name)
-            .Map(dest => dest.Artist, src => src.Beatmap.Artist)
-            .Map(dest => dest.Mapper, src => src.Beatmap.Mapper)
-            .Map(dest => dest.Bpm, src => src.Beatmap.Bpm)
-            .Map(dest => dest.Length, src => src.Beatmap.Length)
-            .Map(dest => dest.StarRate, src => src.Beatmap.StarRate)
-            .Map(dest => dest.Hp, src => src.Beatmap.Hp)
-            .Map(dest => dest.Cs, src => src.Beatmap.Cs)
-            .Map(dest => dest.Ar, src => src.Beatmap.Ar)
-            .Map(dest => dest.BgPath, src => src.Beatmap.BgPath);
-        
-    }
-    
-    private static List<string> ConvertMods(ISettingsService settings, List<Mods> mods)
-    {
-        return 
-            mods.Select(mod => 
-                    Path.Combine(settings.ModIconsFolder, $"{mod}.png"))
-                .ToList();
+            .Map(dest => dest.AvgBpm, src => src.AvgBpm)
+            .Map(dest => dest.AvgStarRate, src => src.AvgStarRate)
+            .Map(dest => dest.AvgAccuracy, src => src.AvgAccuracy)
+            .Map(dest => dest.Date, src => DateTime.Today);
+
     }
 }

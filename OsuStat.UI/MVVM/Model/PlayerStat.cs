@@ -1,4 +1,5 @@
-﻿using OsuStat.UI.MVVM.Core;
+﻿using OsuStat.Data.Models;
+using OsuStat.UI.MVVM.Core;
 
 namespace OsuStat.UI.MVVM.Model;
 
@@ -22,7 +23,6 @@ public class PlayerStat : ObservableObject
             OnPropertyChanged();
         }
     }
-    private double _ppGained = 0;
     public double PpGained
     {
         get;
@@ -32,8 +32,6 @@ public class PlayerStat : ObservableObject
             OnPropertyChanged();
         }
     }
-
-    private double _totalBpm;
     public double AvgBpm
     {
         get;
@@ -43,8 +41,6 @@ public class PlayerStat : ObservableObject
             OnPropertyChanged();
         }
     }
-
-    private double _totalStarRate;
     public double AvgStarRate
     {
         get;
@@ -55,7 +51,6 @@ public class PlayerStat : ObservableObject
         }
     }
 
-    private double _totalAccuracy;
     public double AvgAccuracy
     {
         get;
@@ -66,17 +61,22 @@ public class PlayerStat : ObservableObject
         }
     }
 
-    public void Update(double bpm, double pp, double starRate, double accuracy)
+    public void LoadStatistics(PlayerStatEntity statEntity)
+    {
+        PlayTimeMin = statEntity.PlayTimeMin;
+        MapPlayed = statEntity.MapPlayed;
+        PpGained = Math.Round(statEntity.PpGained, 2); 
+        AvgBpm = Math.Round(statEntity.AvgBpm, 2);
+        AvgAccuracy = Math.Round(statEntity.AvgAccuracy, 2);
+        AvgStarRate = Math.Round(statEntity.AvgStarRate, 2);
+    }
+
+    public void UpdateStatistic(PlayerStatEntity statEntity)
     {
         MapPlayed++;
-        _ppGained += pp;
-        _totalBpm += bpm;
-        _totalStarRate += starRate;
-        _totalAccuracy += accuracy;
-    
-        PpGained = Math.Round(_ppGained, 2); 
-        AvgBpm = Math.Round(_totalBpm / MapPlayed, 2);
-        AvgAccuracy = Math.Round(_totalAccuracy / MapPlayed, 2);
-        AvgStarRate = Math.Round(_totalStarRate / MapPlayed, 2);
+        PpGained = Math.Round(statEntity.PpGained, 2); 
+        AvgBpm = Math.Round(statEntity.AvgBpm, 2);
+        AvgAccuracy = Math.Round(statEntity.AvgAccuracy, 2);
+        AvgStarRate = Math.Round(statEntity.AvgStarRate, 2);
     }
 }
