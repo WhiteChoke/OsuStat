@@ -1,11 +1,14 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
-using System.Net.Http;
-using System.Text.Json;
+﻿using System.IO;
 using System.Windows;
+using MapsterMapper;
 using Microsoft.Extensions.Logging;
+using OsuStat.Core;
 using OsuStat.Core.Extractor;
+using OsuStat.Core.Model;
+using OsuStat.Data.Context;
+using OsuStat.Data.Models;
 using OsuStat.Data.Repository;
+using OsuStat.UI.Mapper;
 using OsuStat.UI.MVVM.Model;
 
 namespace OsuStat.UI.Service.Impl;
@@ -13,65 +16,136 @@ namespace OsuStat.UI.Service.Impl;
 public class DataService : IDataService
 {
     private readonly ISettingsService _settingsService;
-    private readonly PlayerStat _playerStat;
-    private readonly BestScore _bestScore;
     private readonly ILogger<DataService> _logger;
-    private readonly HttpClient _httpClient = new();
-    private const string Url = "https://a.ppy.sh/";
     private readonly PlayerStatRepository _playerStatRepository;
     private readonly PlayRepository _playRepository;
-    
-
+    private readonly BeatmapRepository _beatmapRepository;
+    private readonly IMapper _mapper;
+    private readonly IDataStorage _dataStorage;
+    private readonly OsuStatDbContext  _dbContext;
+    private readonly BeatmapMapper _beatmapMapper;
     
     public DataService(
-        PlayerStat playerStat,
         ISettingsService settingsService,
         ILogger<DataService> logger,
-        BestScore bestScore,
         PlayerStatRepository playerStatRepository,
-        PlayRepository playRepository)
+        PlayRepository playRepository,
+        BeatmapRepository beatmapRepository,
+        IMapper mapper,
+        IDataStorage dataStorage,
+        OsuStatDbContext dbContext,
+        BeatmapMapper beatmapMapper)
     {
+        _dataStorage = dataStorage;
+        _mapper = mapper;
+        _beatmapRepository = beatmapRepository;
         _playRepository = playRepository;
         _playerStatRepository = playerStatRepository;
         _logger = logger;
-        _playerStat = playerStat;
         _settingsService = settingsService;
-        _bestScore = bestScore;
+        _dbContext = dbContext;
+        _beatmapMapper = beatmapMapper;
     }
     
-    public async Task SaveDataAsync<T>(T data, string directory)
+    public async void SaveAndUpdateAsyncEvent(object? sender, ReplayData replayData)
     {
+        await using  var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            var path = GetTodayFilePath(directory);
-            var json = JsonSerializer.Serialize(data);
-            await File.WriteAllTextAsync(path, json);
-            _logger.LogInformation("Data saved to {path}", path);
-        }
-        catch (IOException e)
-        {
-            _logger.LogError("Failed to save data: {Message}", e.Message);
-            throw;
+            var beatmapUi = await SavePlayData(replayData);
+            var stat = await SaveStat(replayData);
+            await transaction.CommitAsync();
+            
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                _dataStorage.PlayerStat.UpdateStatistic(stat);
+
+                if (beatmapUi.PpGained > _dataStorage.BestScore.Pp)
+                {
+                    _dataStorage.BestScore.Update(
+                        beatmapUi.Name,
+                        beatmapUi.PpGained,
+                        beatmapUi.BgPath
+                    );
+                }
+
+                if (_dataStorage.Beatmaps.Contains(beatmapUi))
+                {
+                    var oldBeatmap = _dataStorage.Beatmaps.First(b => b.Equals(beatmapUi));
+                    _dataStorage.Beatmaps.Remove(oldBeatmap);
+
+                    beatmapUi.PpGained = oldBeatmap.PpGained >= beatmapUi.PpGained
+                        ? oldBeatmap.PpGained
+                        : beatmapUi.PpGained;
+
+                    beatmapUi.PlayCount = oldBeatmap.PlayCount + 1;
+                }
+                else
+                {
+                    beatmapUi.PlayCount = 1;
+                }
+
+                _dataStorage.Beatmaps.Insert(0, beatmapUi);
+            });
+
+            _logger.Log(LogLevel.Information, "View successfully updated");
         }
         catch (Exception e)
         {
-            _logger.LogError("Unexpected error: {Message}", e.Message);
-            throw;
+            await transaction.RollbackAsync();
+            _logger.LogCritical("Failed to save statistic due {message}", e.Message);
         }
     }
-    
-    public async Task LoadStatisticAsync(ObservableCollection<BeatMap> beatmaps)
+
+    private async Task<PlayerStatEntity> SaveStat(ReplayData replayData)
     {
+        var statEntity = await _playerStatRepository.GetStatByDateAsync(DateTime.Today);
         
+        statEntity.MapPlayed++;
+        statEntity.SessionStarRateSum += replayData.StarRate;
+        statEntity.SessionAccuracySum += replayData.Accuracy;
+        statEntity.SessionBpmSum += replayData.Bpm;
+        statEntity.AvgStarRate = statEntity.SessionStarRateSum / statEntity.MapPlayed;
+        statEntity.AvgAccuracy = statEntity.SessionAccuracySum / statEntity.MapPlayed;
+        statEntity.AvgBpm = statEntity.SessionBpmSum / statEntity.MapPlayed;
+
+        await _playerStatRepository.UpdateTodayStatAsync(statEntity);
+        
+        _logger.LogInformation("Statistic updated successfully");
+        
+        return statEntity;
+    }
+
+    private async Task<BeatMap> SavePlayData(ReplayData replayData)
+    {
+        var beatmapEntity = await _beatmapRepository.GetBeatmapsByHashCode(replayData.BeatmapHash);
+
+        if (beatmapEntity == null)
+        {
+            var beatmapToCreate = _mapper.Map<BeatmapEntity>(replayData);
+            beatmapEntity = await _beatmapRepository.CreateBeatmap(beatmapToCreate);
+            _logger.LogInformation("Beatmap created successfully");
+        }
+
+        var playToCreate = _mapper.Map<PlayEntity>(replayData);
+        
+        playToCreate.BeatmapId = beatmapEntity.Id;
+        playToCreate.PlayedAt = DateTime.Now;
+        
+        var savedPlay = await _playRepository.CreatePlay(playToCreate);
+        savedPlay.Beatmap = beatmapEntity;
+        
+        _logger.LogInformation("Play saved successfully");
+        
+        return _beatmapMapper.ToBeatMap(savedPlay);
+    }
+    
+    public async Task LoadStatisticAsync()
+    {
         var statEntity = await _playerStatRepository.GetStatByDateAsync(DateTime.Today) ??
                          await _playerStatRepository.CreateStat();
         
-        _playerStat.MapPlayed = statEntity.MapPlayed;
-        _playerStat.PlayTimeMin = statEntity.PlayTimeMin;
-        _playerStat.AvgStarRate = statEntity.AvgStarRate;
-        _playerStat.AvgAccuracy = statEntity.AvgAccuracy;
-        _playerStat.AvgAccuracy = statEntity.AvgAccuracy;
-        _playerStat.AvgBpm = statEntity.AvgBpm;
+        _dataStorage.PlayerStat.LoadStatistics(statEntity);
         
         var playsEntityList = await _playRepository.GetPlaysByDate(DateTime.Today);
 
@@ -81,47 +155,32 @@ public class DataService : IDataService
 
         var max = playsEntityList.MaxBy(p => p.PpGained);
 
-        _bestScore.BgPath = max.Beatmap.BgPath;
-        _bestScore.MapName = max.Beatmap.Name;
-        _bestScore.Pp = max.PpGained;
+        _dataStorage.BestScore.BgPath = max.Beatmap.BgPath;
+        _dataStorage.BestScore.MapName = max.Beatmap.Name;
+        _dataStorage.BestScore.Pp = max.PpGained;
 
 
         foreach (var play in playsEntityList)
         {
-            var mapPlayCount = playsEntityList.Count(p => p.Id == play.Id);
-            var beatmap = new BeatMap
-            {
-                PlayCount = mapPlayCount,
-                Mods = play.Mods,
-                Grade = play.Grade,
-                PpGained = play.PpGained,
-                MaxCombo = play.Combo,
-                Accuracy = play.Accuracy,
-                Name = play.Beatmap.Name,
-                Artist = play.Beatmap.Artist,
-                Mapper = play.Beatmap.Mapper,
-                Bpm = play.Beatmap.Bpm,
-                Length = play.Beatmap.Length,
-                StarRate = play.Beatmap.StarRate,
-                Hp = play.Beatmap.Hp,
-                Cs = play.Beatmap.Cs,
-                Ar = play.Beatmap.Ar,
-                BgPath = play.Beatmap.BgPath
-            };
+            var mapPlayCount = playsEntityList.Count(p => p.Beatmap.BeatmapHash == play.Beatmap.BeatmapHash);
+            var beatmap = _beatmapMapper.ToBeatMap(play);
+            beatmap.PlayCount = mapPlayCount;
             
-            beatmaps.Add(beatmap);
+            _dataStorage.Beatmaps.Add(beatmap);
         }
+        
+        _logger.LogInformation("Statistics loaded successfully");
     }
 
-    public async Task LoadUserInformationAsync(Player player)
+    public async Task LoadUserInformationAsync()
     {
-        player.AvatarPath = Path.Combine(_settingsService.ApplicationFolder, "Assets", "Images", "Default avatar.jpeg");
+        _dataStorage.Player.AvatarPath = Path.Combine(_settingsService.ApplicationFolder, "Assets", "Images", "Default avatar.jpeg");
 
         try
         {
             var playerInfo = PlayerExtractor.Extract(_settingsService.GameFolder);
-            player.Nickname = playerInfo.Nickname;
-            player.GlobalRanking = "#" + playerInfo.Ranking;
+            _dataStorage.Player.Nickname = playerInfo.Nickname;
+            _dataStorage.Player.GlobalRanking = "#" + playerInfo.Ranking;
 
             var avatarPath = await GetAvatar(playerInfo.Id, 5);
             if (avatarPath == null)
@@ -131,7 +190,7 @@ public class DataService : IDataService
                 return;
             }
 
-            player.AvatarPath = avatarPath;
+            _dataStorage.Player.AvatarPath = avatarPath;
         }
         catch (IOException)
         {
@@ -146,35 +205,22 @@ public class DataService : IDataService
 
     private async Task<string?> GetAvatar(int id,int retryCount)
     {
-        try
+        var path = Path.Combine(_settingsService.ApplicationFolder, "Assets", "Images", "Avatar.jpg");
+        var pfpBytes = await Requests.GetAvatar(id);
+        for (int i = 0; i < retryCount; i++)
         {
-            var pfpBytes = await _httpClient.GetByteArrayAsync(Url + id);
-            var path = Path.Combine(_settingsService.ApplicationFolder, "Assets", "Images", "Avatar.jpeg");
-
-            for (int i = 0; i < retryCount; i++)
+            try
             {
-                try
-                {
-                    await File.WriteAllBytesAsync(path, pfpBytes);
-                    return path;
-                }
-                catch (IOException e)
-                {
-                    if (i == retryCount - 1)
-                        _logger.LogError("Failed to write avatar: {}", e.Message);
-                    await Task.Delay(500);
-                }
+                await File.WriteAllBytesAsync(path, pfpBytes);
+                return path;
+            }
+            catch (IOException e)
+            {
+                if (i == retryCount - 1)
+                    _logger.LogError("Failed to write avatar\n {message}",  e.Message);
+                await Task.Delay(500);
             }
         }
-        catch (Exception e)
-        {
-            _logger.LogError("unexpected error: {}", e.Message);
-        }
         return null;
-    }
-
-    private string GetTodayFilePath(string directory)
-    {
-        return Path.Combine(directory, $"{DateTime.Today:yy-MM-dd}.json");
     }
 }
