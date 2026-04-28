@@ -31,7 +31,7 @@ namespace OsuStat.UI
             
             var dataService = _serviceProvider.GetRequiredService<IDataService>();
 
-            Current.Dispatcher.Invoke(async () =>
+            Current.Dispatcher.InvokeAsync(async () =>
             {
                 await dataService.LoadStatisticAsync();
                 await dataService.LoadUserInformationAsync();
