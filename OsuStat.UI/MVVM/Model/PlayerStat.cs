@@ -81,8 +81,8 @@ public class PlayerStat : ObservableObject
         AvgStarRate = Math.Round(statEntity.AvgStarRate, 2);
     }
 
-    public double IncrementPlayTime()
+    public void IncrementPlayTime()
     {
-        return PlayTimeMin++;
+        PlayTimeMin++;
     }
 }
