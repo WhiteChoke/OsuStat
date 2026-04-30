@@ -48,9 +48,13 @@ public class DataService : IDataService
     {
         await using  var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
-        {
+        { 
             var play = _mapper.Map<Play>(replayData);
-            var beatmap = await SavePlayData(replayData);
+            var beatmap = _mapper.Map<BeatMap>(replayData);
+            
+            if (IsPlayExist(beatmap, play))
+                return; 
+            
             var stat = await SaveStat(replayData);
             await SavePlayData(replayData);
             await transaction.CommitAsync();
@@ -82,6 +86,7 @@ public class DataService : IDataService
                 else
                 {
                     beatmap.PlayCount = 1;
+                    beatmap.Plays.Add(play);
                     _dataStorage.Beatmaps.Insert(0, beatmap);
                 }
 
@@ -94,6 +99,22 @@ public class DataService : IDataService
             await transaction.RollbackAsync();
             _logger.LogCritical("Failed to save statistic due {message}", e.Message);
         }
+    }
+
+    private bool IsPlayExist(BeatMap beatmap, Play play)
+    {
+        var foundBeatmap = _dataStorage.Beatmaps
+            .FirstOrDefault(b => b.Equals(beatmap));
+        
+        if (foundBeatmap == null)
+            return false;
+        
+        var foundPlay = foundBeatmap.Plays.FirstOrDefault(p => p.Equals(play));
+        
+        if (foundPlay == null)
+            return false;
+
+        return true;
     }
 
     private async Task<PlayerStatEntity> SaveStat(ReplayData replayData)
@@ -115,7 +136,7 @@ public class DataService : IDataService
         return statEntity;
     }
 
-    private async Task<BeatMap> SavePlayData(ReplayData replayData)
+    private async Task SavePlayData(ReplayData replayData)
     {
         var beatmapEntity = await _beatmapRepository.GetBeatmapsByHashCode(replayData.BeatmapHash);
 
@@ -134,8 +155,6 @@ public class DataService : IDataService
         await _playRepository.CreatePlay(playToCreate);
         
         _logger.LogInformation("Play saved successfully");
-
-        return _mapper.Map<BeatMap>(beatmapEntity);
     }
     
     public async Task LoadStatisticAsync()

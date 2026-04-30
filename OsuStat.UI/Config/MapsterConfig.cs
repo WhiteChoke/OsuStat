@@ -43,6 +43,18 @@ public static class MapsterConfig
             .Map(dest => dest.Cs, src => src.Cs)
             .Map(dest => dest.Ar, src => src.Ar)
             .Map(dest => dest.BgPath, src => src.BgPath);
+        
+        TypeAdapterConfig<ReplayData, BeatMap>.NewConfig()
+            .Map(dest => dest.Name, src => src.Name)
+            .Map(dest => dest.Artist, src => src.Artist)
+            .Map(dest => dest.Mapper, src => src.Mapper)
+            .Map(dest => dest.Bpm, src => src.Bpm)
+            .Map(dest => dest.Length, src => src.Length)
+            .Map(dest => dest.StarRate, src => src.StarRate)
+            .Map(dest => dest.Hp, src => src.Hp)
+            .Map(dest => dest.Cs, src => src.Cs)
+            .Map(dest => dest.Ar, src => src.Ar)
+            .Map(dest => dest.BgPath, src => src.BgPath);
 
         TypeAdapterConfig<ReplayData, Play>.NewConfig()
             .Map(dest => dest.PpGained, src => src.PpGained)
