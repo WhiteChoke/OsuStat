@@ -22,6 +22,7 @@ public class ReplayData
     public List<Mods> Mods {get; set;}
     public Grade Grade {get; set;}
     public string BeatmapHash {get; set;}
+    public DateTime TimeStamp {get; set;}
     
     public override string ToString()
     {

@@ -150,7 +150,7 @@ public class DataService : IDataService
         var playToCreate = _mapper.Map<PlayEntity>(replayData);
         
         playToCreate.BeatmapId = beatmapEntity.Id;
-        playToCreate.PlayedAt = DateTime.Now;
+        playToCreate.PlayedAt = replayData.TimeStamp;
         
         await _playRepository.CreatePlay(playToCreate);
         

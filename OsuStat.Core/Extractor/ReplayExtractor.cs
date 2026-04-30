@@ -70,7 +70,8 @@ public static class ReplayExtractor
             Length = length,
             Accuracy = accuracy,
             Bpm = bpm,
-            BeatmapHash = dbBeatmap.MD5Hash
+            BeatmapHash = dbBeatmap.MD5Hash,
+            TimeStamp = replay.ReplayTimestamp 
         };
     }
 

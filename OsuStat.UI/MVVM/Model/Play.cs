@@ -9,21 +9,18 @@ public class Play
     public double Accuracy { get; set; }
     public List<string> Mods { get; set; } = [];
     public Grade Grade { get; set; }
+    public DateTime TimeStamp { get; set; }
 
     public override bool Equals(object? obj)
     {
         if (obj is not Play other) return false;
         if (ReferenceEquals(this, other)) return true;
 
-        return PpGained.Equals(other.PpGained) &&
-               MaxCombo == other.MaxCombo &&
-               Accuracy.Equals(other.Accuracy) &&
-               Mods.SequenceEqual(other.Mods) &&
-               Grade.Equals(other.Grade);
+        return TimeStamp.Equals(other.TimeStamp);
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(PpGained, MaxCombo, Accuracy, Mods, (int)Grade);
+        return HashCode.Combine(TimeStamp, PpGained, MaxCombo, Accuracy, Mods, (int)Grade);
     }
 }
