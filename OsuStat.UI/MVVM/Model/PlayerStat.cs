@@ -5,6 +5,7 @@ namespace OsuStat.UI.MVVM.Model;
 
 public class PlayerStat : ObservableObject
 {
+    // idk why its a double, MAYBE ill fix it
     public double PlayTimeMin
     {
         get;
@@ -78,5 +79,10 @@ public class PlayerStat : ObservableObject
         AvgBpm = Math.Round(statEntity.AvgBpm, 2);
         AvgAccuracy = Math.Round(statEntity.AvgAccuracy, 2);
         AvgStarRate = Math.Round(statEntity.AvgStarRate, 2);
+    }
+
+    public double IncrementPlayTime()
+    {
+        return PlayTimeMin++;
     }
 }

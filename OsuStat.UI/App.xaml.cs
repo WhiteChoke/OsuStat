@@ -23,25 +23,25 @@ namespace OsuStat.UI
         protected override void OnStartup(StartupEventArgs e)
         {
             Log.Logger.Information("Application starting");
-
+            
             RunApi();
 
-            _serviceProvider.GetRequiredService<INavigationService>().NavigateTo<HomeViewModel>();
-            _serviceProvider.GetRequiredService<IProcessMonitoringService>().Run();
-            
-            var dataService = _serviceProvider.GetRequiredService<IDataService>();
+            var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
+            MapsterConfig.Configure(settingsService);
 
+            var processService = _serviceProvider.GetRequiredService<IProcessMonitoringService>();
+            var replayWatcher = _serviceProvider.GetRequiredService<IReplayWatcher>();
+            var dataService = _serviceProvider.GetRequiredService<IDataService>();
+            
             Current.Dispatcher.InvokeAsync(async () =>
             {
                 await dataService.LoadUserInformationAsync();
                 await dataService.LoadStatisticAsync();
             });
             
-            var replayWatcher = _serviceProvider.GetRequiredService<IReplayWatcher>();
             replayWatcher.OnReplayRegistered += dataService.SaveAndUpdateAsyncEvent;
+            processService.GameTimerElapsed += dataService.UpdateTimerAsyncEvent;
             
-            var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
-            MapsterConfig.Configure(settingsService);
             settingsService.PropertyChanged += async (sender, args) =>
             {
                 if (args.PropertyName == nameof(settingsService.SetGameFolder))
@@ -50,6 +50,9 @@ namespace OsuStat.UI
                 }
             };
             
+            processService.Run();
+            
+            _serviceProvider.GetRequiredService<INavigationService>().NavigateTo<HomeViewModel>();
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
             

@@ -9,7 +9,7 @@ public static class LoggerConfig
     public static Logger GetLogger()
     {
         return new LoggerConfiguration()
-            .MinimumLevel.Debug()
+            .MinimumLevel.Information()
             .WriteTo.Console()
             .WriteTo.File(
                 Path.Combine(

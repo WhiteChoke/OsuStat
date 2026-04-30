@@ -44,6 +44,24 @@ public class DataService : IDataService
         _dbContext = dbContext;
     }
     
+    public async void UpdateTimerAsyncEvent(object? sender, EventArgs eventArgs)
+    {
+        await using  var transaction = await _dbContext.Database.BeginTransactionAsync();
+        try
+        {
+            var time = _dataStorage.PlayerStat.PlayTimeMin;
+            await _playerStatRepository.UpdatePlayTimeAsync((int) time);
+            await transaction.CommitAsync();
+            _dataStorage.PlayerStat.IncrementPlayTime();
+            
+            _logger.LogInformation("Successfully updated play time");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to update play time {message}", e.Message);
+        }
+    }
+    
     public async void SaveAndUpdateAsyncEvent(object? sender, ReplayData replayData)
     {
         await using  var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -99,7 +117,9 @@ public class DataService : IDataService
             await transaction.RollbackAsync();
             _logger.LogCritical("Failed to save statistic due {message}", e.Message);
         }
+ 
     }
+
 
     private bool IsPlayExist(BeatMap beatmap, Play play)
     {
@@ -160,7 +180,7 @@ public class DataService : IDataService
     public async Task LoadStatisticAsync()
     {
         var statEntity = await _playerStatRepository.GetStatByDateAsync(DateTime.Today) ??
-                         await _playerStatRepository.CreateStat();
+                         await _playerStatRepository.CreateStatAsync();
         
         _dataStorage.PlayerStat.LoadStatistics(statEntity);
         

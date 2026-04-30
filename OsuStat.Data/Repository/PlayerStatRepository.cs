@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data.SqlTypes;
+using Microsoft.EntityFrameworkCore;
 using OsuStat.Data.Context;
 using OsuStat.Data.Models;
 
@@ -36,7 +37,7 @@ public class PlayerStatRepository
                 );
     }
 
-    public async Task<PlayerStatEntity> CreateStat()
+    public async Task<PlayerStatEntity> CreateStatAsync()
     {
         var current = await _context.PlayerStats.AsNoTracking()
             .FirstOrDefaultAsync(stat => stat.Date == DateTime.Today);
@@ -53,5 +54,14 @@ public class PlayerStatRepository
         await _context.SaveChangesAsync();
         
         return saved.Entity;
+    }
+
+    public async Task UpdatePlayTimeAsync(int min)
+    {
+        await _context.PlayerStats
+            .Where(stat => stat.Date == DateTime.Today)
+            .ExecuteUpdateAsync(stat => stat
+                .SetProperty(s => s.PlayTimeMin, min)
+            );
     }
 }
