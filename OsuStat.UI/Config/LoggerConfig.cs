@@ -13,7 +13,7 @@ public static class LoggerConfig
             .WriteTo.Console()
             .WriteTo.File(
                 Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Osu stat", "Logs", "log.txt"),
+                    AppContext.BaseDirectory, "Logs", "log.txt"),
                 rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 7)
             .CreateLogger();
