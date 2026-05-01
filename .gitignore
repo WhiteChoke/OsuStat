@@ -15,3 +15,6 @@ __pycache__
 .pytest_cache
 conftest.py
 tests
+
+# VS Code
+.vscode
