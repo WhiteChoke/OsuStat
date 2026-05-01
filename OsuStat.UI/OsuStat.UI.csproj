@@ -92,6 +92,10 @@
     </Content>
     <None Remove="Assets\Images\Settings.png" />
     <Resource Include="Assets\Images\Settings.png" />
+    <None Remove="Assets\AmazingPfpForPerfectApplication.ico" />
+    <Resource Include="Assets\AmazingPfpForPerfectApplication.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
