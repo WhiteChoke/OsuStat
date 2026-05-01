@@ -26,7 +26,7 @@ namespace OsuStat.UI.MVVM.Model
             }
         }
         
-        private string _avatarPath;
+        private string _avatarPath = string.Empty;
         public string AvatarPath
         {
             get => _avatarPath;

@@ -13,7 +13,6 @@ namespace OsuStat.UI.Service.Impl
 
         private readonly string _jsonPath;
         public string GameFolder => CurrentSettings.GameFolder;
-        public string Language => CurrentSettings.Language;
         public string ModIconsFolder { get; }
         private Settings CurrentSettings { get; }
 

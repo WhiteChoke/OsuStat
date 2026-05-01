@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using OsuStat.Core.Enums;
 using OsuStat.UI.MVVM.Core;
 
 namespace OsuStat.UI.MVVM.Model;
