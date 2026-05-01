@@ -12,12 +12,6 @@ namespace OsuStat.UI.Service.Impl
         public string ApplicationFolder { get; }
 
         private readonly string _jsonPath;
-        public string DataDirectoryPath { get; } = 
-            Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Osu stat"
-            );
-        public string SavePlayerStatDirectoryPath { get; }
-        public string SaveScoreDirectoryPath { get; }
         public string GameFolder => CurrentSettings.GameFolder;
         public string Language => CurrentSettings.Language;
         public string ModIconsFolder { get; }
@@ -27,16 +21,8 @@ namespace OsuStat.UI.Service.Impl
         {
             _logger = logger;
             ApplicationFolder = AppContext.BaseDirectory;
-            _jsonPath = Path.Combine(DataDirectoryPath, "Settings.json");
-            SavePlayerStatDirectoryPath = Path.Combine(DataDirectoryPath, "Player");
-            SaveScoreDirectoryPath = Path.Combine(DataDirectoryPath, "Scores");
+            _jsonPath = Path.Combine(ApplicationFolder, "Settings.json");
             ModIconsFolder = Path.Combine(ApplicationFolder, "Assets", "Images", "Mod icons");
-            
-            Directory.CreateDirectory(DataDirectoryPath);
-            Directory.CreateDirectory(SavePlayerStatDirectoryPath);
-            Directory.CreateDirectory(SaveScoreDirectoryPath);
-            Directory.CreateDirectory(Path.Combine(SaveScoreDirectoryPath, "Best"));
-            
             
             if (File.Exists(_jsonPath))
             {
@@ -69,11 +55,6 @@ namespace OsuStat.UI.Service.Impl
             
             OnPropertyChanged();
             _logger.LogInformation("Game folder changed");
-        }
-
-        public void SetLanguage()
-        {
-            throw new NotImplementedException();
         }
     }
 }
