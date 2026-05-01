@@ -9,10 +9,12 @@ packages
 _ReSharper.*
 .idea
 Avatar.jpeg
-*.db
 
 # Python
 __pycache__
 .pytest_cache
 conftest.py
 tests
+
+# VS Code
+.vscode
