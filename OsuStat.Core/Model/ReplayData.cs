@@ -6,22 +6,22 @@ namespace OsuStat.Core.Model;
 public class ReplayData
 {
     public long OnlineScoreId {get; set;}
-    public string Name {get; set;}
-    public string Artist {get; set;}
-    public string Mapper {get; set;}
+    public string Name {get; set;} = string.Empty;
+    public string Artist {get; set;} = string.Empty;
+    public string Mapper {get; set;} = string.Empty;
     public double Bpm {get; set;}
-    public string Length {get; set;}
+    public string Length { get; set; } = "0:00";
     public double StarRate {get; set;}
     public double Hp {get; set;}
     public double Cs {get; set;}
     public double Ar {get; set;}
-    public string BgPath {get; set;}
+    public string BgPath {get; set;} = string.Empty;
     public double PpGained {get; set;}
     public ushort Combo {get; set;}
     public double Accuracy {get; set;}
-    public List<Mods> Mods {get; set;}
+    public List<Mods> Mods { get; set; } = [];
     public Grade Grade {get; set;}
-    public string BeatmapHash {get; set;}
+    public string BeatmapHash {get; set;} = string.Empty;
     public DateTime TimeStamp {get; set;}
     
     public override string ToString()

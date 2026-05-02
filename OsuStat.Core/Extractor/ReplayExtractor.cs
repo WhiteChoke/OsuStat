@@ -1,5 +1,6 @@
 ﻿using OsuParsers.Decoders;
 using OsuParsers.Enums;
+using OsuParsers.Replays;
 using OsuStat.Core.Enums;
 using OsuStat.Core.Model;
 
@@ -30,25 +31,17 @@ public static class ReplayExtractor
                  .FromMilliseconds(dbBeatmap.TotalTime)
                  .ToString(@"mm\:ss");
 
-        var accuracy = CalculateAccuracy(
-            n300: replay.Count300,
-            n100: replay.Count100,
-            n50: replay.Count50,
-            nMiss: replay.CountMiss
-            );
+        var replayStat = ExtractReplayStat(replay);
         
-        var bpm = CalculateBpm(
-            dbBeatmap.TimingPoints.First().BPM
-            );
-
+        var accuracy = CalculateAccuracy(replayStat);
+        
+        var bpm = CalculateBpm(dbBeatmap.TimingPoints.First().BPM);
+        
         var starRate = Math.Round(dbBeatmap.StandardStarRating[replay.Mods], 2);
 
         var grade = CalculateGrade(
             accuracy: accuracy,
-            n300: replay.Count300,     
-            n100: replay.Count100,     
-            n50: replay.Count50,       
-            nMiss: replay.CountMiss  
+            stat: replayStat  
             );
 
         var bgPath = Path.Combine(osuDirectoryPath, "Songs", dbBeatmap.FolderName, beatmap.EventsSection.BackgroundImage);
@@ -71,19 +64,28 @@ public static class ReplayExtractor
             Accuracy = accuracy,
             Bpm = bpm,
             BeatmapHash = dbBeatmap.MD5Hash,
-            TimeStamp = replay.ReplayTimestamp 
+            TimeStamp = replay.ReplayTimestamp
+        };
+    }
+
+    private static PlayStat ExtractReplayStat(Replay replay)
+    {
+        return new PlayStat
+        {
+           N300 = replay.Count300,
+           N100 = replay.Count100,
+           N50 = replay.Count50,
+           Combo = replay.Combo,
+           Misses = replay.CountMiss
         };
     }
 
     private static double CalculateAccuracy(
-        ushort n300,
-        ushort n100,
-        ushort n50,
-        ushort nMiss
+        PlayStat stat
         )
     {
-        double a = 300.0 * n300 + 100.0 * n100 + 50.0 * n50;
-        double b = 300.0 * (n300+n100+n50+nMiss);
+        double a = 300.0 * stat.N300 + 100.0 * stat.N100 + 50.0 * stat.N50;
+        double b = 300.0 * (stat.N300+stat.N100+stat.N50+stat.Misses);
         
         if (b == 0) return 0;
         
@@ -97,17 +99,17 @@ public static class ReplayExtractor
         return (int)Math.Ceiling(60 * 1000 / bpm);
     }
     
-    private static Grade CalculateGrade(double accuracy, ushort n300, ushort n100, ushort n50, ushort nMiss)
+    private static Grade CalculateGrade(double accuracy, PlayStat stat)
     {
-        var total = n300 + n100 + n50 + nMiss;
+        var total = stat.N300 + stat.N100 + stat.N50 + stat.Misses;
     
-        var percent300 = n300 * 100 / total;
-        var percent50 = n50 * 100 / total;
+        var percent300 = stat.N300 * 100 / total;
+        var percent50 = stat.N50 * 100 / total;
     
         if (accuracy.Equals(100)) return Grade.SS;
-        if ( percent300 > 90 && percent50 < 1 && nMiss == 0 ) return Grade.S;
-        if ( (percent300 > 80 && nMiss == 0) || percent300 > 90 ) return Grade.A;
-        if ( (percent300 > 70 && nMiss == 0) || percent300 > 80 ) return Grade.B;
+        if ( percent300 > 90 && percent50 < 1 && stat.Misses == 0 ) return Grade.S;
+        if ( (percent300 > 80 && stat.Misses == 0) || percent300 > 90 ) return Grade.A;
+        if ( (percent300 > 70 && stat.Misses == 0) || percent300 > 80 ) return Grade.B;
         if ( percent300 > 60 ) return Grade.C;
         return Grade.D;
     }
