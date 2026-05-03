@@ -1,6 +1,9 @@
+# secret
 .vs
 .env
 .venv
+
+# related
 bin/
 obj/
 packages
@@ -9,6 +12,7 @@ packages
 _ReSharper.*
 .idea
 Avatar.jpeg
+todo.txt
 
 # Python
 __pycache__
