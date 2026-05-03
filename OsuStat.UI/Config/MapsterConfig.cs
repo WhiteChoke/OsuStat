@@ -69,7 +69,8 @@ public static class MapsterConfig
             .Map(dest => dest.MaxCombo, src => src.Combo)
             .Map(dest => dest.Accuracy, src => src.Accuracy)
             .Map(dest => dest.Mods, src => ConvertMods(settingsService, src.Mods))
-            .Map(dest => dest.Grade, src => src.Grade);
+            .Map(dest => dest.Grade, src => src.Grade)
+            .Map(dest => dest.TimeStamp, src => src.PlayedAt);
 
         TypeAdapterConfig<PlayerStat, PlayerStatEntity>.NewConfig()
             .Map(dest => dest.PlayTimeMin, src => src.PlayTimeMin)
