@@ -46,8 +46,11 @@ public class ProcessMonitoringService : IProcessMonitoringService
         
         _searchProcessTimer.Stop();
         _playTimer.Start();
-        
-        _replayWatcher.Start();
+
+        var fullPath = process.MainModule.FileName;
+        var directory = Path.GetDirectoryName(fullPath);
+
+        _replayWatcher.Start(directory);
         
         _logger.LogInformation("Found process");
     }

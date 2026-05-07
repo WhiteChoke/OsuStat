@@ -4,7 +4,7 @@ namespace OsuStat.Core.Service.Interfaces;
 
 public interface IReplayWatcher
 {
-    void Start();
+    void Start(string gameDirectory);
     void Stop();
     public event EventHandler<ReplayData>? OnReplayRegistered;
 }
