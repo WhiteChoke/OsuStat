@@ -2,10 +2,10 @@
 
 public record GetMapStatRequestDto(
     string filePath,
-    int n300,
-    int n100,
-    int n50,
-    int combo,
-    int misses,
+    ushort n300,
+    ushort n100,
+    ushort n50,
+    ushort combo,
+    ushort misses,
     int mods
     );
