@@ -14,16 +14,18 @@ class MapScore(BaseModel):
 
 @router.post("/latest/new/best-score")
 async def post_latest_best_play(Schema: MapScore):
+    try:
+        obj = user_best_map(
+            user_id = Schema.user_id,
+            map_name = Schema.map_name,
+            map_chars = Schema.map_chars,
+            map_id = Schema.map_id
+        )
 
-    obj = user_best_map(
-        user_id = Schema.user_id,
-        map_name = Schema.map_name,
-        map_chars = Schema.map_chars,
-        map_id = Schema.map_id
-    )
-
-    async with localSession() as session:
-        session.add(obj)
-        await session.commit()
+        async with localSession() as session:
+            session.add(obj)
+            await session.commit()
+    except Exception as e:
+        return e
         
     return "200"

@@ -26,11 +26,11 @@ app.include_router(post_latest_info.router)
 app.include_router(get_best_play.router)
 app.include_router(get_latest_info.router)
 
-@app.on_event("startup")
-async def on_startup():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+# @app.on_event("startup")
+# async def on_startup():
+#     async with engine.begin() as conn:
+#         await conn.run_sync(Base.metadata.drop_all)
+#         await conn.run_sync(Base.metadata.create_all)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=7272, log_config=False)
