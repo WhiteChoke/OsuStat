@@ -33,4 +33,4 @@ app.include_router(get_latest_info.router)
 #         await conn.run_sync(Base.metadata.create_all)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=7272, log_config=False)
+    uvicorn.run(app, host="127.0.0.1", port=7272, log_config=None)
