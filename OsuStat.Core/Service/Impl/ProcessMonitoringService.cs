@@ -11,16 +11,19 @@ public class ProcessMonitoringService : IProcessMonitoringService
     private Process? _monitoredProcess;
     private readonly ILogger<ProcessMonitoringService> _logger;
     private readonly IReplayWatcher _replayWatcher;
+    private readonly GameWatcher _gameWatcher;
     private const string ProcessName = "osu!";
     public event EventHandler? GameTimerElapsed; 
     
     public ProcessMonitoringService( 
         ILogger<ProcessMonitoringService> logger,
-        IReplayWatcher replayWatcher
+        IReplayWatcher replayWatcher,
+        GameWatcher gameWatcher
         ) 
     {
         _logger = logger;
         _replayWatcher = replayWatcher;
+        _gameWatcher = gameWatcher;
     }
     
     public void Run()
@@ -34,7 +37,7 @@ public class ProcessMonitoringService : IProcessMonitoringService
         };
     }
     
-    private void CheckForProcess()
+    private async void CheckForProcess()
     {
         var process = Process.GetProcessesByName(ProcessName).FirstOrDefault();
         
@@ -51,10 +54,10 @@ public class ProcessMonitoringService : IProcessMonitoringService
         var directory = Path.GetDirectoryName(fullPath);
 
         _replayWatcher.Start(directory);
+        await _gameWatcher.Start();
         
         _logger.LogInformation("Found process");
-    }
-
+    } 
     private void MonitoredProcessOnExited(object? sender, EventArgs e)
     {
         _monitoredProcess?.Dispose();

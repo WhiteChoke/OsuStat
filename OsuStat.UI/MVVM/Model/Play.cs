@@ -16,7 +16,12 @@ public class Play
         if (obj is not Play other) return false;
         if (ReferenceEquals(this, other)) return true;
 
-        return TimeStamp.Equals(other.TimeStamp);
+        return TimeStamp.Equals(other.TimeStamp) &&  
+               PpGained.Equals(other.PpGained) && 
+               MaxCombo.Equals(other.MaxCombo) &&  
+               Accuracy.Equals(other.Accuracy) && 
+               Mods.SequenceEqual(other.Mods) && 
+               Grade.Equals(other.Grade);
     }
 
     public override int GetHashCode()

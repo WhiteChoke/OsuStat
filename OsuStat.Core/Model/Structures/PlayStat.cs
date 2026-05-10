@@ -1,4 +1,4 @@
-﻿namespace OsuStat.Core.Model;
+﻿namespace OsuStat.Core.Model.Structures;
 
 public struct PlayStat
 {

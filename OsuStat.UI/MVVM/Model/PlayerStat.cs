@@ -24,7 +24,7 @@ public class PlayerStat : ObservableObject
             OnPropertyChanged();
         }
     }
-    public double PpGained
+    public int PpGained
     {
         get;
         set
@@ -66,7 +66,7 @@ public class PlayerStat : ObservableObject
     {
         PlayTimeMin = statEntity.PlayTimeMin;
         MapPlayed = statEntity.MapPlayed;
-        PpGained = Math.Round(statEntity.PpGained, 2); 
+        PpGained = statEntity.PpGained; 
         AvgBpm = Math.Round(statEntity.AvgBpm, 2);
         AvgAccuracy = Math.Round(statEntity.AvgAccuracy, 2);
         AvgStarRate = Math.Round(statEntity.AvgStarRate, 2);
@@ -75,7 +75,7 @@ public class PlayerStat : ObservableObject
     public void UpdateStatistic(PlayerStatEntity statEntity)
     {
         MapPlayed++;
-        PpGained = Math.Round(statEntity.PpGained, 2); 
+        PpGained = statEntity.PpGained; 
         AvgBpm = Math.Round(statEntity.AvgBpm, 2);
         AvgAccuracy = Math.Round(statEntity.AvgAccuracy, 2);
         AvgStarRate = Math.Round(statEntity.AvgStarRate, 2);

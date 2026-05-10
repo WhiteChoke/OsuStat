@@ -23,7 +23,7 @@ public static class MapsterConfig
             .Map(dest => dest.Cs, src => src.Cs)
             .Map(dest => dest.Ar, src => src.Ar)
             .Map(dest => dest.BgPath, src => src.BgPath)
-            .Map(dest => dest.BeatmapHash, src => src.BeatmapHash);
+            .Map(dest => dest.OsuBeatmapId, src => src.BeatmapId);
 
         TypeAdapterConfig<ReplayData, PlayEntity>.NewConfig()
             .Map(dest => dest.PpGained, src => src.PpGained)

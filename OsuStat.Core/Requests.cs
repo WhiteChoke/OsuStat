@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using OsuParsers.Enums;
-using OsuStat.Core.Model;
 using OsuStat.Core.Model.Dto;
+using OsuStat.Core.Model.Structures;
 
 namespace OsuStat.Core;
 

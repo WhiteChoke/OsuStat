@@ -13,6 +13,6 @@ public class BeatmapEntity
     public double Cs { get; set; }
     public double Ar { get; set; }
     public string BgPath { get; set; } = string.Empty;
-    public string BeatmapHash { get; set; } = string.Empty;
+    public long OsuBeatmapId { get; set; } 
     public List<PlayEntity> Plays { get; set; } = [];
 }

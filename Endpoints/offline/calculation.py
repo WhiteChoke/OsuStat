@@ -48,11 +48,12 @@ async def UserStats(ClassSchema: classniy_class):
         perf.set_combo(None)
         max_pp = perf.calculate(beatmap)
 
-        max = round(max_pp.pp, 2)
+        pp = round(receive_pp.pp, 2)
+        maxPp = round(max_pp.pp, 2)
 
         obj = {
-            "gained": receive_pp,
-            "max_pp": max,
+            "gained": pp,
+            "max_pp": maxPp,
             "star_rate": diff.stars
         }
         return obj

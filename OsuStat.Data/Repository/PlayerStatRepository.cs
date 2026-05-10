@@ -64,4 +64,23 @@ public class PlayerStatRepository
                 .SetProperty(s => s.PlayTimeMin, min)
             );
     }
+
+    public async Task UpdateGainedPp(int gainedPp)
+    {
+        await _context.PlayerStats
+            .Where(p => p.Date == DateTime.Today)
+            .ExecuteUpdateAsync(stat => stat
+                .SetProperty(s => s.PpGained, gainedPp)
+            );
+    }
+
+    public async Task SetDayPp(int pp)
+    {
+        await _context.PlayerStats
+            .Where(p => p.Date == DateTime.Today)
+            .ExecuteUpdateAsync(stat => stat
+                .SetProperty(s => s.DayInitialPp, pp)
+            );
+       
+    }
 }

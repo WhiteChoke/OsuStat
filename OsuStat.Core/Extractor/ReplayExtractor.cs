@@ -3,56 +3,51 @@ using OsuParsers.Enums;
 using OsuParsers.Replays;
 using OsuStat.Core.Enums;
 using OsuStat.Core.Model;
+using OsuStat.Core.Model.Structures;
 
 namespace OsuStat.Core.Extractor;
 
 public static class ReplayExtractor
 {
-    public static ReplayData Extract(string replayPath, string osuDirectoryPath)
+    public static async Task<ReplayData> Extract(string replayPath, string[] beatmapPath)
     {
-        var osuDbPath = Path.Combine(osuDirectoryPath, "osu!.db");
-        
-        var osuDb = DatabaseDecoder.DecodeOsu(osuDbPath);
+        var osuFilePath = Path.Combine(beatmapPath);
+        var folderPath = beatmapPath.First();
         
         var replay = ReplayDecoder.Decode(replayPath);
         
-        var dbBeatmap = osuDb.Beatmaps.Find(beatmap => replay.BeatmapMD5Hash == beatmap.MD5Hash) 
-                        ?? throw new NullReferenceException("Beatmap not found!");
-        
-        var beatmapPath = Path.Combine(osuDirectoryPath, "Songs", dbBeatmap.FolderName, dbBeatmap.FileName);
-
-        var beatmap = BeatmapDecoder.Decode(beatmapPath);
+        var beatmap = BeatmapDecoder.Decode(osuFilePath);
         
         var mods = Enum.GetValues<Mods>()
                  .Where(m => m != Mods.None && ((int)replay.Mods & (int)m) == (int)m)
                  .ToList();
         
         var length = TimeSpan
-                 .FromMilliseconds(dbBeatmap.TotalTime)
+                 .FromMilliseconds(beatmap.GeneralSection.Length)
                  .ToString(@"mm\:ss");
 
         var replayStat = ExtractReplayStat(replay);
         
         var accuracy = CalculateAccuracy(replayStat);
         
-        var bpm = CalculateBpm(dbBeatmap.TimingPoints.First().BPM);
-        
-        var starRate = Math.Round(dbBeatmap.StandardStarRating[replay.Mods], 2);
+        var bpm = CalculateBpm(beatmap.TimingPoints.First().BeatLength);
 
+        var apiStat = await Requests.GetMapStat(osuFilePath, replayStat, replay.Mods);
+        
         var grade = CalculateGrade(
             accuracy: accuracy,
             stat: replayStat  
             );
-
-        var bgPath = Path.Combine(osuDirectoryPath, "Songs", dbBeatmap.FolderName, beatmap.EventsSection.BackgroundImage);
+        
+        var bgPath = Path.Combine(folderPath, beatmap.EventsSection.BackgroundImage);
         
         return new ReplayData
         {
             OnlineScoreId = replay.OnlineId,
-            Name = dbBeatmap.Title,
-            Artist = dbBeatmap.Artist,
-            Mapper = dbBeatmap.Creator,
-            StarRate = starRate,
+            Name = beatmap.MetadataSection.Title,
+            Artist = beatmap.MetadataSection.Artist,
+            Mapper = beatmap.MetadataSection.Creator,
+            StarRate = Math.Round(apiStat.star_rate, 2),
             Hp = Math.Round(beatmap.DifficultySection.HPDrainRate, 2),
             Cs = Math.Round(beatmap.DifficultySection.CircleSize, 2),
             Ar = Math.Round(beatmap.DifficultySection.ApproachRate, 2),
@@ -63,8 +58,8 @@ public static class ReplayExtractor
             Length = length,
             Accuracy = accuracy,
             Bpm = bpm,
-            BeatmapHash = dbBeatmap.MD5Hash,
-            TimeStamp = replay.ReplayTimestamp
+            BeatmapId = beatmap.MetadataSection.BeatmapID,
+            TimeStamp = replay.ReplayTimestamp,
         };
     }
 

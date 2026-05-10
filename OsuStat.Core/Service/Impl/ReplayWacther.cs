@@ -10,12 +10,15 @@ public class ReplayWatcher : IReplayWatcher
     private string _gameFolder;
     private FileSystemWatcher _watcher;
     private readonly ILogger<ReplayWatcher> _logger;
+    private readonly PlayedBeatmap _playedBeatmap;  
     public event EventHandler<ReplayData>? OnReplayRegistered;
 
     public ReplayWatcher(
-        ILogger<ReplayWatcher> logger)
+        ILogger<ReplayWatcher> logger, 
+        PlayedBeatmap playedBeatmap)
     {
         _logger = logger;
+        _playedBeatmap = playedBeatmap;
     }
 
     public void Start(string gameDirectory)
@@ -41,7 +44,11 @@ public class ReplayWatcher : IReplayWatcher
 
     private async void ReplayRegistered(object sender, FileSystemEventArgs e)
     {
-        var result = await ReplayExtractor.Extract(e.FullPath, [_gameFolder, ]);
+        var beatmapDirectoryPath = Path.Combine(_gameFolder, "Songs", _playedBeatmap.MapDirectory);
+        var result = await ReplayExtractor.Extract(
+            e.FullPath, 
+            [beatmapDirectoryPath, _playedBeatmap.OsuFileName]
+            );
         OnReplayRegistered?.Invoke(this, result);
         _logger.LogInformation("Registered a play of beatmap {name}", result.Name);
     }

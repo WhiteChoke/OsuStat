@@ -158,7 +158,7 @@ public class DataService : IDataService
 
     private async Task SavePlayData(ReplayData replayData)
     {
-        var beatmapEntity = await _beatmapRepository.GetBeatmapsByHashCode(replayData.BeatmapHash);
+        var beatmapEntity = await _beatmapRepository.GetBeatmapsByOsuBeatmapId(replayData.BeatmapId);
 
         if (beatmapEntity == null)
         {
@@ -262,5 +262,26 @@ public class DataService : IDataService
             }
         }
         return null;
+    }
+
+    public async Task SetDayInitialPp(int pp)
+    {
+        var entity = await _playerStatRepository.GetStatByDateAsync(DateTime.Today);
+        if (entity.DayInitialPp != 0)
+            return;
+        await _playerStatRepository.SetDayPp(pp);
+        _logger.LogInformation("Day pp set: {pp}", pp);
+    }
+
+    public async Task UpdateGainedPpEvent(int pp)
+    {
+        var entity = await _playerStatRepository.GetStatByDateAsync(DateTime.Today);
+        var gained = pp - entity.DayInitialPp;
+        await _playerStatRepository.UpdateGainedPp(gained);
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            _dataStorage.PlayerStat.PpGained = gained;
+            _logger.LogInformation("Gained PP: {gained}", gained);
+        });
     }
 }

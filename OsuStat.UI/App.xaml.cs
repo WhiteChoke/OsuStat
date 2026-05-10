@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using OsuStat.Core.Service.Impl;
 using OsuStat.Core.Service.Interfaces;
 using OsuStat.UI.Config;
 using OsuStat.UI.MVVM.View;
@@ -32,6 +33,7 @@ namespace OsuStat.UI
             var processService = _serviceProvider.GetRequiredService<IProcessMonitoringService>();
             var replayWatcher = _serviceProvider.GetRequiredService<IReplayWatcher>();
             var dataService = _serviceProvider.GetRequiredService<IDataService>();
+            var gameWatcher = _serviceProvider.GetRequiredService<GameWatcher>();
             
             Current.Dispatcher.InvokeAsync(async () =>
             {
@@ -40,6 +42,8 @@ namespace OsuStat.UI
             });
             
             replayWatcher.OnReplayRegistered += dataService.SaveAndUpdateAsyncEvent;
+            gameWatcher.OnGameStarted = async (pp) => await dataService.SetDayInitialPp(pp);
+            gameWatcher.PlayCompleted = async (pp) => await dataService.UpdateGainedPpEvent(pp);
             processService.GameTimerElapsed += dataService.UpdateTimerAsyncEvent;
             
             settingsService.PropertyChanged += async (sender, args) =>

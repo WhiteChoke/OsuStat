@@ -21,8 +21,8 @@ public class ReplayData
     public double Accuracy {get; set;}
     public List<Mods> Mods { get; set; } = [];
     public Grade Grade {get; set;}
-    public string BeatmapHash {get; set;} = string.Empty;
-    public DateTime TimeStamp {get; set;}
+    public long BeatmapId {get; set;}
+    public DateTime TimeStamp { get; set; }
     
     public override string ToString()
     {
