@@ -60,6 +60,7 @@ public static class ReplayExtractor
             Bpm = bpm,
             BeatmapId = beatmap.MetadataSection.BeatmapID,
             TimeStamp = replay.ReplayTimestamp,
+            PpGained = Math.Round(apiStat.gained, 2)
         };
     }
 

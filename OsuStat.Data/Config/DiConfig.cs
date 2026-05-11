@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using OsuStat.Data.Context;
-using OsuStat.Data.Models;
 using OsuStat.Data.Repository;
 
 namespace OsuStat.Data.Config;
