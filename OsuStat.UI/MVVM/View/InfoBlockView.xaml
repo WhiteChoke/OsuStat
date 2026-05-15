@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="OsuStat.UI.MVVM.View.InfoBlockView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OsuStat.UI.MVVM.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="721" d:DesignWidth="551">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock FontSize="64" Text="{Binding SelectedDate}" Margin="0 0 0 20"/>
+        <Border Grid.Row="1"
+                Background="{StaticResource RaspberryRed}"
+                CornerRadius="14"
+                Padding="34 96">
+            <StackPanel>
+                <TextBlock FontSize="40" Text="{Binding PlayerStat.PlayTimeMin, StringFormat='• Play time {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="40" Text="{Binding PlayerStat.MapPlayed, StringFormat='• Maps played {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="40" Text="{Binding PlayerStat.PpGained, StringFormat='• PP gained {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="40" Text="{Binding PlayerStat.AvgBpm, StringFormat='• AVG Bpm {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="40" Text="{Binding PlayerStat.AvgStarRate, StringFormat='• AVG StarRate {0}'}" Margin="6 0 0 10 "/>
+                <TextBlock FontSize="40" Text="{Binding PlayerStat.AvgAccuracy, StringFormat='• AVG Accuracy {0}'}" Margin="6 0 0 10 "/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
