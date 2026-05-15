@@ -24,5 +24,13 @@ namespace OsuStat.UI.MVVM.View
         {
             Close();
         }
+
+        private void btnMaximize_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+                WindowState = WindowState.Normal;
+            else
+                WindowState = WindowState.Maximized;
+        }
     }
 }

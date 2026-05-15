@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="OsuStat" Height="1920" Width="572"
+        Title="OsuStat" Height="800" Width="1200"
         Icon="../../Assets/AmazingPfpForPerfectApplication.ico"
         Background="{StaticResource BackgroundBlack}"
         WindowStyle="None"
@@ -15,8 +15,8 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal">
             <Button Width="40"
@@ -25,7 +25,7 @@
                     Background="Transparent"
                     Content="..." />
         </StackPanel>
-        <StackPanel Grid.Column="1" Orientation="Horizontal">
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Width="40"
                     BorderBrush="Transparent"
                     Background="Transparent"
@@ -35,7 +35,8 @@
             <Button Width="40"
                     Background="Transparent"
                     BorderBrush="Transparent"
-                    Content="🗖" />
+                    Content="🗖" 
+                    Click="btnMaximize_Click"/>
             <Button Width="40"
                     BorderBrush="Transparent"
                     Background="Transparent"
