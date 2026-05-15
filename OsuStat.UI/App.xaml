@@ -19,9 +19,10 @@
             <DataTemplate DataType="{x:Type viewModel:SettingsViewModel}">
                 <view:SettingsView/>
             </DataTemplate>
-        
-            <SolidColorBrush x:Key="BackgroundBlack" Color="#27292B"/>
-            <SolidColorBrush x:Key="RaspberryRed" Color="#5C2334"/>
+
+            <SolidColorBrush x:Key="BackgroundBlack" Color="#1F2021"/>
+            <SolidColorBrush x:Key="RaspberryRed" Color="#721D30"/>
+            <SolidColorBrush x:Key="86Black" Color="#00000086" />
         
             <FontFamily x:Key="Rubik">/Assets/Fonts/#Rubik</FontFamily>
         </ResourceDictionary>
