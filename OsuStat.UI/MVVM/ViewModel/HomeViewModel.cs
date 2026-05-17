@@ -10,6 +10,7 @@ public class HomeViewModel : Core.ViewModel
     public PlayerStat PlayerStat { get; }
     public BestScore BestScore { get; } 
     public ObservableCollection<BeatMap> BeatMaps { get; }
+    public string SessionDate { get; }
 
     public HomeViewModel
     (
@@ -20,6 +21,7 @@ public class HomeViewModel : Core.ViewModel
         BestScore = dataStorage.BestScore;
         BeatMaps = dataStorage.Beatmaps;
         User = dataStorage.Player;
+        SessionDate = DateTime.Today.ToShortDateString();
     }
     
 }
