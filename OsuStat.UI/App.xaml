@@ -22,9 +22,10 @@
 
             <SolidColorBrush x:Key="BackgroundBlack" Color="#1F2021"/>
             <SolidColorBrush x:Key="RaspberryRed" Color="#721D30"/>
-            <SolidColorBrush x:Key="86Black" Color="#00000086" />
+            <SolidColorBrush x:Key="86Black" Color="#86000000" />
             <SolidColorBrush x:Key="LightGrayBackground" Color="#27292B"/>
             <SolidColorBrush x:Key="EllipseBlack" Color="#12121A"/>
+            <SolidColorBrush x:Key="SwagBlack" Color="#30000000"/>
         
             <FontFamily x:Key="Rubik">/Assets/Fonts/#Rubik</FontFamily>
         </ResourceDictionary>
